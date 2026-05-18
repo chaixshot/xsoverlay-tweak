@@ -1,5 +1,5 @@
-if (window.XSOverlayTWEAK_SETTING) return 'XSOverlayTWEAK_SETTING already injected';
-window.XSOverlayTWEAK_SETTING = true;
+if (window.XSOverlayTweak_Setting) return 'XSOverlayTweak_Setting already injected';
+window.XSOverlayTweak_Setting = true;
 
 function InjectKBOSCTab() {
     var scr = document.createElement('script');
@@ -175,4 +175,4 @@ function InjectKBOSCTab() {
 
 InjectKBOSCTab()
 
-return 'XSOverlayTWEAK_SETTING injected';
+return 'XSOverlayTweak_Setting injected';
