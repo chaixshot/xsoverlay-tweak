@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using Valve.Newtonsoft.Json;
 using Vuplex.WebView;
 using XSOverlay;
@@ -45,7 +46,9 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // Mouse Navigation
                 ["XSOverlayTweak.MouseNavigation"] = XConfig.MouseNavigation.Value,
-                ["XSOverlayTweak.MouseNavigationUseModifiedKey"] = XConfig.MouseNavigationUseModifiedKey.Value
+                ["XSOverlayTweak.MouseNavigationUseModifiedKey"] = XConfig.MouseNavigationUseModifiedKey.Value,
+
+                ["XSOverlayTweak.UpdateNotification"] = XConfig.UpdateNotification.Value,
             };
 
             var data = JsonConvert.SerializeObject(settings);
@@ -101,10 +104,13 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // About
                 case "XSOverlayTweak.CheckForUpdate":
-                    Utils.Update.CheckForUpdate();
+                    Task.Run(Utils.Update.CheckForUpdate);
                     break;
                 case "XSOverlayTweak.OpenGitHub":
-                    Utils.Update.OpenGitHubPage();
+                    Task.Run(Utils.Update.OpenGitHubPage);
+                    break;
+                case "XSOverlayTweak.UpdateNotification":
+                    XConfig.UpdateNotification.Value = bool.Parse(value);
                     break;
             }
 
@@ -115,9 +121,12 @@ namespace xsoverlay_tweak.Patches.Setting
         {
 
             // JS for inserting the actual settings page
-            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("xsoverlay_tweak.Patches.Setting.setting.js");
-            using var reader = new StreamReader(stream);
-            var jsContent = reader.ReadToEnd();
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("xsoverlay_tweak.Patches.Setting.setting.js");
+            using StreamReader reader = new(stream);
+            string jsContent = reader.ReadToEnd();
+
+            jsContent = jsContent.Replace("<<Version>>", MyPluginInfo.PLUGIN_VERSION);
+
             string jsCode = $"(function() {{ {jsContent} }})();";
 
             // Lisen for WebView loaded

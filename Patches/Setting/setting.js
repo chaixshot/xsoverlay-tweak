@@ -43,14 +43,12 @@ function InjectKBOSCTab() {
             },
             {
                 name: 'About', priority: 5, settings: [
+                    { type: Ui.ComponentType.Text, description: '<br>Version: <<Version>>'},
                     { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.CheckForUpdate', name: 'Check for Updates', description: 'Check for the latest version of XSOverlay Tweak.', default: true },
-                    { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.OpenGitHub', name: 'Open GitHub Page', description: 'Visit the XSOverlay Tweak GitHub page.', default: true },
+                    { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.OpenGitHub', name: 'Open GitHub', description: 'Visit the XSOverlay Tweak GitHub page.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.UpdateNotification', name: 'Update Notification', description: 'Receive update notification when update are available.', default: true },
                 ]
             }
-
-            // addSetting(Cursor, Ui.ComponentType.Button, 'Button', 'Button', 'Button', null);
-            // addSetting(Cursor, Ui.ComponentType.Text, 'Text', 'Text', '');
-            // addSetting(Cursor, Ui.ComponentType.Dropdown, 'KBDropdownExample', 'Dropdown Example', 'This is an example dropdown.', 'Option 1', ['Option 1', 'Option 2', 'Option 3']);
         ];
 
         const sidebar = document.querySelector('.side-bar-button-container');

@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using System.Threading.Tasks;
 
 namespace xsoverlay_tweak;
 
@@ -41,6 +42,9 @@ public class Plugin : BaseUnityPlugin
         // Set default refresh rate to HMD refresh rate if it's not set by user
         if (XConfig.RefreshRate.Value == -1)
             XConfig.RefreshRate.Value = DeviceManager.Instance.HMDRefreshRate;
+
+        if (XConfig.UpdateNotification.Value)
+            Task.Run(Utils.Update.CheckForUpdate);
 
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is started!");
     }
