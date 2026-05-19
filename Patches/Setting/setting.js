@@ -17,7 +17,7 @@ function InjectKBOSCTab() {
             {
                 name: 'Refresh Rate', priority: 1, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EnableRefreshRate', name: 'Enable', description: 'Overriding the XSOverlay render refresh rate.', default: false },
-                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.RefreshRate', name: 'Refresh Rate', description: 'The target frame rate for XSOverlay rendering.<br>Higher values improve responsiveness but increase CPU usage.', default: 90, options: [90, 500, 10], unit: 'FPS' }
+                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.RefreshRate', name: 'Refresh Rate', description: 'The target frame rate for XSOverlay rendering.<br>Higher values improve responsiveness but increase CPU usage.<br>Set to <b>500</b> for unlimited.', default: 90, options: [90, 500, 10], unit: 'FPS' }
                 ]
             },
             {

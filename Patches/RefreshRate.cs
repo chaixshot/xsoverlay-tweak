@@ -37,7 +37,7 @@ namespace xsoverlay_tweak.Patches
 
             XSTools.ExecuteOnMainThread(delegate
             {
-                Application.targetFrameRate = XConfig.RefreshRate.Value;
+                Application.targetFrameRate = XConfig.RefreshRate.Value.Equals(500) ? -1 : XConfig.RefreshRate.Value;
                 Time.fixedDeltaTime = 1f / (float)XConfig.RefreshRate.Value;
             });
 

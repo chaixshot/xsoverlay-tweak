@@ -26,7 +26,7 @@ namespace xsoverlay_tweak
         {
             // RefreshRate
             EnableRefreshRate = cfg.Bind("RefreshRate", "EnableRefreshRate", false, "Overriding the XSOverlay render refresh rate.");
-            RefreshRate = cfg.Bind("RefreshRate", "RefreshRate", -1, "The target frame rate for XSOverlay rendering.\nHigher values improve responsiveness but increase CPU usage.");
+            RefreshRate = cfg.Bind("RefreshRate", "RefreshRate", -1, "The target frame rate for XSOverlay rendering.\nHigher values improve responsiveness but increase CPU usage.\nSet to 500 for unlimited.");
 
             // Cursor
             AlwayUpdateCursor = cfg.Bind("Cursor", "AlwayUpdateCursor", true, "Reduces cursor latency by sending cursor position data from the Pointer before the desktop frame is captured.\nWithout this, the cursor often appears to lag one frame behind the Pointer position.");
