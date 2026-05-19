@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿﻿using HarmonyLib;
+using System;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches
@@ -7,6 +8,8 @@ namespace xsoverlay_tweak.Patches
     {
         public static bool IsPhysicalMovement = false;
         private static MouseInputDetector mouseDetector;
+
+        private static readonly Action<Raycaster> TakeControlOverCursorIfNotInControlDelegate = AccessTools.MethodDelegate<Action<Raycaster>>(AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl"));
 
         [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
         [HarmonyPostfix]
@@ -27,7 +30,7 @@ namespace xsoverlay_tweak.Patches
             if (IsPhysicalMovement)
             {
                 IsPhysicalMovement = false;
-                AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl").Invoke(__instance, null);
+                TakeControlOverCursorIfNotInControlDelegate(__instance);
 
                 return false;
             }
@@ -42,7 +45,7 @@ namespace xsoverlay_tweak.Patches
             if (IsPhysicalMovement)
             {
                 IsPhysicalMovement = false;
-                AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl").Invoke(__instance, null);
+                TakeControlOverCursorIfNotInControlDelegate(__instance);
 
                 return false;
             }
@@ -57,7 +60,7 @@ namespace xsoverlay_tweak.Patches
             if (IsPhysicalMovement)
             {
                 IsPhysicalMovement = false;
-                AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl").Invoke(__instance, null);
+                TakeControlOverCursorIfNotInControlDelegate(__instance);
 
                 return false;
             }

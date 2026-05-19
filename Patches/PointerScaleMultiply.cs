@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿﻿using HarmonyLib;
 using XSOverlay;
 
 namespace xsoverlay_tweak.Patches
@@ -6,13 +6,15 @@ namespace xsoverlay_tweak.Patches
     [HarmonyPatch(typeof(UI_RelativeTransformManipulator))]
     internal class PointerScaleMultiply
     {
+        private static readonly AccessTools.FieldRef<UI_RelativeTransformManipulator, float> ScaleMultiplierRef = AccessTools.FieldRefAccess<UI_RelativeTransformManipulator, float>("scaleMultiplier");
+
         [HarmonyPatch("Start")]
         [HarmonyPostfix]
         public static void Start(UI_RelativeTransformManipulator __instance)
         {
             XConfig.PointerScaleMultiply.SettingChanged += (sender, args) =>
             {
-                AccessTools.Field(typeof(UI_RelativeTransformManipulator), "scaleMultiplier").SetValue(__instance, GetScale());
+                ScaleMultiplierRef(__instance) = GetScale();
             };
         }
 

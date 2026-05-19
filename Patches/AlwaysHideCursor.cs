@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -10,7 +10,7 @@ namespace xsoverlay_tweak.Patches
         private static readonly List<WindowComponentManager> instanceRefs = [];
 
         // Cache the private field once for high-speed access
-        private static readonly FieldInfo WindowCursorField = AccessTools.Field(typeof(WindowComponentManager), "WindowCanShowDesktopCursor");
+        private static readonly AccessTools.FieldRef<WindowComponentManager, bool> WindowCursorRef = AccessTools.FieldRefAccess<WindowComponentManager, bool>("WindowCanShowDesktopCursor");
 
         [HarmonyPatch(typeof(WindowComponentManager), "Start")]
         [HarmonyPostfix]
@@ -39,7 +39,7 @@ namespace xsoverlay_tweak.Patches
                 }
 
                 // Set the private boolean to false for EVERY manager
-                WindowCursorField.SetValue(manager, false);
+                WindowCursorRef(manager) = false;
             }
         }
 

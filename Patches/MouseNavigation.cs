@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿﻿using HarmonyLib;
 using System;
 using System.IO;
 using System.Linq;
@@ -23,6 +23,8 @@ namespace xsoverlay_tweak.Patches
 
         private static bool IsDesktopHover = false;
         private static Raycaster CurrentRaycaster;
+
+        private static readonly string[] ActionNames = ["/actions/xsoverlay/in/MouseBack", "/actions/xsoverlay/in/MouseForward"];
 
         // Define this once at the class level to avoid Marshal.SizeOf and repeated allocations
         private static readonly uint DigitalDataSize = (uint)Marshal.SizeOf(typeof(InputDigitalActionData_t));
@@ -132,9 +134,8 @@ namespace xsoverlay_tweak.Patches
 
             // Update "actions" array
             JArray actions = (JArray)root["actions"];
-            string[] actionNames = ["/actions/xsoverlay/in/MouseBack", "/actions/xsoverlay/in/MouseForward"];
 
-            foreach (string name in actionNames)
+            foreach (string name in ActionNames)
             {
                 if (!actions.Any(a => a["name"]?.ToString() == name))
                 {

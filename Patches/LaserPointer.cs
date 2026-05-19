@@ -42,7 +42,10 @@ namespace xsoverlay_tweak.Patches
                 else
                 {
                     if (LaserDictionary.TryGetValue(__instance, out LaserData Data))
+                    {
                         Object.Destroy(Data.Laser.gameObject);
+                        Object.Destroy(Data.Texture); // Prevent GPU memory leak
+                    }
                     LaserDictionary.Remove(__instance);
                 }
             };
