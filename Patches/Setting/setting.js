@@ -18,8 +18,9 @@ function InjectKBOSCTab() {
                 name: 'Refresh Rate', priority: 1, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EnableRefreshRate', name: 'Enable', description: 'Overriding the XSOverlay render refresh rate.', default: false },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.RefreshRate', name: 'Refresh Rate', description: 'The target frame rate for XSOverlay rendering.<br>Higher values improve responsiveness but increase CPU usage.<br>Set to <b>500</b> for unlimited.', default: 90, options: [90, 500, 10], unit: 'FPS' },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyHoverOverlay', name: 'Only Hover Overlay', description: 'Only apply overriding refresh rate when hovering any Overlay.', default: false },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyInEditMod', name: 'Only In Edit Mode', description: 'Only apply overriding refresh rate in <b>Edit Mode</b>.', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyHoverOverlay', name: 'Only Hover Overlay', description: 'Only apply overriding refresh rate when hovering any Overlay.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyInEditMod', name: 'Only In Edit Mode', description: 'Only apply overriding refresh rate in <b>Edit Mode</b>.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enable efficiency mode to reduce CPU usage when not interacting with Overlay.', default: true },
                 ]
             },
             {

@@ -8,6 +8,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<int> RefreshRate;
         public static ConfigEntry<bool> OnlyHoverOverlay;
         public static ConfigEntry<bool> OnlyInEditMod;
+        public static ConfigEntry<bool> EfficiencyMode;
 
         public static ConfigEntry<bool> AlwayUpdateCursor;
         public static ConfigEntry<bool> AlwaysHideCursor;
@@ -31,8 +32,9 @@ namespace xsoverlay_tweak
             // RefreshRate
             EnableRefreshRate = cfg.Bind("RefreshRate", "EnableRefreshRate", false, "Overriding the XSOverlay render refresh rate.");
             RefreshRate = cfg.Bind("RefreshRate", "RefreshRate", -1, "The target frame rate for XSOverlay rendering.\nHigher values improve responsiveness but increase CPU usage.\nSet to 500 for unlimited.");
-            OnlyHoverOverlay = cfg.Bind("RefreshRate", "OnlyHoverOverlay", false, "Only apply overriding refresh rate when hovering any Overlay.");
-            OnlyInEditMod = cfg.Bind("RefreshRate", "OnlyInEditMod", false, "Only apply overriding refresh rate in Edit Mode.");
+            OnlyHoverOverlay = cfg.Bind("RefreshRate", "OnlyHoverOverlay", true, "Only apply overriding refresh rate when hovering any Overlay.");
+            OnlyInEditMod = cfg.Bind("RefreshRate", "OnlyInEditMod", true, "Only apply overriding refresh rate in Edit Mode.");
+            EfficiencyMode = cfg.Bind("RefreshRate", "EfficiencyMode", true, "Enable efficiency mode to reduce CPU usage when not interacting with Overlay.");
 
             // Cursor
             AlwayUpdateCursor = cfg.Bind("Cursor", "AlwayUpdateCursor", true, "Reduces cursor latency by sending cursor position data from the Pointer before the desktop frame is captured.\nWithout this, the cursor often appears to lag one frame behind the Pointer position.");
