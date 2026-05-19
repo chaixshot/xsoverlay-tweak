@@ -12,6 +12,7 @@ namespace xsoverlay_tweak.Patches
         private class LaserData
         {
             public Unity_Overlay Laser;
+            public Texture2D Texture;
             public float Distance;
             public float Distance_Last;
         }
@@ -83,7 +84,7 @@ namespace xsoverlay_tweak.Patches
                 Data.Laser.transform.position = ___CurrentRayPosition + (___CurrentRayDirection * (Data.Distance / 2));
                 Data.Laser.transform.up = ___CurrentRayDirection;
 
-                if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.02f)
+                if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.01f)
                     UpdateLaserLength(__instance);
             }
         }
@@ -112,10 +113,9 @@ namespace xsoverlay_tweak.Patches
             laser.AutoUpdateOverlayTexture = false;
             laser.overlayName = VisualCursorElement.name;
             laser.overlayKey = VisualCursorElement.name.ToLower();
-            laser.overlayTexture = new Texture2D(1, 1, TextureFormat.RGB24, false);
 
             Object.Destroy(laser.GetComponent<UI_RelativeTransformManipulator>());
-            LaserDictionary.Add(instance, new LaserData { Laser = laser, Distance = 1f, Distance_Last = 1f });
+            LaserDictionary.Add(instance, new LaserData { Laser = laser, Texture = new(1, 1, TextureFormat.RGB24, false), Distance = 1f, Distance_Last = 1f });
             Plugin.Instance.StartCoroutine(UpdateLaserLengthDelay(instance));
         }
 
@@ -130,10 +130,13 @@ namespace xsoverlay_tweak.Patches
         {
             if (LaserDictionary.TryGetValue(hovering, out LaserData Data))
             {
-                Object.Destroy(Data.Laser.overlayTexture);
+                int newHeight = Mathf.Max(1, (int)(Data.Distance * 500));
 
-                Data.Laser.overlayTexture = new Texture2D(1, (int)(Data.Distance * 500), TextureFormat.RGB24, false);
-                Data.Laser.overlay.overlayTexture = Data.Laser.overlayTexture;
+                Data.Texture.Reinitialize(1, newHeight);
+                Data.Texture.Apply(); // Apply changes to the GPU.
+
+                Data.Laser.overlayTexture = Data.Texture;
+                Data.Laser.overlay.overlayTexture = Data.Texture;
                 Data.Laser.overlay.overlayWidthInMeters = 0.002f;
                 Data.Distance_Last = Data.Distance;
             }
