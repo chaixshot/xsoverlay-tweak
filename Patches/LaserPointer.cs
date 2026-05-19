@@ -70,21 +70,20 @@ namespace xsoverlay_tweak.Patches
         // Change lasers position, rotation and length
         [HarmonyPatch("UpdateRaycaster")]
         [HarmonyPostfix]
-        public static void UpdateRaycaster(Raycaster __instance, ref Vector3 ___CurrentRayPosition, ref Vector3 ___RayHitPoint, ref Vector3 ___CurrentRayDirection)
+        public static void UpdateRaycaster(Raycaster __instance, ref GameObject ___VisualCursorElement, ref Vector3 ___CurrentRayPosition, ref Vector3 ___RayHitPoint, ref Vector3 ___CurrentRayDirection)
         {
             if (!IsEnable()) return;
             if (!IsHand(__instance)) return;
 
             if (LaserDictionary.TryGetValue(__instance, out LaserData Data))
             {
-                Vector3 RayHitPoint = ___RayHitPoint - (___CurrentRayDirection * 0.04f);
+                Vector3 RayHitPoint = ___RayHitPoint - (___CurrentRayDirection * 0.015f);
 
-                Data.Distance = Vector3.Distance(___CurrentRayPosition, RayHitPoint);
-
+                Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(___CurrentRayPosition, RayHitPoint) : 0.5f;
                 Data.Laser.transform.position = ___CurrentRayPosition + (___CurrentRayDirection * (Data.Distance / 2));
                 Data.Laser.transform.up = ___CurrentRayDirection;
 
-                if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.05f)
+                if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.02f)
                     UpdateLaserLength(__instance);
             }
         }
@@ -114,10 +113,10 @@ namespace xsoverlay_tweak.Patches
             laser.overlayName = VisualCursorElement.name;
             laser.overlayKey = VisualCursorElement.name.ToLower();
             laser.overlayTexture = new Texture2D(1, 1, TextureFormat.RGB24, false);
-            laser.overlay.overlayTexture = laser.overlayTexture;
 
             Object.Destroy(laser.GetComponent<UI_RelativeTransformManipulator>());
-            LaserDictionary.Add(instance, new LaserData { Laser = laser, Distance = 1f, Distance_Last = 0f });
+            LaserDictionary.Add(instance, new LaserData { Laser = laser, Distance = 1f, Distance_Last = 1f });
+            Plugin.Instance.StartCoroutine(UpdateLaserLengthDelay(instance));
         }
 
         // Wait one frame for UpdateRaycaster to update Distance
