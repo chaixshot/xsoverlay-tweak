@@ -9,13 +9,14 @@ namespace xsoverlay_tweak
 
         public static ConfigEntry<bool> AlwayUpdateCursor;
         public static ConfigEntry<bool> AlwaysHideCursor;
+        public static ConfigEntry<bool> PhysicalMouseDetector;
 
         public static ConfigEntry<bool> ActivePointerColor;
         public static ConfigEntry<int> ActivePointerOpacity;
         public static ConfigEntry<bool> ActivePointerWebView;
         public static ConfigEntry<int> PointerScaleMultiply;
         public static ConfigEntry<bool> PointerDoubleClickDelay;
-        public static ConfigEntry<bool> PhysicalMouseDetector;
+        public static ConfigEntry<bool> EmulateMouseClickAnimation;
 
         public static ConfigEntry<bool> MouseNavigation;
         public static ConfigEntry<bool> MouseNavigationUseModifiedKey;
@@ -39,6 +40,7 @@ namespace xsoverlay_tweak
             ActivePointerWebView = cfg.Bind("Pointer", "ActivePointerWebView", true, "Apply the inactive Pointer feature to WebView Overlays such as Settings, Wrist, and others that is not Desktop or Window Capture.");
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the XSOverlay setting.");
             PointerDoubleClickDelay = cfg.Bind("Pointer", "PointerDoubleClickDelay", true, "Apply a Double Click Delay from XSOverlay setting to the Pointer itself, not just the cursor.");
+            EmulateMouseClickAnimation = cfg.Bind("Pointer", "EmulateMouseClickAnimation", true, "Apply Pointer click animation for Input Method > Emulate Mouse.");
 
             // Mouse Navigation
             MouseNavigation = cfg.Bind("Mouse Navigation", "MouseNavigation", false, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration by press \"Bindings\" tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for \"MouseBack/MouseForward\".");

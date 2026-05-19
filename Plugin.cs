@@ -29,6 +29,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.PointerScaleMultiply));
         harmony.PatchAll(typeof(Patches.ActivePointerWebView));
         harmony.PatchAll(typeof(Patches.LaserPointer));
+        harmony.PatchAll(typeof(Patches.EmulateMouseClickAnimation));
 
         harmony.PatchAll(typeof(Patches.RefreshRate));
 

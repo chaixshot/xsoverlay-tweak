@@ -44,6 +44,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.ActivePointerWebView"] = XConfig.ActivePointerWebView.Value,
                 ["XSOverlayTweak.PointerScaleMultiply"] = XConfig.PointerScaleMultiply.Value,
                 ["XSOverlayTweak.PointerDoubleClickDelay"] = XConfig.PointerDoubleClickDelay.Value,
+                ["XSOverlayTweak.EmulateMouseClickAnimation"] = XConfig.EmulateMouseClickAnimation.Value,
 
                 // Mouse Navigation
                 ["XSOverlayTweak.MouseNavigation"] = XConfig.MouseNavigation.Value,
@@ -96,6 +97,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.PointerDoubleClickDelay":
                     XConfig.PointerDoubleClickDelay.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.EmulateMouseClickAnimation":
+                    XConfig.EmulateMouseClickAnimation.Value = bool.Parse(value);
                     break;
 
                 // Mouse Navigation
