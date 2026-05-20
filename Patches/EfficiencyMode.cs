@@ -40,7 +40,6 @@ namespace xsoverlay_tweak.Patches
         [HarmonyPostfix]
         public static void PatchHMDRefreshRate()
         {
-            Plugin.Logger.LogError(EventBridge.IsNotificationVisible);
             if (ShouldInEfficiencyMode())
             {
                 IsInEfficiencyMode = true;
