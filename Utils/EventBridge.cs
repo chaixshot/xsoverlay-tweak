@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections;
-using System.Reflection;
 using UnityEngine;
 using XSOverlay;
 
@@ -13,7 +13,7 @@ namespace xsoverlay_tweak.Utils
         public static bool IsNotificationVisible = false;
         public static bool IsHoverAnyOverlay = false;
 
-        private static readonly MethodInfo GetHMDRefreshRate = AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate");
+        private static readonly Action<DeviceManager> GetHMDRefreshRateDelegate = AccessTools.MethodDelegate<Action<DeviceManager>>(AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate"));
 
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]
@@ -28,7 +28,7 @@ namespace xsoverlay_tweak.Utils
                     Plugin.Instance.StopCoroutine(NotificationCoroutine);
                 NotificationCoroutine = Plugin.Instance.StartCoroutine(NotificationTimer(notify.timeout));
 
-                GetHMDRefreshRate.Invoke(__instance, null);
+                GetHMDRefreshRateDelegate(__instance);
             };
 
             // Listen to hovering overlay change
@@ -36,19 +36,19 @@ namespace xsoverlay_tweak.Utils
                 XSOEventSystem.OnSwitchHoveringOverlay += (raycaster, overlay) =>
                 {
                     IsHoverAnyOverlay = true;
-                    GetHMDRefreshRate.Invoke(__instance, null);
+                    GetHMDRefreshRateDelegate(__instance);
                 };
 
                 XSOEventSystem.OnTakeControlOfDesktopCursor += (raycaster) =>
                 {
                     IsHoverAnyOverlay = true;
-                    GetHMDRefreshRate.Invoke(__instance, null);
+                    GetHMDRefreshRateDelegate(__instance);
                 };
 
                 XSOEventSystem.OnReleaseControlOfDesktopCursor += (raycaster) =>
                 {
                     IsHoverAnyOverlay = false;
-                    GetHMDRefreshRate.Invoke(__instance, null);
+                    GetHMDRefreshRateDelegate(__instance);
                 };
             }
 

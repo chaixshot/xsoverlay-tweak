@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿﻿using HarmonyLib;
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -10,7 +10,7 @@ namespace xsoverlay_tweak.Patches
 {
     internal class EfficiencyMode
     {
-        private static readonly MethodInfo GetHMDRefreshRate = AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate");
+        private static readonly Action<DeviceManager> GetHMDRefreshRateDelegate = AccessTools.MethodDelegate<Action<DeviceManager>>(AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate"));
 
         public static bool IsInEfficiencyMode = false;
 
@@ -23,7 +23,7 @@ namespace xsoverlay_tweak.Patches
             {
                 if (IsEfficiencyModeEnable())
                     if (isEditMode) // Smooth overlay fadeout
-                        GetHMDRefreshRate.Invoke(__instance, null);
+                        GetHMDRefreshRateDelegate(__instance);
             };
         }
 

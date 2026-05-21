@@ -10,7 +10,7 @@ namespace xsoverlay_tweak.Patches
 
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]
-        public static void OnSwitchHoveringOverlay(DeviceManager __instance)
+        public static void OnSwitchHoveringOverlay()
         {
             XSOEventSystem.OnSwitchHoveringOverlay += (hover, overlay) =>
             {
@@ -27,22 +27,18 @@ namespace xsoverlay_tweak.Patches
         {
             if (!IsEnable()) return true;
 
-            foreach (Unity_Overlay allSceneOverlay in Overlay_Manager.Instance.AllSceneOverlays)
-            {
-                if (allSceneOverlay?.WebViewHandler && allSceneOverlay.IsPluginApplication && !allSceneOverlay.IsDesktopOrWindowCapture)
-                    if (allSceneOverlay != __instance.HoveringOverlay)
-                        if (!allSceneOverlay.overlayName.Equals("wrist") && !allSceneOverlay.overlayName.Equals("notification"))
-                        {
-                            allSceneOverlay.OverlayWebView._webView.WebView.SetRenderingEnabled(false);
+            foreach (Unity_Overlay overlay in Overlay_Manager.Instance.AllSceneOverlays)
+                if (IsWebView(overlay))
+                    if (overlay != __instance.HoveringOverlay)
+                    {
+                        overlay.OverlayWebView._webView.WebView.SetRenderingEnabled(false);
+                        DisabledOverlays.Add(overlay);
+                    }
 
-                            DisabledOverlays.Add(allSceneOverlay);
-                        }
-            }
-
-            foreach (Unity_Overlay allSceneOverlay in Overlay_Manager.Instance.AllSceneOverlays)
-                if (allSceneOverlay == __instance.HoveringOverlay)
-                    if (allSceneOverlay?.WebViewHandler && allSceneOverlay.IsPluginApplication && !allSceneOverlay.IsDesktopOrWindowCapture)
-                        allSceneOverlay.OverlayWebView._webView.WebView.SetRenderingEnabled(true);
+            foreach (Unity_Overlay overlay in Overlay_Manager.Instance.AllSceneOverlays)
+                if (IsWebView(overlay))
+                    if (overlay == __instance.HoveringOverlay)
+                        overlay.OverlayWebView._webView.WebView.SetRenderingEnabled(true);
 
             return true;
         }
@@ -60,6 +56,12 @@ namespace xsoverlay_tweak.Patches
             }
 
             DisabledOverlays.Clear();
+        }
+
+        private static bool IsWebView(Unity_Overlay overlay)
+        {
+            string overlayName = overlay.overlayName;
+            return overlay.WebViewHandler != null && overlay.IsPluginApplication && !overlay.IsDesktopOrWindowCapture && !overlayName.Equals("wrist") && !overlayName.Equals("notification");
         }
 
         private static bool IsEnable()
