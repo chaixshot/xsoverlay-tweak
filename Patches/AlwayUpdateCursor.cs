@@ -1,4 +1,4 @@
-﻿﻿using HarmonyLib;
+﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -61,20 +61,14 @@ namespace xsoverlay_tweak.Patches
         }
 
         [HarmonyPatch(typeof(UpdateDateTime)), HarmonyPatch("Update")]
-        [HarmonyPrefix]
-        public static bool Update()
+        [HarmonyPostfix]
+        public static void Update()
         {
-            if (!IsEnable()) return true;
+            if (!IsEnable()) return;
 
-            for (int i = _handArray.Count - 1; i >= 0; i--)
-            {
-                HandData data = _handArray[i];
-
-                // Invoke the delegate stored in the array
+            // Invoke the delegate stored in the array
+            foreach (HandData data in _handArray)
                 data.SyncedOverlayUpdate?.Invoke(data.Instance, EmptyOverlay);
-            }
-
-            return true;
         }
 
         private static void AddUpdatedOverlay(Raycaster __instance)
