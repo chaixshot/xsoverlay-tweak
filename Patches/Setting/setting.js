@@ -52,7 +52,7 @@ function InjectKBOSCTab() {
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardSettings', name: 'Dashboard Settings', description: 'Allow Settings Overlay to be displayed over SteamVR Dashboard.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardWindow', name: 'Dashboard Window', description: 'Allow Window Overlay to be displayed over SteamVR Dashboard.', default: false },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardWrist', name: 'Dashboard Wrist', description: 'Allow Wrist Overlay to be displayed over SteamVR Dashboard.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.Dashboardkeyboard', name: 'Dashboard Keyboard', description: 'Allow Keyboard Overlay to be displayed over SteamVR Dashboard.', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.Dashboardkeyboard', name: 'Dashboard Keyboard', description: 'Allow Keyboard Overlay to be displayed over SteamVR Dashboard.<br><b>* Incompatible with Keyboard OSC mod.<b>', default: false },
                 ]
             },
             {
