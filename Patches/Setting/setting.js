@@ -60,6 +60,7 @@ function InjectKBOSCTab() {
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Put XSOverlay in Windows Efficiency Mode to reduce CPU usage when not interacting with Overlay.', default: true },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.InactiveRefreshRate', name: 'Inactive Refresh Rate', description: 'The target frame rate for XSOverlay rendering when in Efficiency Mode.', default: 15, options: [5, <<HMDRefreshRate>>, 1], unit: 'FPS' },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristOverPosition', name: 'Wrist Over Position', description: 'Allow to move Wrist Overlay over limited postion.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFix', name: 'WebView Fix', description: 'Fix the WebView UI element unclickable for some reason.', default: true },
                 ]
             },
             {

@@ -64,6 +64,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.EfficiencyMode"] = XConfig.EfficiencyMode.Value,
                 ["XSOverlayTweak.InactiveRefreshRate"] = XConfig.InactiveRefreshRate.Value,
                 ["XSOverlayTweak.WristOverPosition"] = XConfig.WristOverPosition.Value,
+                ["XSOverlayTweak.WebViewFix"] = XConfig.WebViewFix.Value,
 
                 // About
                 ["XSOverlayTweak.UpdateNotification"] = XConfig.UpdateNotification.Value,
@@ -161,6 +162,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.WristOverPosition":
                     XConfig.WristOverPosition.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.WebViewFix":
+                    XConfig.WebViewFix.Value = bool.Parse(value);
                     break;
 
                 // About

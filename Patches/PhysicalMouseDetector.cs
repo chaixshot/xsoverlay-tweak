@@ -1,4 +1,4 @@
-﻿﻿using HarmonyLib;
+﻿using HarmonyLib;
 using System;
 using xsoverlay_tweak.Utils;
 
