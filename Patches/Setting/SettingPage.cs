@@ -66,6 +66,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.InactiveRefreshRate"] = XConfig.InactiveRefreshRate.Value,
                 ["XSOverlayTweak.WristOverPosition"] = XConfig.WristOverPosition.Value,
                 ["XSOverlayTweak.WebViewFix"] = XConfig.WebViewFix.Value,
+                ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
 
                 // About
                 ["XSOverlayTweak.UpdateNotification"] = XConfig.UpdateNotification.Value,
@@ -169,6 +170,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.WebViewFix":
                     XConfig.WebViewFix.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.WebViewWiderScroll":
+                    XConfig.WebViewWiderScroll.Value = bool.Parse(value);
                     break;
 
                 // About

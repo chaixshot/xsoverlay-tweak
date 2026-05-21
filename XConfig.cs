@@ -35,6 +35,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<int> InactiveRefreshRate;
         public static ConfigEntry<bool> WristOverPosition;
         public static ConfigEntry<bool> WebViewFix;
+        public static ConfigEntry<bool> WebViewWiderScroll;
 
 
         public static ConfigEntry<bool> UpdateNotification;
@@ -77,6 +78,7 @@ namespace xsoverlay_tweak
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The refresh rate for XSOverlay rendering when in Efficiency Mode.");
             WristOverPosition = cfg.Bind("Optimization", "WristOverPosition", true, "Allow to move Wrist Overlay over limited postion.");
             WebViewFix = cfg.Bind("Optimization", "WebViewFix", true, "Fix the WebView UI element unclickable for some reason.");
+            WebViewWiderScroll = cfg.Bind("Optimization", "WebViewWiderScroll", true, "Wider scrollbar, make it easier to click.");
 
             // About
             UpdateNotification = cfg.Bind("About", "UpdateNotifications", true, "Receive update notification when update are available.");

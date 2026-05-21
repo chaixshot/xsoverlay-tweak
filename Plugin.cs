@@ -40,6 +40,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.SteamDashboard));
         harmony.PatchAll(typeof(Patches.WebViewFix));
         harmony.PatchAll(typeof(Patches.WristOverPosition));
+        harmony.PatchAll(typeof(Patches.WebViewWiderScroll));
 
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));
 
