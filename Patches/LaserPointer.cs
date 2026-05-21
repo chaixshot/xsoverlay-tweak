@@ -79,19 +79,25 @@ namespace xsoverlay_tweak.Patches
             if (!IsEnable()) return;
             if (!IsHand(__instance)) return;
 
-            if (LaserDictionary.TryGetValue(__instance, out LaserData Data))
+            PointerDoubleClickDelay.InstanceState.TryGetValue(__instance, out PointerDoubleClickDelay.RaycasterState state);
+
+            if (state == null || state.ClickedTimer.IsReady) // PointerDoubleClickDelay
             {
-                Vector3 RayHitPoint = ___RayHitPoint - (___CurrentRayDirection * 0.015f);
+                if (LaserDictionary.TryGetValue(__instance, out LaserData Data))
+                {
+                    Vector3 RayHitPoint = ___RayHitPoint - (___CurrentRayDirection * 0.015f);
 
-                Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(___CurrentRayPosition, RayHitPoint) : 0.5f;
-                Data.Laser.transform.position = ___CurrentRayPosition + (___CurrentRayDirection * (Data.Distance / 2));
+                    Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(___CurrentRayPosition, RayHitPoint) : 0.5f;
+                    Data.Laser.transform.position = ___CurrentRayPosition + (___CurrentRayDirection * (Data.Distance / 2));
 
-                Data.Laser.transform.up = ___CurrentRayDirection;
-                if (!IsRightHand(__instance))
-                    Data.Laser.transform.Rotate(0, -45, 0, Space.Self);
+                    Data.Laser.transform.up = ___CurrentRayDirection;
+                    if (!IsRightHand(__instance))
+                        Data.Laser.transform.Rotate(0, -45, 0, Space.Self);
 
-                if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.01f)
-                    UpdateLaserLength(__instance);
+                    if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.01f)
+                        UpdateLaserLength(__instance);
+                }
+
             }
         }
 
