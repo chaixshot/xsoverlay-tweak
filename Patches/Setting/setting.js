@@ -26,6 +26,7 @@ function InjectKBOSCTab() {
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwayUpdateCursor', name: 'Always Update Cursor', description: 'Reduces cursor latency by sending cursor position data from the Pointer before the desktop frame is captured.<br>Without this, the cursor often appears to lag one frame behind the Pointer position.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysHideCursor', name: 'Always Hide Cursor', description: 'Forcefully hide the system cursor in Window Capture overlays.', default: false },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PhysicalMouseDetector', name: 'Physical Mouse Detector', description: 'Release the Pointer control when physical mouse movement is detected.<br>Pointer click to regain control.', default: true },
+                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Window overlay cursor smoothing.', default: 10.0, options: [0.1, 30.0, 0.1], unit: '%' },
                 ]
             },
             {

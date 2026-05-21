@@ -38,6 +38,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.AlwayUpdateCursor"] = XConfig.AlwayUpdateCursor.Value,
                 ["XSOverlayTweak.AlwaysHideCursor"] = XConfig.AlwaysHideCursor.Value,
                 ["XSOverlayTweak.PhysicalMouseDetector"] = XConfig.PhysicalMouseDetector.Value,
+                ["XSOverlayTweak.MouseSmoothSpeed"] = XConfig.MouseSmoothSpeed.Value,
 
                 // Pointer
                 ["XSOverlayTweak.ActivePointerColor"] = XConfig.ActivePointerColor.Value,
@@ -102,6 +103,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.PhysicalMouseDetector":
                     XConfig.PhysicalMouseDetector.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.MouseSmoothSpeed":
+                    XConfig.MouseSmoothSpeed.Value = float.Parse(value);
                     break;
 
                 // Pointer

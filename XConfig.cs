@@ -11,6 +11,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> AlwayUpdateCursor;
         public static ConfigEntry<bool> AlwaysHideCursor;
         public static ConfigEntry<bool> PhysicalMouseDetector;
+        public static ConfigEntry<float> MouseSmoothSpeed;
 
         public static ConfigEntry<bool> ActivePointerColor;
         public static ConfigEntry<int> ActivePointerOpacity;
@@ -37,7 +38,6 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> WebViewFix;
         public static ConfigEntry<bool> WebViewWiderScroll;
 
-
         public static ConfigEntry<bool> UpdateNotification;
 
         public static void AllConfig(ConfigFile cfg)
@@ -51,6 +51,7 @@ namespace xsoverlay_tweak
             AlwayUpdateCursor = cfg.Bind("Cursor", "AlwayUpdateCursor", true, "Reduces cursor latency by sending cursor position data from the Pointer before the desktop frame is captured.\nWithout this, the cursor often appears to lag one frame behind the Pointer position.");
             AlwaysHideCursor = cfg.Bind("Cursor", "AlwaysHideCursor", false, "Forcefully hide the system cursor in Window Capture overlays.");
             PhysicalMouseDetector = cfg.Bind("Cursor", "PhysicalMouseDetector", true, "Release the Pointer control when physical mouse movement is detected.\nPointer click to regain control.");
+            MouseSmoothSpeed = cfg.Bind("Cursor", "CursorSmoothSpeed", 10f, "Window overlay cursor smooth speed.");
 
             // Pointer
             ActivePointerColor = cfg.Bind("Pointer", "ActivePointerColor", true, "Highlight the non-active hand's pointer in red for easier identification.");
