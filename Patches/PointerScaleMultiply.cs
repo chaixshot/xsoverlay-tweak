@@ -1,4 +1,4 @@
-﻿﻿using HarmonyLib;
+﻿using HarmonyLib;
 using XSOverlay;
 
 namespace xsoverlay_tweak.Patches
@@ -25,7 +25,7 @@ namespace xsoverlay_tweak.Patches
             ___scaleMultiplier = GetScale();
         }
 
-        private static float GetScale()
+        public static float GetScale()
         {
             return XSettingsManager.Instance.Settings.PointerScale * (XConfig.PointerScaleMultiply.Value / 100f);
         }

@@ -18,6 +18,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> ActivePointerWebView;
         public static ConfigEntry<int> PointerScaleMultiply;
         public static ConfigEntry<bool> PointerDoubleClickDelay;
+        public static ConfigEntry<bool> WindowsCursorPointer;
         public static ConfigEntry<bool> PointerActiveClick;
         public static ConfigEntry<bool> EmulateMouseClickAnimation;
         public static ConfigEntry<bool> LaserPointer;
@@ -51,7 +52,8 @@ namespace xsoverlay_tweak
             AlwayUpdateCursor = cfg.Bind("Cursor", "AlwayUpdateCursor", false, "Reduces Windows Cursor latency by sending position from the Pointer before the desktop frame is captured.\nWithout this, Windows Cursor often appears to lag one frame behind the Pointer position.");
             AlwaysHideCursor = cfg.Bind("Cursor", "AlwaysHideCursor", false, "Forcefully hide the system cursor in Window Capture Overlay.");
             PhysicalMouseDetector = cfg.Bind("Cursor", "PhysicalMouseDetector", true, "Release the Pointer control when physical mouse movement is detected.\nPointer click to regain control.");
-            MouseSmoothSpeed = cfg.Bind("Cursor", "CursorSmoothSpeed", 10f, "Window overlay cursor smoothing.");
+            MouseSmoothSpeed = cfg.Bind("Cursor", "CursorSmoothSpeed", 10f, "Window Capture Overlay cursor smoothing.");
+            WindowsCursorPointer = cfg.Bind("Pointer", "WindowsCursorPointer", true, "Hide Capture Windows Cursor and using Windows Cursor image as the Window Capture Pointer to mimic the SteamVR Dashboard.");
 
             // Pointer
             ActivePointerColor = cfg.Bind("Pointer", "ActivePointerColor", true, "Highlight the non-active hand's pointer in red for easier identification.");

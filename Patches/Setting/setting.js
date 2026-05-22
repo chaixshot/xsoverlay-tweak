@@ -27,6 +27,7 @@ function InjectKBOSCTab() {
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysHideCursor', name: 'Always Hide', description: 'Forcefully hide the system cursor in Window Capture Overlay.', default: false },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PhysicalMouseDetector', name: 'Physical Mouse Detector', description: 'Release the Pointer control when physical mouse movement is detected.<br>Pointer click to regain control.', default: true },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Window Capture Overlay cursor smoothing.', default: 10.0, options: [0.1, 30.0, 0.1], unit: '%' },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowsCursorPointer', name: 'Windows Cursor Pointer', description: 'Hide Capture Windows Cursor and using Windows Cursor image as the Window Capture Pointer to mimic the SteamVR Dashboard.', default: true },
                 ]
             },
             {
