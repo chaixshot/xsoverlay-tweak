@@ -16,15 +16,15 @@ function InjectKBOSCTab() {
         const SECTIONS = [
             {
                 name: 'Refresh Rate', priority: 1, settings: [
-                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.RefreshRate', name: 'Refresh Rate', description: 'The target frame rate for XSOverlay rendering.<br>Higher values improve responsiveness but increase CPU usage.<br>Set to <b>500</b> for unlimited.', default: <<HMDRefreshRate>>, options: [<<HMDRefreshRate>>, 500, 10], unit: 'FPS' },
+                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.RefreshRate', name: 'Refresh Rate', description: 'The target frame rate for XSOverlay rendering.<br>Higher values improve responsiveness but increase CPU usage.<br><b>- Set to 500 for unlimited.</b>', default: <<HMDRefreshRate>>, options: [<<HMDRefreshRate>>, 500, 10], unit: 'FPS' },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyHoverOverlay', name: 'Only Hover Overlay', description: 'Only apply overriding refresh rate when hovering any Overlay.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyInLayoutMod', name: 'Only In Layout Mode', description: 'Only apply overriding refresh rate in <b>Layout Mode</b>.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyInLayoutMod', name: 'Only In Layout Mode', description: 'Only apply overriding refresh rate in Layout Mode.', default: true },
                 ]
             },
             {
                 name: 'Cursor', priority: 2, settings: [
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwayUpdateCursor', name: 'Always Update Cursor', description: 'Reduces cursor latency by sending cursor position data from the Pointer before the desktop frame is captured.<br>Without this, the cursor often appears to lag one frame behind the Pointer position.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysHideCursor', name: 'Always Hide Cursor', description: 'Forcefully hide the system cursor in Window Capture Overlays.', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwayUpdateCursor', name: 'Always Update Cursor', description: 'Reduces Windows Cursor latency by sending position from the Pointer before the desktop frame is captured.<br>Without this, Windows Cursor often appears to lag one frame behind the Pointer position.', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysHideCursor', name: 'Always Hide Cursor', description: 'Forcefully hide the system cursor in Window Capture Overlay.', default: false },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PhysicalMouseDetector', name: 'Physical Mouse Detector', description: 'Release the Pointer control when physical mouse movement is detected.<br>Pointer click to regain control.', default: true },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Window overlay cursor smoothing.', default: 10.0, options: [0.1, 30.0, 0.1], unit: '%' },
                 ]
@@ -33,33 +33,33 @@ function InjectKBOSCTab() {
                 name: 'Pointer', priority: 3, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.ActivePointerColor', name: 'Active Pointer Highlight', description: 'Highlight the non-active hand\'s pointer in red for easier identification.', default: true },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.ActivePointerOpacity', name: 'Inactive Opacity', description: 'Set the opacity of the non-active hand\'s pointer.', default: 50, options: [0, 100, 10], unit: '%' },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.ActivePointerWebView', name: 'Active Pointer WebViews', description: 'Apply the inactive Pointer feature to WebView Overlays such as Settings, Wrist, and others that is not Desktop or Window Capture.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.ActivePointerWebView', name: 'Active Pointer WebViews', description: 'Apply the Inactive Pointer feature to WebView Overlays such as Settings, Wrist, and others that is not Desktop or Window Capture.', default: true },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.PointerScaleMultiply', name: 'Scale Multiplier', description: 'Multiplier for the Pointer scale relative to the XSOverlay setting.', default: 100, options: [100, 1000, 50], unit: '%' },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PointerDoubleClickDelay', name: 'Double Click Delay', description: 'Apply a Double Click Delay from XSOverlay setting to the Pointer itself, not just the cursor.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PointerActiveClick', name: 'Pointer Active Click', description: 'Click non-active hand\'s pointer to become <b>Active Hand</b> and <b>Mouse Click</b> at the same time for two-hand clicking.', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PointerActiveClick', name: 'Pointer Active Click', description: 'Click non-active hand\'s pointer to become Active Hand and Mouse Click at the same time for two-hand clicking.', default: false },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EmulateMouseClickAnimation', name: 'Emulate Mouse Click Animation', description: 'Apply Pointer click animation for Input Method > Emulate Mouse.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LaserPointer', name: 'Laser Pointer', description: 'Draw a <b>Laser Pointer</b> from the VR controllers to mimic the <b>SteamVR Dashboard </b>for more accurate targeting.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LaserPointer', name: 'Laser Pointer', description: 'Draw a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for more accurate targeting.', default: true },
                 ]
             },
             {
                 name: 'Mouse Navigation', priority: 4, settings: [
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseNavigation', name: 'Enable', description: 'Custom keybindings for Mouse Forward/Back navigation.<br>Configuration by press <b>Bindings</b> tab in XSOverlay settings to open SteamVR bindings menu.<br>Edit the Current Binding and add a button for <b>MouseBack/MouseForward</b>.', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseNavigation', name: 'Enable', description: 'Custom keybindings for Mouse Forward/Back navigation.<br>Configuration by press Bindings tab in XSOverlay settings to open SteamVR bindings menu.<br>Edit the Current Binding and add a button for MouseBack/MouseForward.', default: false },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseNavigationUseModifiedKey', name: 'Use Alt+Left/Right', description: 'Use Alt+Left/Right keyboard shortcuts for navigation instead of mouse clicks.<br>Targets the focused window instead of the hovered window.', default: false },
                 ]
             },
             {
                 name: 'Dashboard Overlay', priority: 5, settings: [
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardNotification', name: 'Dashboard Notification', description: 'Allow Notification Overlay to be displayed over <b>SteamVR Dashboard</b>.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardPointer', name: 'Dashboard Pointer', description: 'Allow Pointer Overlay to be displayed over <b>SteamVR Dashboard</b>.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardSettings', name: 'Dashboard Settings', description: 'Allow Settings Overlay to be displayed over <b>SteamVR Dashboard</b>.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardWindow', name: 'Dashboard Window', description: 'Allow Window Overlay to be displayed over <b>SteamVR Dashboard</b>.', default: false },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardWrist', name: 'Dashboard Wrist', description: 'Allow Wrist Overlay to be displayed over <b>SteamVR Dashboard</b>.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.Dashboardkeyboard', name: 'Dashboard Keyboard', description: 'Allow Keyboard Overlay to be displayed over <b>SteamVR Dashboard</b>.<br><b>* Incompatible with Keyboard OSC mod.<b>', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardNotification', name: 'Dashboard Notification', description: 'Allow Notification to be displayed over SteamVR Dashboard.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardPointer', name: 'Dashboard Pointer', description: 'Allow Pointer to be displayed over SteamVR Dashboard.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardSettings', name: 'Dashboard Settings', description: 'Allow Settings to be displayed over SteamVR Dashboard.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardWindow', name: 'Dashboard Window', description: 'Allow Window Overlay to be displayed over SteamVR Dashboard.', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardWrist', name: 'Dashboard Wrist', description: 'Allow Wrist Overlay to be displayed over SteamVR Dashboard.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.Dashboardkeyboard', name: 'Dashboard Keyboard', description: 'Allow Keyboard to be displayed over SteamVR Dashboard.<br><br>- Incompatible with Keyboard OSC mod.</b>', default: false },
                 ]
             },
             {
                 name: 'Optimization', priority: 6, settings: [
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Put XSOverlay in Windows Efficiency Mode to reduce CPU usage when not interacting with Overlay.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Put XSOverlay in Windows Efficiency Mode to reduce CPU usage when not interacting with any overlays.', default: true },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.InactiveRefreshRate', name: 'Inactive Refresh Rate', description: 'The target frame rate for XSOverlay rendering when in Efficiency Mode.', default: 15, options: [5, <<HMDRefreshRate>>, 1], unit: 'FPS' },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristOverPosition', name: 'Wrist Over Position', description: 'Triple allow position radius of Wrist Overlay.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFix', name: 'WebView Fix', description: 'Fix the WebView UI element unclickable for some reason.', default: true },
