@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using uWindowCapture;
 using XSOverlay;
 using xsoverlay_tweak.Patches;
 
@@ -15,6 +16,7 @@ namespace xsoverlay_tweak.Utils
         public static bool IsHoverAnyOverlay = false;
 
         public static readonly Action<DeviceManager> GetHMDRefreshRateDelegate = AccessTools.MethodDelegate<Action<DeviceManager>>(AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate"));
+        public static readonly Func<Raycaster, RayCastResult?> GetDesktopCoordinateDelegate = AccessTools.MethodDelegate<Func<Raycaster, RayCastResult?>>(AccessTools.Method(typeof(Raycaster), "GetDesktopCoordinate"));
 
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]

@@ -31,7 +31,6 @@ namespace xsoverlay_tweak.Patches
         }
         private static readonly ConditionalWeakTable<Raycaster, CursorData> CursorDictionary = new();
 
-        private static readonly Func<Raycaster, RayCastResult?> GetDesktopCoordinateDelegate = AccessTools.MethodDelegate<Func<Raycaster, RayCastResult?>>(AccessTools.Method(typeof(Raycaster), "GetDesktopCoordinate"));
         private static readonly AccessTools.FieldRef<UI_RelativeTransformManipulator, bool> ScaleByDistanceRef = AccessTools.FieldRefAccess<UI_RelativeTransformManipulator, bool>("ScaleByDistance");
 
         [HarmonyPatch("Start")]
@@ -157,7 +156,7 @@ namespace xsoverlay_tweak.Patches
                 if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
                     if (Data.IsCursor)
                     {
-                        RayCastResult? desktopCoordinate = GetDesktopCoordinateDelegate(__instance);
+                        RayCastResult? desktopCoordinate = EventBridge.GetDesktopCoordinateDelegate(__instance);
                         MouseOperations.SetCursorPosition((int)desktopCoordinate.Value.desktopCoord.x, (int)desktopCoordinate.Value.desktopCoord.y);
                     }
 
