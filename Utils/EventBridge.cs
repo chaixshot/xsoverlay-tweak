@@ -10,10 +10,13 @@ namespace xsoverlay_tweak.Utils
 {
     internal class EventBridge
     {
-        private static Coroutine NotificationCoroutine;
-
-        public static bool IsNotificationVisible = false;
         public static bool IsHoverAnyOverlay = false;
+
+        private static Coroutine NotificationCoroutine;
+        public static bool IsNotificationVisible = false;
+
+        private static Coroutine CurrentHoveringOverlayCoroutine;
+        public static Unity_Overlay CurrentHoveringOverlay;
 
         public static readonly Action<DeviceManager> GetHMDRefreshRateDelegate = AccessTools.MethodDelegate<Action<DeviceManager>>(AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate"));
         public static readonly Func<Raycaster, RayCastResult?> GetDesktopCoordinateDelegate = AccessTools.MethodDelegate<Func<Raycaster, RayCastResult?>>(AccessTools.Method(typeof(Raycaster), "GetDesktopCoordinate"));
@@ -39,18 +42,23 @@ namespace xsoverlay_tweak.Utils
                 XSOEventSystem.OnSwitchHoveringOverlay += (raycaster, overlay) =>
                 {
                     IsHoverAnyOverlay = true;
+                    CurrentHoveringOverlay = overlay;
                     GetHMDRefreshRateDelegate(__instance);
                 };
 
                 XSOEventSystem.OnTakeControlOfDesktopCursor += (raycaster) =>
                 {
                     IsHoverAnyOverlay = true;
+                    Plugin.Instance.StopCoroutine(CurrentHoveringOverlayCoroutine);
+
                     GetHMDRefreshRateDelegate(__instance);
                 };
 
                 XSOEventSystem.OnReleaseControlOfDesktopCursor += (raycaster) =>
                 {
                     IsHoverAnyOverlay = false;
+                    CurrentHoveringOverlayCoroutine = Plugin.Instance.StartCoroutine(ClearCurrentHoveringOverlayTimer());
+
                     GetHMDRefreshRateDelegate(__instance);
                 };
             }
@@ -72,6 +80,19 @@ namespace xsoverlay_tweak.Utils
                 return false;
 
             return true;
+        }
+
+        public static bool IsOverlayWebView(Unity_Overlay overlay)
+        {
+            string overlayName = overlay?.overlayName ?? "";
+            return overlay.WebViewHandler != null && overlay.IsPluginApplication && !overlay.IsDesktopOrWindowCapture && !overlayName.Equals("wrist") && !overlayName.Equals("notification");
+        }
+
+        private static IEnumerator ClearCurrentHoveringOverlayTimer()
+        {
+            yield return new WaitForSecondsRealtime(1);
+
+            CurrentHoveringOverlay = null;
         }
     }
 }

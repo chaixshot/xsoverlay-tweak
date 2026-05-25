@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XSOverlay;
+using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches
 {
@@ -23,7 +24,7 @@ namespace xsoverlay_tweak.Patches
                     Plugin.Instance.StopCoroutine(StopingCoroutine);
                 StopingCoroutine = Plugin.Instance.StartCoroutine(StopingDelay(overlay));
 
-                if (overlay != null && IsWebView(overlay))
+                if (overlay != null && EventBridge.IsOverlayWebView(overlay))
                     overlay.OverlayWebView._webView.WebView.SetRenderingEnabled(true);
             };
         }
@@ -65,15 +66,9 @@ namespace xsoverlay_tweak.Patches
             yield return new WaitForSecondsRealtime(0.22f);
 
             foreach (Unity_Overlay allOverlay in Overlay_Manager.Instance.AllSceneOverlays)
-                if (IsWebView(allOverlay))
+                if (EventBridge.IsOverlayWebView(allOverlay))
                     if (allOverlay != overlay)
                         allOverlay.OverlayWebView._webView.WebView.SetRenderingEnabled(false);
-        }
-
-        private static bool IsWebView(Unity_Overlay overlay)
-        {
-            string overlayName = overlay?.overlayName ?? "";
-            return overlay.WebViewHandler != null && overlay.IsPluginApplication && !overlay.IsDesktopOrWindowCapture && !overlayName.Equals("wrist") && !overlayName.Equals("notification");
         }
 
         private static bool IsEnable()
