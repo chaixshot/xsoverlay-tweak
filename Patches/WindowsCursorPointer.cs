@@ -65,7 +65,7 @@ namespace xsoverlay_tweak.Patches
             if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
             {
                 Unity_Overlay hoveringOverlay = __instance.HoveringOverlay;
-                if (EventBridge.IsActiveHand(__instance) && __instance.HeldOverlay == null && hoveringOverlay != null && hoveringOverlay.IsDesktopOrWindowCapture)
+                if (EventBridge.IsActiveHand(__instance) && __instance.HeldOverlay == null && hoveringOverlay != null && hoveringOverlay.IsDesktopCapture && !EventBridge.IsOverlayWebView(hoveringOverlay))
                 {
                     try
                     {
@@ -113,8 +113,8 @@ namespace xsoverlay_tweak.Patches
                     }
                     finally { }
                 }
-                else if
-                    (Data.IsCursor) ResetToDefaultCursor(___VisualCursorElementOverlay, ___CursorIcon, Data);
+                else if (Data.IsCursor)
+                    ResetToDefaultCursor(___VisualCursorElementOverlay, ___CursorIcon, Data);
             }
         }
 
