@@ -7,7 +7,7 @@ namespace xsoverlay_tweak.Patches
 {
     internal class OverlayRollFlickerFix
     {
-        private class RollState { public float lastX; }
+        private class RollState { public float LastRotation; }
         private static readonly ConditionalWeakTable<Unity_Overlay, RollState> LastX = new();
 
         [HarmonyPatch(typeof(WindowMovementManager), nameof(WindowMovementManager.HandleWindowRollAndRotation))]
@@ -19,11 +19,11 @@ namespace xsoverlay_tweak.Patches
             RollState state = LastX.GetOrCreateValue(overlayToPoint);
             Quaternion rotation = overlayTransform.rotation;
 
-            if (rotation.x < 0.001f && rotation.x > -0.2f)
-                if (state.lastX < rotation.x)
-                    overlayTransform.rotation = new(0f, rotation.y, rotation.z, rotation.w);
+            if (rotation.eulerAngles.x > 335f)
+                if (rotation.eulerAngles.x > state.LastRotation)
+                    overlayTransform.rotation = Quaternion.Euler(0f, rotation.eulerAngles.y, rotation.eulerAngles.z);
 
-            state.lastX = overlayTransform.rotation.x;
+            state.LastRotation = rotation.eulerAngles.x;
         }
 
         [HarmonyPatch(typeof(WindowMovementManager), nameof(WindowMovementManager.DetermineIfOverlayShouldBeCurved))]
@@ -31,19 +31,17 @@ namespace xsoverlay_tweak.Patches
         public static void CurveApplyFlicker(ref Unity_Overlay overlay)
         {
             if (!IsEnable()) return;
+            if (overlay.IsHeld) return;
 
-            if (!overlay.IsHeld)
-            {
-                Quaternion rotation = overlay.transform.rotation;
+            Quaternion rotation = overlay.transform.rotation;
 
-                if (rotation.x < 0f && rotation.x > -0.2f)
-                    overlay.transform.rotation = new(0f, rotation.y, rotation.z, rotation.w);
-            }
+            if (rotation.eulerAngles.x > 335f)
+                overlay.transform.rotation = Quaternion.Euler(0f, rotation.eulerAngles.y, rotation.eulerAngles.z);
         }
 
         private static bool IsEnable()
         {
-            return XConfig.OverlayRollFlickerFix.Value;
+            return XConfig.OverlayRollFlickerFix.Value && XSettingsManager.Instance.Settings.CurvedOverlays;
         }
     }
 }
