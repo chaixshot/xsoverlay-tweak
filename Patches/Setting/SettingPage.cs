@@ -71,6 +71,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.WebViewFix"] = XConfig.WebViewFix.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
+                ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
 
                 // About
                 ["XSOverlayTweak.UpdateNotification"] = XConfig.UpdateNotification.Value,
@@ -189,6 +190,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.OverlayRollCurveFix":
                     XConfig.OverlayRollCurveFix.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.PinBlockInputNonEditMode":
+                    XConfig.PinBlockInputNonEditMode.Value = bool.Parse(value);
                     break;
 
                 // About

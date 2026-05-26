@@ -66,7 +66,8 @@ function InjectKBOSCTab() {
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFix', name: 'WebView Fix', description: 'Fix the WebView UI element unclickable for some reason.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewWiderScroll', name: 'WebView Wider Scroll', description: 'Make WebView scrollbar wider.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayCurveAutoRefresh', name: 'Overlay Curve Auto Refresh', description: 'Auto apply Overlay Curve setting to any behavior without grabbing Overlay to see a change. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected.', default: true },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve Fix', description: 'Fix the Capture Overlay to be invisible when the Curve and Angle are changing at the same time', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve Fix', description: 'Fix the Capture Overlay to be invisible when the Curve and Angle are changing at the same time.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PinBlockInputNonEditMode', name: 'Pin + Block Input Non Layout Mode', description: 'Non Layout Mode, Pin + Block Input Capture Overlay will no longer be available to hover.', default: true },
                 ]
             },
             {
