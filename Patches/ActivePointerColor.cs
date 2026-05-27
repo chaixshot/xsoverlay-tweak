@@ -21,7 +21,7 @@ namespace xsoverlay_tweak.Patches
 
             if (!EventBridge.IsActiveHand(__instance))
                 ___VisualCursorElementOverlay.colorTint = Color.red;
-            else if (!__instance.HoveringOverlay.IsLocked)
+            else if (__instance.HoveringOverlay != null && !__instance.HoveringOverlay.IsLocked)
                 ___VisualCursorElementOverlay.colorTint = XSettingsManager.Instance.Settings.AccentColor;
         }
 
@@ -37,7 +37,7 @@ namespace xsoverlay_tweak.Patches
                     ___VisualCursorElementOverlay.opacity = XConfig.ActivePointerOpacity.Value / 100f;
         }
 
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows")]
+        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
         [HarmonyPrefix]
         public static bool HandlePressTriggerOnWindowCaptureToBecomeActiveHandAndClick(Raycaster __instance)
         {
