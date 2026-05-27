@@ -205,18 +205,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.UpdateNotification":
                     XConfig.UpdateNotification.Value = bool.Parse(value);
                     break;
-
-                // Trigger
-                case "InputMethod":
-                    XConfig.WindowsCursorPointer.Value = !XConfig.WindowsCursorPointer.Value;
-                    XConfig.WindowsCursorPointer.Value = !XConfig.WindowsCursorPointer.Value;
-
-                    XConfig.AlwayUpdateCursor.Value = !XConfig.AlwayUpdateCursor.Value;
-                    XConfig.AlwayUpdateCursor.Value = !XConfig.AlwayUpdateCursor.Value;
-
-                    XConfig.AlwaysHideCursor.Value = !XConfig.AlwaysHideCursor.Value;
-                    XConfig.AlwaysHideCursor.Value = !XConfig.AlwaysHideCursor.Value;
-                    break;
             }
 
             return true;

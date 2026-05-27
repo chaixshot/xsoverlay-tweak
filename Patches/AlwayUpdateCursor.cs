@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using XSOverlay;
+using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches
 {
@@ -25,6 +26,14 @@ namespace xsoverlay_tweak.Patches
 
             // Setting changed
             XConfig.AlwayUpdateCursor.SettingChanged += (sender, args) =>
+            {
+                if (IsEnable())
+                    RemoveUpdatedOverlay(__instance);
+                else
+                    AddUpdatedOverlay(__instance);
+            };
+
+            EventBridge.InputMethodChanged += () =>
             {
                 if (IsEnable())
                     RemoveUpdatedOverlay(__instance);

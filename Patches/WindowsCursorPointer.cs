@@ -54,6 +54,18 @@ namespace xsoverlay_tweak.Patches
                         CursorDictionary.Remove(__instance);
                     }
             };
+
+            EventBridge.InputMethodChanged += () =>
+            {
+                if (IsEnable())
+                    CursorDictionary.Add(__instance, new());
+                else
+                    if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
+                    {
+                        UnityEngine.Object.Destroy(Data.CursorTexture);
+                        CursorDictionary.Remove(__instance);
+                    }
+            };
         }
 
         [HarmonyPatch("Update")]

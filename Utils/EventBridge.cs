@@ -21,6 +21,9 @@ namespace xsoverlay_tweak.Utils
         public static readonly Action<DeviceManager> GetHMDRefreshRateDelegate = AccessTools.MethodDelegate<Action<DeviceManager>>(AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate"));
         public static readonly Func<Raycaster, RayCastResult?> GetDesktopCoordinateDelegate = AccessTools.MethodDelegate<Func<Raycaster, RayCastResult?>>(AccessTools.Method(typeof(Raycaster), "GetDesktopCoordinate"));
 
+        public static event Action InputMethodChanged;
+
+
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]
         public static void InitializeEvents(DeviceManager __instance)
@@ -62,7 +65,19 @@ namespace xsoverlay_tweak.Utils
                     GetHMDRefreshRateDelegate(__instance);
                 };
             }
+        }
 
+        [HarmonyPatch(typeof(XSettingsManager), nameof(XSettingsManager.SetSetting))]
+        [HarmonyPostfix]
+        public static void SetSetting(string name, string value, string value1, bool sendAnalytics = true)
+        {
+            switch (name)
+            {
+                case "InputMethod":
+                    InputMethodChanged?.Invoke();
+
+                    break;
+            }
         }
 
         public static IEnumerator NotificationTimer(float timeout)
