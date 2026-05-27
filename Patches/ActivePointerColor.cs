@@ -37,9 +37,9 @@ namespace xsoverlay_tweak.Patches
                     ___VisualCursorElementOverlay.opacity = XConfig.ActivePointerOpacity.Value / 100f;
         }
 
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
+        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows")]
         [HarmonyPrefix]
-        public static bool HandlePressTriggerOnWindowCaptureToBecomeActiveHandAndClick(Raycaster __instance)
+        public static bool HandleClickOnCaptureOverlayToBecomeActiveHandAndClick(Raycaster __instance)
         {
             if (XConfig.PointerActiveClick.Value)
                 if (!EventBridge.IsActiveHand(__instance))
