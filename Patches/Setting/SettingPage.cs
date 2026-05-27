@@ -74,6 +74,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
                 ["XSOverlayTweak.DefaultCaptureOverlayTexture"] = XConfig.DefaultCaptureOverlayTexture.Value,
+                ["XSOverlayTweak.PullTriggerPointerLock"] = XConfig.PullTriggerPointerLock.Value,
                 ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
 
@@ -203,6 +204,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.DefaultCaptureOverlayTexture":
                     XConfig.DefaultCaptureOverlayTexture.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.PullTriggerPointerLock":
+                    XConfig.PullTriggerPointerLock.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.PullTriggerClickThreshold":
                     XConfig.PullTriggerClickThreshold.Value = float.Parse(value);

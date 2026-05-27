@@ -85,6 +85,8 @@ namespace xsoverlay_tweak.Patches
             {
                 // Handle movement
                 {
+                    PullTriggerPointerLock.InstanceState.TryGetValue(__instance, out PullTriggerPointerLock.RaycasterState DoubleClickDelayState);
+
                     Vector3 CurrentRayPosition = ___CurrentRayPosition;
                     Vector3 CurrentRayDirection = ___CurrentRayDirection;
                     Vector3 RayHitPoint = ___RayHitPoint;
@@ -97,13 +99,15 @@ namespace xsoverlay_tweak.Patches
                         RayHitPoint = (CurrentRayPosition + CurrentRayDirection * __instance.FinalSteamVRRaycastResults.fDistance) - (CurrentRayDirection * 0.05f);
                     }
 
-                    Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(CurrentRayPosition, RayHitPoint) : 0.5f;
-
-                    if (PointerDoubleClickDelay.IsEnable() && ___InputDevice.ClickFreezeActive) // PointerDoubleClickDelay lock RayHitPoint in place
-                        CurrentRayDirection = -(CurrentRayPosition - Data.RayHitPoint_last).normalized;
+                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || (DoubleClickDelayState != null && DoubleClickDelayState.IsBlock))) // PointerDoubleClickDelay lock RayHitPoint in place
+                    {
+                        RayHitPoint = Data.RayHitPoint_last;
+                        CurrentRayDirection = -(CurrentRayPosition - RayHitPoint).normalized;
+                    }
                     else
                         Data.RayHitPoint_last = RayHitPoint;
 
+                    Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(CurrentRayPosition, RayHitPoint) : 0.5f;
                     Data.Laser.transform.position = CurrentRayPosition + (CurrentRayDirection * (Data.Distance / 2));
                     Data.Laser.transform.up = CurrentRayDirection;
                     Data.Laser.transform.Rotate(0, 180 * (__instance.transform.rotation.y - (__instance.transform.rotation.y - Overlay_Manager.Instance.head.rotation.y)), 0, Space.Self);
