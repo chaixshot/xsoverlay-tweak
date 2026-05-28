@@ -245,6 +245,7 @@ namespace xsoverlay_tweak.Patches.Setting
             jsContent = jsContent.Replace("<<Version>>", MyPluginInfo.PLUGIN_VERSION);
             jsContent = jsContent.Replace("<<HMDRefreshRate>>", $"'{DeviceManager.Instance.HMDRefreshRate} FPS'");
             jsContent = jsContent.Replace("<<RefreshRateList>>", string.Join(", ", RefreshRate.RefreshRateList));
+            jsContent = jsContent.Replace("<<MouseSmoothList>>", string.Join(", ", MouseSmoothSpeed.MouseSmoothList));
 
             string jsCode = $"(function() {{ {jsContent} }})();";
 

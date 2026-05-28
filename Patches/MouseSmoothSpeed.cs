@@ -5,7 +5,8 @@ namespace xsoverlay_tweak.Patches
 {
     internal class MouseSmoothSpeed
     {
-        private static List<Raycaster> Instances = [];
+        private static readonly List<Raycaster> Instances = [];
+        public static List<string> MouseSmoothList = ["'Ultra Low'", "'Very Low'", "'Low'", "'Medium'", "'High'", "'Very High'"];
 
         [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
         [HarmonyPostfix]
@@ -42,16 +43,7 @@ namespace xsoverlay_tweak.Patches
 
         public static string GetSpeed(int speed)
         {
-            return speed switch
-            {
-                0 => "Ultra Low",
-                1 => "Very Low",
-                2 => "Low",
-                3 => "Medium",
-                4 => "High",
-                5 => "Very High",
-                _ => throw new System.NotImplementedException(),
-            };
+            return MouseSmoothList[speed].Replace("'", "");
         }
     }
 }
