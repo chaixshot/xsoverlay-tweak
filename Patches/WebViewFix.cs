@@ -18,12 +18,14 @@ namespace xsoverlay_tweak.Patches
             {
                 if (!IsEnable()) return;
 
-                if (StoppingCoroutine != null)
-                    Plugin.Instance.StopCoroutine(StoppingCoroutine);
-                StoppingCoroutine = Plugin.Instance.StartCoroutine(StoppingDelay(overlay));
+                if (EventBridge.IsOverlayWebView(overlay))
+                {
+                    if (StoppingCoroutine != null)
+                        Plugin.Instance.StopCoroutine(StoppingCoroutine);
+                    StoppingCoroutine = Plugin.Instance.StartCoroutine(StoppingDelay(overlay));
 
-                if (overlay != null && EventBridge.IsOverlayWebView(overlay))
                     overlay.OverlayWebView._webView.WebView.SetRenderingEnabled(true);
+                }
             };
         }
 
@@ -56,7 +58,10 @@ namespace xsoverlay_tweak.Patches
             if (__instance.HoveringOverlay.overlayName.Equals("window.toolbar"))
                 foreach (Unity_Overlay allOverlay in Overlay_Manager.Instance.AllSceneOverlays)
                     if (allOverlay.overlayName.Equals("window.settings"))
+                    {
                         allOverlay.OverlayWebView._webView.WebView.SetRenderingEnabled(true);
+                        break;
+                    }
         }
 
         private static IEnumerator StoppingDelay(Unity_Overlay overlay)

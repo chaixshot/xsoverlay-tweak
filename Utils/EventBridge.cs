@@ -24,7 +24,6 @@ namespace xsoverlay_tweak.Utils
 
         public static event Action InputMethodChanged;
 
-
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]
         public static void InitializeEvents(DeviceManager __instance)
@@ -101,6 +100,9 @@ namespace xsoverlay_tweak.Utils
 
         public static bool IsOverlayWebView(Unity_Overlay overlay)
         {
+            if (overlay == null)
+                return false;
+
             string overlayName = overlay?.overlayName ?? "";
             return overlay.WebViewHandler != null && overlay.IsPluginApplication && !overlay.IsDesktopOrWindowCapture && !overlayName.Equals("wrist") && !overlayName.Equals("notification");
         }
