@@ -1,4 +1,4 @@
-﻿﻿using HarmonyLib;
+﻿using HarmonyLib;
 using System;
 using System.IO;
 using System.Linq;
@@ -152,7 +152,7 @@ namespace xsoverlay_tweak.Patches
             // Update "localization" object
             // Localization is an array of objects; we want the first one (usually en_US)
             JArray localization = (JArray)root["localization"];
-            if (localization != null && localization.HasValues)
+            if (localization?.HasValues == true)
             {
                 JObject langObject = (JObject)localization[0];
 

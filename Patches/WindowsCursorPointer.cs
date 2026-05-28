@@ -288,7 +288,8 @@ namespace xsoverlay_tweak.Patches
             Texture2D texture = data.CursorTexture;
             if (texture == null || texture.width != W || texture.height != H)
             {
-                if (texture != null) UnityEngine.Object.Destroy(texture);
+                if (texture != null)
+                    UnityEngine.Object.Destroy(texture);
                 texture = new Texture2D(W, H, TextureFormat.RGBA32, false);
                 data.ColorBuffer = new Color32[W * H];
             }

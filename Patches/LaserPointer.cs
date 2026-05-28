@@ -102,7 +102,7 @@ namespace xsoverlay_tweak.Patches
                     if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
                         RayHitPoint = (CurrentRayPosition + CurrentRayDirection * __instance.FinalSteamVRRaycastResults.fDistance) - (CurrentRayDirection * 0.05f);
 
-                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || (DoubleClickDelayState != null && DoubleClickDelayState.IsBlock))) // PointerDoubleClickDelay lock RayHitPoint in place
+                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || DoubleClickDelayState?.IsBlock == true)) // PointerDoubleClickDelay lock RayHitPoint in place
                     {
                         RayHitPoint = Data.RayHitPoint_last;
                         CurrentRayDirection = -(CurrentRayPosition - RayHitPoint).normalized;

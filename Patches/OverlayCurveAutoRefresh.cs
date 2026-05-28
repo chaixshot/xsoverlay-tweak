@@ -37,10 +37,8 @@ namespace xsoverlay_tweak.Patches
         public static void ListenOverlayScaling(Raycaster __instance)
         {
             if (!IsEnable()) return;
-            if (!(__instance.HeldOverlay != null) || __instance.HeldOverlay.IsWindowInteractionLocked)
-                return;
 
-            if (__instance.HeldOverlay.IsBeingScaled)
+            if (__instance?.HeldOverlay?.IsWindowInteractionLocked == false && __instance?.HeldOverlay?.IsBeingScaled == true)
                 WindowMovementManager.DetermineIfOverlayShouldBeCurved("none", __instance.HeldOverlay, true);
         }
 

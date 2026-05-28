@@ -16,7 +16,7 @@ namespace xsoverlay_tweak.Patches
 
             ___WindowCanShowDesktopCursor = true; // SteamVR Dashboard Desktop make cursor reappear
 
-            if (__instance.WindowAPI != null && __instance.WindowAPI.window.isDesktop) // Disable for Window Capture Mode, Cursor offsetting from Pointer
+            if (__instance?.WindowAPI?.window?.isDesktop == true) // Disable for Window Capture Mode, Cursor offsetting from Pointer
                 Plugin.Instance.StartCoroutine(HideDelay(__instance));
         }
 

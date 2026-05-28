@@ -18,7 +18,7 @@ namespace xsoverlay_tweak.Patches
 
             if (EventBridge.IsActiveHand(__instance) || EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay))
                 ___VisualCursorElementOverlay.colorTint = XSettingsManager.Instance.Settings.AccentColor;
-            else if (__instance.HoveringOverlay != null && !__instance.HoveringOverlay.IsLocked)
+            else if (__instance?.HoveringOverlay?.IsLocked == false)
                 ___VisualCursorElementOverlay.colorTint = Color.red;
         }
 

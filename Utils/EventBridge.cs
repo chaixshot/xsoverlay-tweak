@@ -109,7 +109,7 @@ namespace xsoverlay_tweak.Utils
 
         public static bool IsOverlayKeyboard(Unity_Overlay overlay)
         {
-            return overlay != null && overlay.overlayName.Equals("keyboard");
+            return overlay?.overlayName == "keyboard";
         }
 
         private static IEnumerator ClearCurrentHoveringOverlayTimer()

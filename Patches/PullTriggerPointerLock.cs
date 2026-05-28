@@ -39,8 +39,7 @@ namespace xsoverlay_tweak.Patches
             if (EventBridge.IsActiveHand(__instance))
                 if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
                 {
-                    Unity_Overlay hover = __instance.HoveringOverlay;
-                    if (hover != null && hover.IsDesktopOrWindowCapture)
+                    if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
                     {
                         if (GetTriggerAxis(__instance) > 0f && !___HadMouseInputDown && !___HoldingTouch && !___DraggingTouch)
                         {

@@ -12,10 +12,10 @@ namespace xsoverlay_tweak.Patches
         {
             if (!IsEnable()) return;
 
-            if (__result && __instance.HoveringOverlay != null)
+            if (__result)
             {
                 if (!Overlay_Manager.Instance.editMode)
-                    if (__instance.HoveringOverlay.isPinned && __instance.HoveringOverlay.IsLocked)
+                    if (__instance?.HoveringOverlay?.isPinned == true && __instance?.HoveringOverlay?.IsLocked == true)
                     {
                         __instance.HoveringOverlay = null;
                         __result = false;
