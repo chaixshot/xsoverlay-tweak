@@ -177,7 +177,7 @@ namespace xsoverlay_tweak.Patches
                 if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
                     if (Data.IsCursor)
                     {
-                        RayCastResult? desktopCoordinate = EventBridge.GetDesktopCoordinate(__instance);
+                        RayCastResult? desktopCoordinate = EventBridge.Ref_Raycaster.GetDesktopCoordinate(__instance);
                         MouseOperations.SetCursorPosition((int)desktopCoordinate.Value.desktopCoord.x, (int)desktopCoordinate.Value.desktopCoord.y);
                     }
 

@@ -21,7 +21,7 @@ namespace xsoverlay_tweak.Patches
             {
                 if (IsEfficiencyModeEnable())
                     if (isEditMode) // Smooth overlay fadeout
-                        EventBridge.GetHMDRefreshRate(__instance);
+                        EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
             };
         }
 

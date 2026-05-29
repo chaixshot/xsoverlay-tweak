@@ -28,7 +28,7 @@ namespace xsoverlay_tweak.Patches
             if (IsPhysicalMovement)
             {
                 IsPhysicalMovement = false;
-                EventBridge.TakeControlOverCursorIfNotInControl(__instance);
+                EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
 
                 return false;
             }

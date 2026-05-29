@@ -42,9 +42,9 @@ namespace xsoverlay_tweak.Patches
             if (XConfig.PointerActiveClick.Value)
                 if (!EventBridge.IsActiveHand(__instance))
                 {
-                    EventBridge.TakeControlOverCursorIfNotInControl(__instance);
+                    EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
 
-                    RayCastResult? desktopCoordinate = EventBridge.GetDesktopCoordinate(__instance);
+                    RayCastResult? desktopCoordinate = EventBridge.Ref_Raycaster.GetDesktopCoordinate(__instance);
                     MouseOperations.SetCursorPosition((int)desktopCoordinate.Value.desktopCoord.x, (int)desktopCoordinate.Value.desktopCoord.y);
 
                     __instance.CanClickDesktopCursor = true;

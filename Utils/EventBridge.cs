@@ -18,11 +18,20 @@ namespace xsoverlay_tweak.Utils
         private static Coroutine CurrentHoveringOverlayCoroutine;
         public static Unity_Overlay CurrentHoveringOverlay;
 
-        public static readonly Action<Raycaster> TakeControlOverCursorIfNotInControl = AccessTools.MethodDelegate<Action<Raycaster>>(AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl"));
-        public static readonly Action<DeviceManager> GetHMDRefreshRate = AccessTools.MethodDelegate<Action<DeviceManager>>(AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate"));
-        public static readonly Func<Raycaster, RayCastResult?> GetDesktopCoordinate = AccessTools.MethodDelegate<Func<Raycaster, RayCastResult?>>(AccessTools.Method(typeof(Raycaster), "GetDesktopCoordinate"));
-
         public static event Action InputMethodChanged;
+
+        internal class Ref_DeviceManager
+        {
+            public static readonly Action<DeviceManager> GetHMDRefreshRate = AccessTools.MethodDelegate<Action<DeviceManager>>(AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate"));
+        }
+
+        internal class Ref_Raycaster
+        {
+            public static readonly Action<Raycaster> TakeControlOverCursorIfNotInControl = AccessTools.MethodDelegate<Action<Raycaster>>(AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl"));
+            public static readonly Func<Raycaster, RayCastResult?> GetDesktopCoordinate = AccessTools.MethodDelegate<Func<Raycaster, RayCastResult?>>(AccessTools.Method(typeof(Raycaster), "GetDesktopCoordinate"));
+            public static readonly AccessTools.FieldRef<Raycaster, float> InterpolationSpeed = AccessTools.FieldRefAccess<Raycaster, float>("InterpolationSpeed");
+            public static readonly AccessTools.FieldRef<Raycaster, float> InterpolationDistance = AccessTools.FieldRefAccess<Raycaster, float>("InterpolationDistance");
+        }
 
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]
@@ -37,7 +46,7 @@ namespace xsoverlay_tweak.Utils
                     Plugin.Instance.StopCoroutine(NotificationCoroutine);
                 NotificationCoroutine = Plugin.Instance.StartCoroutine(NotificationTimer(notify.timeout));
 
-                GetHMDRefreshRate(__instance);
+                Ref_DeviceManager.GetHMDRefreshRate(__instance);
             };
 
             // Listen to hovering overlay change
@@ -46,13 +55,13 @@ namespace xsoverlay_tweak.Utils
                 {
                     IsHoverAnyOverlay = true;
                     CurrentHoveringOverlay = overlay;
-                    GetHMDRefreshRate(__instance);
+                    Ref_DeviceManager.GetHMDRefreshRate(__instance);
                 };
 
                 XSOEventSystem.OnTakeControlOfDesktopCursor += (raycaster) =>
                 {
                     IsHoverAnyOverlay = true;
-                    GetHMDRefreshRate(__instance);
+                    Ref_DeviceManager.GetHMDRefreshRate(__instance);
 
                     if (CurrentHoveringOverlayCoroutine != null)
                         Plugin.Instance.StopCoroutine(CurrentHoveringOverlayCoroutine);
@@ -61,7 +70,7 @@ namespace xsoverlay_tweak.Utils
                 XSOEventSystem.OnReleaseControlOfDesktopCursor += (raycaster) =>
                 {
                     IsHoverAnyOverlay = false;
-                    GetHMDRefreshRate(__instance);
+                    Ref_DeviceManager.GetHMDRefreshRate(__instance);
 
                     CurrentHoveringOverlayCoroutine = Plugin.Instance.StartCoroutine(ClearCurrentHoveringOverlayTimer());
                 };

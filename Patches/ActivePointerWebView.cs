@@ -30,7 +30,7 @@ namespace xsoverlay_tweak.Patches
             // Become active hand and skip sending touch event to webview
             if (!EventBridge.IsActiveHand(__instance) && EventBridge.IsOverlayWebView(__instance.HoveringOverlay))
             {
-                EventBridge.TakeControlOverCursorIfNotInControl(__instance);
+                EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
 
                 if (!XConfig.PointerActiveClick.Value)
                     return false;

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches
 {
@@ -15,7 +16,7 @@ namespace xsoverlay_tweak.Patches
             XConfig.MouseSmoothSpeed.SettingChanged += (sender, args) =>
             {
                 foreach (var __instance in Instances)
-                    AccessTools.Field(typeof(Raycaster), "InterpolationSpeed").SetValue(__instance, GetSpeed(XConfig.MouseSmoothSpeed.Value));
+                    EventBridge.Ref_Raycaster.InterpolationSpeed(__instance) = GetSpeed(XConfig.MouseSmoothSpeed.Value);
             };
         }
 
@@ -24,7 +25,7 @@ namespace xsoverlay_tweak.Patches
         public static void ApplyMouseSmoothSpeed(Raycaster __instance)
         {
             Instances.Add(__instance);
-            AccessTools.Field(typeof(Raycaster), "InterpolationSpeed").SetValue(__instance, GetSpeed(XConfig.MouseSmoothSpeed.Value));
+            EventBridge.Ref_Raycaster.InterpolationSpeed(__instance) = GetSpeed(XConfig.MouseSmoothSpeed.Value);
         }
 
         public static float GetSpeed(string speed)
