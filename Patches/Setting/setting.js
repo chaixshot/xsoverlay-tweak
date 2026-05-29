@@ -23,10 +23,10 @@ function InjectKBOSCTab() {
             },
             {
                 name: 'Cursor', priority: 2, settings: [
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwayUpdateCursor', name: 'Always Update', description: 'Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.<br>Without this, the Windows Cursor often appears to lag one frame behind the Pointer position.', default: false },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysHideCursor', name: 'Always Hide', description: 'Forcefully hides the system Windows Cursor in Desktop and Window Capture Overlay.', default: false },
-                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PhysicalMouseDetector', name: 'Physical Mouse Detector', description: 'Relinquishes Pointer control when physical mouse movement is detected.<br>Pointer Click to regain control.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysUpdateCursor', name: 'Always Update', description: 'Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.<br>Without this, the Windows Cursor often appears to lag one frame behind the Pointer position.', default: false },
                     { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.', default: 'Medium', options: ['Ultra Low', 'Very Low', 'Low', 'Medium', 'High', 'Very High'] },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PhysicalMouseDetector', name: 'Physical Mouse Detector', description: 'Relinquishes Pointer control when physical mouse movement is detected.<br>Pointer Click to regain control.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowsCursorPointer', name: 'Windows Cursor Pointer', description: 'Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.', default: true },
                 ]
             },

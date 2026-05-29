@@ -24,11 +24,11 @@ public class Plugin : BaseUnityPlugin
 
         harmony.PatchAll(typeof(Patches.RefreshRate));
 
-        harmony.PatchAll(typeof(Patches.Cursor.AlwayUpdateCursor));
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysHideCursor));
-        harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed));
+        harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor));
         harmony.PatchAll(typeof(Patches.Cursor.PhysicalMouseDetector));
-        harmony.PatchAll(typeof(Patches.Pointer.WindowsCursorPointer));
+        harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed));
+        harmony.PatchAll(typeof(Patches.Cursor.WindowsCursorPointer));
 
         harmony.PatchAll(typeof(Patches.MouseNavigation));
 

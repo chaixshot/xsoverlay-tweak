@@ -8,7 +8,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> OnlyHoverOverlay;
         public static ConfigEntry<bool> OnlyInLayoutMod;
 
-        public static ConfigEntry<bool> AlwayUpdateCursor;
+        public static ConfigEntry<bool> AlwaysUpdateCursor;
         public static ConfigEntry<bool> AlwaysHideCursor;
         public static ConfigEntry<bool> PhysicalMouseDetector;
         public static ConfigEntry<int> MouseSmoothSpeed;
@@ -59,10 +59,10 @@ namespace xsoverlay_tweak
             OnlyInLayoutMod = cfg.Bind("RefreshRate", "OnlyInLayoutMod", true, "Apply the custom Refresh Rate only when Layout Mode is active.");
 
             // Cursor
-            AlwayUpdateCursor = cfg.Bind("Cursor", "AlwayUpdateCursor", false, "Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.\nWithout this, the Windows Cursor often appears to lag one frame behind the Pointer position.");
             AlwaysHideCursor = cfg.Bind("Cursor", "AlwaysHideCursor", false, "Forcefully hides the system Windows Cursor in Desktop and Window Capture Overlay.");
-            PhysicalMouseDetector = cfg.Bind("Cursor", "PhysicalMouseDetector", true, "Relinquishes Pointer control when physical mouse movement is detected.\nPointer Click to regain control.");
+            AlwaysUpdateCursor = cfg.Bind("Cursor", "AlwaysUpdateCursor", false, "Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.\nWithout this, the Windows Cursor often appears to lag one frame behind the Pointer position.");
             MouseSmoothSpeed = cfg.Bind("Cursor", "MouseSmoothSpeed", 3, "Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.");
+            PhysicalMouseDetector = cfg.Bind("Cursor", "PhysicalMouseDetector", true, "Relinquishes Pointer control when physical mouse movement is detected.\nPointer Click to regain control.");
             WindowsCursorPointer = cfg.Bind("Pointer", "WindowsCursorPointer", true, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.");
 
             // Pointer

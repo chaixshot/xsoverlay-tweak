@@ -6,10 +6,11 @@ using UnityEngine;
 using uWindowCapture;
 using Valve.VR;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Patches.QualityOfLife;
 using xsoverlay_tweak.Utils;
 
-namespace xsoverlay_tweak.Patches.Pointer
+namespace xsoverlay_tweak.Patches.Cursor
 {
     [HarmonyPatch(typeof(Raycaster))]
     internal class WindowsCursorPointer

@@ -35,10 +35,11 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.OnlyInLayoutMod"] = XConfig.OnlyInLayoutMod.Value,
 
                 // Cursor
-                ["XSOverlayTweak.AlwayUpdateCursor"] = XConfig.AlwayUpdateCursor.Value,
                 ["XSOverlayTweak.AlwaysHideCursor"] = XConfig.AlwaysHideCursor.Value,
-                ["XSOverlayTweak.PhysicalMouseDetector"] = XConfig.PhysicalMouseDetector.Value,
+                ["XSOverlayTweak.AlwaysUpdateCursor"] = XConfig.AlwaysUpdateCursor.Value,
                 ["XSOverlayTweak.MouseSmoothSpeed"] = XConfig.MouseSmoothSpeed.Value,
+                ["XSOverlayTweak.PhysicalMouseDetector"] = XConfig.PhysicalMouseDetector.Value,
+                ["XSOverlayTweak.WindowsCursorPointer"] = XConfig.WindowsCursorPointer.Value,
 
                 // Pointer
                 ["XSOverlayTweak.ActivePointerWebView"] = XConfig.ActivePointerWebView.Value,
@@ -46,7 +47,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.PointerDoubleClickDelay"] = XConfig.PointerDoubleClickDelay.Value,
                 ["XSOverlayTweak.InactivePointerColor"] = XConfig.InactivePointerColor.Value,
                 ["XSOverlayTweak.InactivePointerOpacity"] = XConfig.InactivePointerOpacity.Value,
-                ["XSOverlayTweak.WindowsCursorPointer"] = XConfig.WindowsCursorPointer.Value,
                 ["XSOverlayTweak.PointerActiveClick"] = XConfig.PointerActiveClick.Value,
                 ["XSOverlayTweak.EmulateMouseClickAnimation"] = XConfig.EmulateMouseClickAnimation.Value,
 
@@ -108,8 +108,8 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
 
                 // Cursor
-                case "XSOverlayTweak.AlwayUpdateCursor":
-                    XConfig.AlwayUpdateCursor.Value = bool.Parse(value);
+                case "XSOverlayTweak.AlwaysUpdateCursor":
+                    XConfig.AlwaysUpdateCursor.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.AlwaysHideCursor":
                     XConfig.AlwaysHideCursor.Value = bool.Parse(value);

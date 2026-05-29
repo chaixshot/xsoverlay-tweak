@@ -28,7 +28,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="Patches\Cursor\AlwayUpdateCursor.cs" />
+    <None Include="Patches\Cursor\AlwaysUpdateCursor.cs" />
   </ItemGroup>
   
   <ItemGroup>

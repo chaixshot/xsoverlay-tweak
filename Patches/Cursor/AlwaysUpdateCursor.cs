@@ -7,7 +7,7 @@ using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Cursor
 {
-    internal class AlwayUpdateCursor
+    internal class AlwaysUpdateCursor
     {
         private delegate void SyncedUpdateDelegate(Raycaster instance, Unity_Overlay overlay);
         private static readonly SyncedUpdateDelegate SyncedOverlayUpdate = AccessTools.MethodDelegate<SyncedUpdateDelegate>(AccessTools.Method(typeof(Raycaster), "SyncedOverlayUpdate"));
@@ -25,7 +25,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             RaycasterInstances.Add(__instance);
 
             // Setting changed
-            XConfig.AlwayUpdateCursor.SettingChanged += (sender, args) =>
+            XConfig.AlwaysUpdateCursor.SettingChanged += (sender, args) =>
             {
                 if (IsEnable())
                     RemoveUpdatedOverlay(__instance);
@@ -81,7 +81,7 @@ namespace xsoverlay_tweak.Patches.Cursor
 
         private static bool IsEnable()
         {
-            return XConfig.AlwayUpdateCursor.Value && XSettingsManager.Instance.Settings.InputMethod == InputMethods.EmulateMouse;
+            return XConfig.AlwaysUpdateCursor.Value && XSettingsManager.Instance.Settings.InputMethod == InputMethods.EmulateMouse;
         }
         private static bool IsController(Raycaster __instance)
         {
