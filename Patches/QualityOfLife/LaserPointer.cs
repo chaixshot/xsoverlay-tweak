@@ -93,7 +93,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     Vector3 RayHitPoint = ___RayHitPoint;
 
                     // Capture overlay UseCursorSmoothing
-                    if (XConfig.LaserPointerMouseSmoothDisable.Value && __instance?.HoveringOverlay?.UseCursorSmoothing == true)
+                    if (!IsEnableMouseSmooth() && __instance?.HoveringOverlay?.UseCursorSmoothing == true)
                     {
                         CurrentRayPosition = __instance.transform.position;
                         CurrentRayDirection = Quaternion.AngleAxis(__instance.RayRotationOffset, __instance.transform.right) * __instance.transform.forward;
@@ -149,6 +149,8 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
         private static void CreateLaser(Raycaster instance)
         {
+            if (LaserDictionary.TryGetValue(instance, out _)) return;
+
             GameObject VisualCursorElementPrefab = (GameObject)AccessTools.Field(typeof(Raycaster), "VisualCursorElementPrefab").GetValue(instance);
             GameObject VisualCursorElement = Object.Instantiate(VisualCursorElementPrefab);
             Unity_Overlay laser = VisualCursorElement.GetComponent<Unity_Overlay>();
@@ -189,9 +191,14 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             }
         }
 
+        private static bool IsEnableMouseSmooth()
+        {
+            return XConfig.LaserPointer.Value == 2;
+        }
+
         private static bool IsEnable()
         {
-            return XConfig.LaserPointer.Value;
+            return XConfig.LaserPointer.Value != 0;
         }
 
         private static bool IsHand(Raycaster __instance)

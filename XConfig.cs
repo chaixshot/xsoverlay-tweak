@@ -37,8 +37,7 @@ namespace xsoverlay_tweak
 
         public static ConfigEntry<bool> DefaultCaptureOverlayTexture;
         public static ConfigEntry<bool> DoubleClickConfirm;
-        public static ConfigEntry<bool> LaserPointer;
-        public static ConfigEntry<bool> LaserPointerMouseSmoothDisable;
+        public static ConfigEntry<int> LaserPointer;
         public static ConfigEntry<bool> OverlayCurveAutoRefresh;
         public static ConfigEntry<bool> PinBlockInputNonEditMode;
         public static ConfigEntry<float> PullTriggerClickThreshold;
@@ -93,8 +92,7 @@ namespace xsoverlay_tweak
             // Quality of Life
             DefaultCaptureOverlayTexture = cfg.Bind("Optimization", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
             DoubleClickConfirm = cfg.Bind("Optimization", "DoubleClickConfirm", true, "Ensures that a Double Click is always sent reliably when using Emulate Mouse mode.");
-            LaserPointer = cfg.Bind("Pointer", "Laser Pointer", true, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
-            LaserPointerMouseSmoothDisable = cfg.Bind("Pointer", "LaserPointer Mouse Smooth Disable", true, "Prevents Mouse Smoothing from being applied to the Laser Pointer movement.");
+            LaserPointer = cfg.Bind("Pointer", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
             OverlayCurveAutoRefresh = cfg.Bind("Optimization", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
             PinBlockInputNonEditMode = cfg.Bind("Optimization", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' or 'Block Input' Overlay unless Layout Mode is active.");
             PullTriggerClickThreshold = cfg.Bind("Optimization", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");

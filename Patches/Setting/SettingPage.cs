@@ -70,7 +70,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.DefaultCaptureOverlayTexture"] = XConfig.DefaultCaptureOverlayTexture.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
-                ["XSOverlayTweak.LaserPointerMouseSmoothDisable"] = XConfig.LaserPointerMouseSmoothDisable.Value,
                 ["XSOverlayTweak.OverlayCurveAutoRefresh"] = XConfig.OverlayCurveAutoRefresh.Value,
                 ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
                 ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
@@ -192,10 +191,7 @@ namespace xsoverlay_tweak.Patches.Setting
                     XConfig.DoubleClickConfirm.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.LaserPointer":
-                    XConfig.LaserPointer.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.LaserPointerMouseSmoothDisable":
-                    XConfig.LaserPointerMouseSmoothDisable.Value = bool.Parse(value);
+                    XConfig.LaserPointer.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.OverlayCurveAutoRefresh":
                     XConfig.OverlayCurveAutoRefresh.Value = bool.Parse(value);
