@@ -19,6 +19,9 @@ namespace xsoverlay_tweak.Utils
         public static Unity_Overlay CurrentHoveringOverlay;
 
         public static event Action InputMethodChanged;
+        public static event Action<Raycaster, Unity_Overlay> OnSwitchHoveringOverlay;
+        public static event Action<Raycaster> OnTakeControlOfDesktopCursor;
+        public static event Action<Raycaster> OnReleaseControlOfDesktopCursor;
 
         internal class Ref_DeviceManager
         {
@@ -56,6 +59,8 @@ namespace xsoverlay_tweak.Utils
                     IsHoverAnyOverlay = true;
                     CurrentHoveringOverlay = overlay;
                     Ref_DeviceManager.GetHMDRefreshRate(__instance);
+
+                    OnSwitchHoveringOverlay?.Invoke(raycaster, overlay);
                 };
 
                 XSOEventSystem.OnTakeControlOfDesktopCursor += (raycaster) =>
@@ -65,6 +70,8 @@ namespace xsoverlay_tweak.Utils
 
                     if (CurrentHoveringOverlayCoroutine != null)
                         Plugin.Instance.StopCoroutine(CurrentHoveringOverlayCoroutine);
+
+                    OnTakeControlOfDesktopCursor?.Invoke(raycaster);
                 };
 
                 XSOEventSystem.OnReleaseControlOfDesktopCursor += (raycaster) =>
@@ -73,6 +80,8 @@ namespace xsoverlay_tweak.Utils
                     Ref_DeviceManager.GetHMDRefreshRate(__instance);
 
                     CurrentHoveringOverlayCoroutine = Plugin.Instance.StartCoroutine(ClearCurrentHoveringOverlayTimer());
+
+                    OnReleaseControlOfDesktopCursor?.Invoke(raycaster);
                 };
             }
         }
