@@ -59,12 +59,19 @@ function InjectKBOSCTab() {
             },
             {
                 name: 'Optimization', priority: 6, settings: [
+                name: 'Haptic Feedback', priority: 6, settings: [
+                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.GrabHaptic', name: 'Grab', description: 'Plays a haptic feedback when grab any Overlay.', default: 50, options: [0, 100, 10], unit: '%' },
+                ]
+            },
+            {
+                name: 'Optimization', priority: 7, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.', default: true },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.InactiveRefreshRate', name: 'Inactive Refresh Rate', description: 'The target Refresh Rate for XSOverlay rendering when Efficiency Mode is active.<br>Very low value: the Layout Mode Toggle binding listener will miss some frames.', default: 15, options: [5, <<HMDRefreshRate>>, 1], unit: 'FPS' },
                 ]
             },
             {
                 name: 'Quality of Life', priority: 7, settings: [
+                name: 'Quality of Life', priority: 8, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DefaultCaptureOverlayTexture', name: 'Default Capture Overlay Texture', description: 'Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DoubleClickConfirm', name: 'Double Click Confirm', description: 'Ensures that a Double Click is always sent reliably when using Emulate Mouse mode.', default: true },
                     { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.LaserPointer', name: 'Laser', description: 'Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.', default: 'Enable Without Mouse Smooth', options: ['Disable', 'Enable Without Mouse Smooth', 'Enable With Mouse Smooth'] },
@@ -78,6 +85,7 @@ function InjectKBOSCTab() {
             },
             {
                 name: 'Fix', priority: 8, settings: [
+                name: 'Fix', priority: 9, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale Fix', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve Fix', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFix', name: 'WebView Fix', description: 'Fixes an issue where certain WebView UI elements were not clickable.', default: true },

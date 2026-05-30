@@ -62,6 +62,8 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.DashboardWrist"] = XConfig.DashboardWrist.Value,
                 ["XSOverlayTweak.Dashboardkeyboard"] = XConfig.Dashboardkeyboard.Value,
 
+                // Haptic
+                ["XSOverlayTweak.GrabHaptic"] = XConfig.GrabHaptic.Value,
                 // Optimization
                 ["XSOverlayTweak.EfficiencyMode"] = XConfig.EfficiencyMode.Value,
                 ["XSOverlayTweak.InactiveRefreshRate"] = XConfig.InactiveRefreshRate.Value,
@@ -175,6 +177,10 @@ namespace xsoverlay_tweak.Patches.Setting
                     XConfig.Dashboardkeyboard.Value = bool.Parse(value);
                     break;
 
+                // Haptic
+                case "XSOverlayTweak.GrabHaptic":
+                    XConfig.GrabHaptic.Value = int.Parse(value);
+                    break;
                 // Optimization
                 case "XSOverlayTweak.EfficiencyMode":
                     XConfig.EfficiencyMode.Value = bool.Parse(value);

@@ -32,6 +32,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> DashboardWrist;
         public static ConfigEntry<bool> Dashboardkeyboard;
 
+        public static ConfigEntry<int> GrabHaptic;
         public static ConfigEntry<bool> EfficiencyMode;
         public static ConfigEntry<int> InactiveRefreshRate;
 
@@ -86,6 +87,8 @@ namespace xsoverlay_tweak
             DashboardWrist = cfg.Bind("Dashboard", "DashboardWrist", true, "Keeps Wrist Overlay visible while the SteamVR Dashboard is open.");
             Dashboardkeyboard = cfg.Bind("Dashboard", "Dashboardkeyboard", false, "Keeps Keyboard visible while the SteamVR Dashboard is open.\n- Incompatible with Keyboard OSC mod.");
 
+            // Haptic
+            GrabHaptic = cfg.Bind("Haptic", "GrabHaptic", 50, "Plays a haptic feedback when grab any Overlay.");
             // Optimization
             EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", true, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.");
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The target Refresh Rate for XSOverlay rendering when Efficiency Mode is active.\nVery low value: the Layout Mode Toggle binding listener will miss some frames.");
