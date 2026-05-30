@@ -63,7 +63,7 @@ namespace xsoverlay_tweak
             AlwaysUpdateCursor = cfg.Bind("Cursor", "AlwaysUpdateCursor", false, "Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.\nWithout this, the Windows Cursor often appears to lag one frame behind the Pointer position.");
             MouseSmoothSpeed = cfg.Bind("Cursor", "MouseSmoothSpeed", 3, "Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.");
             PhysicalMouseDetector = cfg.Bind("Cursor", "PhysicalMouseDetector", true, "Relinquishes Pointer control when physical mouse movement is detected.\nPointer Click to regain control.");
-            WindowsCursorPointer = cfg.Bind("Pointer", "WindowsCursorPointer", true, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.");
+            WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", true, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.");
 
             // Pointer
             ActivePointerWebView = cfg.Bind("Pointer", "ActivePointerWebView", true, "Applies the inactive Pointer features to WebView Overlay such as Settings, Wrist, and others.");
@@ -75,9 +75,10 @@ namespace xsoverlay_tweak
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the global XSOverlay setting.");
 
             // Mouse Navigation
-            MouseNavigation = cfg.Bind("Mouse Navigation", "MouseNavigation", false, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.");
-            MouseNavigationUseModifiedKey = cfg.Bind("Mouse Navigation", "MouseNavigationUseModifiedKey", false, "Use Alt+Left/Right keyboard shortcuts for navigation instead of Mouse Clicks.\nTargets the focused window instead of the hovered window.");
+            MouseNavigation = cfg.Bind("MouseNavigation", "MouseNavigation", false, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.");
+            MouseNavigationUseModifiedKey = cfg.Bind("MouseNavigation", "MouseNavigationUseModifiedKey", false, "Use Alt+Left/Right keyboard shortcuts for navigation instead of Mouse Clicks.\nTargets the focused window instead of the hovered window.");
 
+            // Dashboard
             DashboardNotification = cfg.Bind("Dashboard", "DashboardNotification", true, "Keeps Notifications visible while the SteamVR Dashboard is open.");
             DashboardPointer = cfg.Bind("Dashboard", "DashboardPointer", true, "Keeps Pointer visible and interactive while the SteamVR Dashboard is open.");
             DashboardSettings = cfg.Bind("Dashboard", "DashboardSettings", true, "Keeps Settings Overlay visible while the SteamVR Dashboard is open.");
@@ -90,20 +91,20 @@ namespace xsoverlay_tweak
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The target Refresh Rate for XSOverlay rendering when Efficiency Mode is active.\nVery low value: the Layout Mode Toggle binding listener will miss some frames.");
 
             // Quality of Life
-            DefaultCaptureOverlayTexture = cfg.Bind("Optimization", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
-            DoubleClickConfirm = cfg.Bind("Optimization", "DoubleClickConfirm", true, "Ensures that a Double Click is always sent reliably when using Emulate Mouse mode.");
-            LaserPointer = cfg.Bind("Pointer", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
-            OverlayCurveAutoRefresh = cfg.Bind("Optimization", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
-            PinBlockInputNonEditMode = cfg.Bind("Optimization", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' or 'Block Input' Overlay unless Layout Mode is active.");
-            PullTriggerClickThreshold = cfg.Bind("Optimization", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
-            PullTriggerPointerLock = cfg.Bind("Optimization", "PullTriggerPointerLock", true, "Locks the Pointer in place while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.");
-            WebViewWiderScroll = cfg.Bind("Optimization", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
-            WristOverPosition = cfg.Bind("Optimization", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
+            DefaultCaptureOverlayTexture = cfg.Bind("QualityOfLife", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
+            DoubleClickConfirm = cfg.Bind("QualityOfLife", "DoubleClickConfirm", true, "Ensures that a Double Click is always sent reliably when using Emulate Mouse mode.");
+            LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
+            OverlayCurveAutoRefresh = cfg.Bind("QualityOfLife", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
+            PinBlockInputNonEditMode = cfg.Bind("QualityOfLife", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' or 'Block Input' Overlay unless Layout Mode is active.");
+            PullTriggerClickThreshold = cfg.Bind("QualityOfLife", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
+            PullTriggerPointerLock = cfg.Bind("QualityOfLife", "PullTriggerPointerLock", true, "Locks the Pointer in place while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.");
+            WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
+            WristOverPosition = cfg.Bind("QualityOfLife", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
 
             // Fix
-            LoadLayoutScaleFix = cfg.Bind("Optimization", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
-            OverlayRollCurveFix = cfg.Bind("Optimization", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
-            WebViewFix = cfg.Bind("Optimization", "WebViewFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
+            LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
+            OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
+            WebViewFix = cfg.Bind("Fix", "WebViewFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
 
             // About
             UpdateNotification = cfg.Bind("About", "UpdateNotifications", true, "Displays a notification when a new version is available.");
