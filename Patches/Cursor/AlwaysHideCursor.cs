@@ -8,6 +8,8 @@ namespace xsoverlay_tweak.Patches.Cursor
     [HarmonyPatch(typeof(WindowComponentManager))]
     internal class AlwaysHideCursor
     {
+        private static readonly AccessTools.FieldRef<WindowComponentManager, bool> WindowCanShowDesktopCursor_Ref = AccessTools.FieldRefAccess<WindowComponentManager, bool>("WindowCanShowDesktopCursor");
+
         [HarmonyPatch("OnSwitchHoveringOverlay"), HarmonyPatch("SetupWindow")]
         [HarmonyPostfix]
         public static void StartHide(WindowComponentManager __instance, ref bool ___WindowCanShowDesktopCursor)
@@ -24,7 +26,7 @@ namespace xsoverlay_tweak.Patches.Cursor
         {
             yield return new WaitForSecondsRealtime(0.05f);
 
-            AccessTools.Field(typeof(WindowComponentManager), "WindowCanShowDesktopCursor").SetValue(__instance, false);
+            WindowCanShowDesktopCursor_Ref(__instance) = false;
         }
 
         private static bool IsEnable()

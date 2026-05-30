@@ -32,6 +32,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             public bool IsCursor = false;
         }
         private static readonly ConditionalWeakTable<Raycaster, CursorData> CursorDictionary = new();
+        private static readonly ConditionalWeakTable<Unity_Overlay, object> IsXSWindowCache = new();
 
         private static readonly AccessTools.FieldRef<UI_RelativeTransformManipulator, bool> ScaleByDistance_Ref = AccessTools.FieldRefAccess<UI_RelativeTransformManipulator, bool>("ScaleByDistance");
         private static readonly AccessTools.FieldRef<Raycaster, bool> CursorLocked_Ref = AccessTools.FieldRefAccess<Raycaster, bool>("CursorLocked");
@@ -80,7 +81,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
             {
                 Unity_Overlay hoveringOverlay = __instance.HoveringOverlay;
-                if (hoveringOverlay != null && EventBridge.IsActiveHand(__instance) && __instance.HeldOverlay == null && hoveringOverlay.IsDesktopCapture && hoveringOverlay.overlayName.IndexOf("XSOverlay Window", StringComparison.Ordinal) >= 0)
+                if (hoveringOverlay != null && EventBridge.IsActiveHand(__instance) && __instance.HeldOverlay == null && hoveringOverlay.IsDesktopCapture && IsTargetWindow(hoveringOverlay))
                 {
                     CURSORINFO ci = new() { cbSize = CURSORINFO_SIZE };
 
@@ -128,6 +129,17 @@ namespace xsoverlay_tweak.Patches.Cursor
                 else if (Data.IsCursor)
                     ResetToDefaultCursor(__instance, ___VisualCursorElementOverlay, ___CursorIcon, Data);
             }
+        }
+
+        private static bool IsTargetWindow(Unity_Overlay overlay)
+        {
+            if (IsXSWindowCache.TryGetValue(overlay, out object result))
+                return (bool)result;
+
+            // XSOverlay Window names are consistent, we only check this once per overlay instance
+            bool isMatch = overlay.overlayName.IndexOf("XSOverlay Window", StringComparison.Ordinal) >= 0;
+            IsXSWindowCache.Add(overlay, isMatch);
+            return isMatch;
         }
 
         private static void ResetToDefaultCursor(Raycaster instance, Unity_Overlay visualOverlay, Texture2D defaultIcon, CursorData data)
