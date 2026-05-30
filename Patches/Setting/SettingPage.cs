@@ -64,6 +64,7 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // Haptic
                 ["XSOverlayTweak.GrabHaptic"] = XConfig.GrabHaptic.Value,
+                ["XSOverlayTweak.KeyboardKeyHaptic"] = XConfig.KeyboardKeyHaptic.Value,
                 ["XSOverlayTweak.OverlaySwapHaptic"] = XConfig.OverlaySwapHaptic.Value,
                 ["XSOverlayTweak.WebViewHaptic"] = XConfig.WebViewHaptic.Value,
 
@@ -183,6 +184,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Haptic
                 case "XSOverlayTweak.GrabHaptic":
                     XConfig.GrabHaptic.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.KeyboardKeyHaptic":
+                    XConfig.KeyboardKeyHaptic.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.OverlaySwapHaptic":
                     XConfig.OverlaySwapHaptic.Value = int.Parse(value);

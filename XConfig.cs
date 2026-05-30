@@ -33,6 +33,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> Dashboardkeyboard;
 
         public static ConfigEntry<int> GrabHaptic;
+        public static ConfigEntry<int> KeyboardKeyHaptic;
         public static ConfigEntry<int> OverlaySwapHaptic;
         public static ConfigEntry<int> WebViewHaptic;
 
@@ -92,6 +93,7 @@ namespace xsoverlay_tweak
 
             // Haptic
             GrabHaptic = cfg.Bind("Haptic", "GrabHaptic", 50, "Plays a haptic feedback when grab any Overlay.");
+            KeyboardKeyHaptic = cfg.Bind("Haptic", "KeyboardKeyHaptic", 30, "Plays a haptic feedback when Pointer is hovering a Keyboard key.");
             OverlaySwapHaptic = cfg.Bind("Haptic", "OverlaySwapHaptic", 30, "Plays a haptic feedback when Pointer is switching Overlay.");
             WebViewHaptic = cfg.Bind("Haptic", "WebViewHaptic", 30, "c.");
 

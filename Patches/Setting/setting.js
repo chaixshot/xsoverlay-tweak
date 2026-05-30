@@ -58,9 +58,9 @@ function InjectKBOSCTab() {
                 ]
             },
             {
-                name: 'Optimization', priority: 6, settings: [
                 name: 'Haptic Feedback', priority: 6, settings: [
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.GrabHaptic', name: 'Grab', description: 'Plays a haptic feedback when grab any Overlay.', default: 50, options: [0, 100, 10], unit: '%' },
+                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardKeyHaptic', name: 'Keyboard Key', description: 'Plays a haptic feedback when Pointer is hovering a Keyboard key.', default: 30, options: [0, 100, 10], unit: '%' },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.OverlaySwapHaptic', name: 'Overlay Swapping', description: 'Plays a haptic feedback when Pointer is switching Overlay.', default: 30, options: [0, 100, 10], unit: '%' },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.WebViewHaptic', name: 'WebView', description: 'Plays a haptic feedback when Pointer is hovering a Keyboard key.', default: 30, options: [0, 100, 10], unit: '%' },
 
@@ -73,7 +73,6 @@ function InjectKBOSCTab() {
                 ]
             },
             {
-                name: 'Quality of Life', priority: 7, settings: [
                 name: 'Quality of Life', priority: 8, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DefaultCaptureOverlayTexture', name: 'Default Capture Overlay Texture', description: 'Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DoubleClickConfirm', name: 'Double Click Confirm', description: 'Ensures that a Double Click is always sent reliably when using Emulate Mouse mode.', default: true },
@@ -87,7 +86,6 @@ function InjectKBOSCTab() {
                 ]
             },
             {
-                name: 'Fix', priority: 8, settings: [
                 name: 'Fix', priority: 9, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale Fix', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve Fix', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },

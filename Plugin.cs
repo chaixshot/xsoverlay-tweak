@@ -43,6 +43,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.SteamDashboard));
 
         harmony.PatchAll(typeof(Patches.Haptic.GrabHaptic));
+        harmony.PatchAll(typeof(Patches.Haptic.KeyboardKeyHaptic));
         harmony.PatchAll(typeof(Patches.Haptic.OverlaySwapHaptic));
         harmony.PatchAll(typeof(Patches.Haptic.WebViewHaptic));
 
