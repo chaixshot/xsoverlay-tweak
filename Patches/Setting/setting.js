@@ -16,7 +16,7 @@ function InjectKBOSCTab() {
         const SECTIONS = [
             {
                 name: 'Refresh Rate', priority: 1, settings: [
-                    { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.RefreshRate', name: 'Refresh Rate', description: 'The target frame rate for XSOverlay rendering.<br>Higher values improve responsiveness but increase CPU usage.', default: <<HMDRefreshRate>>, options: [<<RefreshRateList>>] },
+                    { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.RefreshRate', name: 'Refresh Rate', description: 'The target frame rate for XSOverlay rendering.<br>Higher values improve responsiveness but increase CPU usage.', default: '<<RefreshRate>>', options: [<<RefreshRateList>>] },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyHoverOverlay', name: 'Only Hover Overlay', description: 'Apply the custom Refresh Rate only when a Pointer is hovering over an Overlay.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OnlyInLayoutMod', name: 'Only In Layout Mode', description: 'Apply the custom Refresh Rate only when Layout Mode is active.', default: true },
                 ]

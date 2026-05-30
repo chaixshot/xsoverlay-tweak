@@ -248,7 +248,8 @@ namespace xsoverlay_tweak.Patches.Setting
             string jsContent = reader.ReadToEnd();
 
             jsContent = jsContent.Replace("<<Version>>", MyPluginInfo.PLUGIN_VERSION);
-            jsContent = jsContent.Replace("<<HMDRefreshRate>>", $"'{DeviceManager.Instance.HMDRefreshRate} FPS'");
+            jsContent = jsContent.Replace("<<HMDRefreshRate>>", DeviceManager.Instance.HMDRefreshRate.ToString());
+            jsContent = jsContent.Replace("<<RefreshRate>>", XConfig.RefreshRate.Value);
             jsContent = jsContent.Replace("<<RefreshRateList>>", string.Join(", ", RefreshRate.RefreshRateList));
 
             string jsCode = $"(function() {{ {jsContent} }})();";
