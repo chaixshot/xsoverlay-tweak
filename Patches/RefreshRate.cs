@@ -12,18 +12,27 @@ namespace xsoverlay_tweak.Patches
         private static float LastGrabTime;
         private static float GrabbedDistance = 0f;
 
+        private static int TargetFrameRate = -1;
+        private static bool IsRefreshRateEnabled = false;
+
         public static List<string> RefreshRateList = ["'60 FPS'", "'75 FPS'", "'90 FPS'", "'120 FPS'", "'144 FPS'", "'200 FPS'", "'240 FPS'", "'300 FPS'", "'Unlimited'"];
 
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]
         public static void InitializeEvents(DeviceManager __instance)
         {
+            UpdateCache();
+
             // Listen to refresh rate change
             XConfig.RefreshRate.SettingChanged += (sender, args) =>
             {
+                UpdateCache();
                 if (IsRefreshRateEnable())
                     EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
             };
+
+            XConfig.OnlyHoverOverlay.SettingChanged += (sender, args) => UpdateCache();
+            XConfig.OnlyInLayoutMod.SettingChanged += (sender, args) => UpdateCache();
 
             // Listen to edit mode change
             XSOEventSystem.OnToggleLayoutMode += (isEditMode) =>
@@ -49,6 +58,8 @@ namespace xsoverlay_tweak.Patches
                 // Add HMDRefreshRate to RefreshRateList if not exist
                 if (!RefreshRateList.Exists(x => x.Equals($"'{HMDRefreshRate} FPS'")))
                     RefreshRateList.Add($"'{HMDRefreshRate} FPS'");
+
+                UpdateCache();
             }
         }
 
@@ -82,7 +93,7 @@ namespace xsoverlay_tweak.Patches
                     int targetFrameRate = HMDRefreshRate;
 
                     if (IsRefreshRateEnable() && IsOnlyHoverOverlay() && IsOnlyInLayoutMode())
-                        targetFrameRate = GetFramrate(XConfig.RefreshRate.Value);
+                        targetFrameRate = TargetFrameRate;
 
                     if (EfficiencyMode.ShouldInEfficiencyMode())
                         targetFrameRate = XConfig.InactiveRefreshRate.Value;
@@ -119,8 +130,8 @@ namespace xsoverlay_tweak.Patches
         {
             if (!IsRefreshRateEnable()) return true;
 
-            float currentFPS = 1.0f / Time.unscaledDeltaTime;
-            float scrollSpeedMultiplier = XSettingsManager.Instance.Settings.ScrollSpeed * (currentFPS / HMDRefreshRate);
+            // Pre-calculate combined constant to avoid redundant division and framerate sampling
+            float scrollFactor = XSettingsManager.Instance.Settings.ScrollSpeed / HMDRefreshRate;
 
             float num = 0.2f;
             float y = ___InputDevice.NormalizedScrollAxis.y;
@@ -132,7 +143,7 @@ namespace xsoverlay_tweak.Patches
 
             if (__instance.HoveringOverlay.IsDesktopOrWindowCapture)
             {
-                ____tickAccumulator += num2 * (float)___ScrollClicksPerSecond * scrollSpeedMultiplier * Time.unscaledDeltaTime;
+                ____tickAccumulator += num2 * (float)___ScrollClicksPerSecond * scrollFactor;
                 int num3 = (int)____tickAccumulator;
                 if (num3 > 0)
                 {
@@ -142,16 +153,22 @@ namespace xsoverlay_tweak.Patches
             }
             else if (__instance.HoveringOverlay.IsPluginApplication)
             {
-                float num4 = y * scrollSpeedMultiplier * Time.unscaledDeltaTime;
+                float num4 = y * scrollFactor;
                 __instance.HoveringOverlay.WebViewHandler.WebView.Scroll(new Vector2(0f, 0f - num4), ___CursorUVNormalized);
             }
 
             return false;
         }
 
+        private static void UpdateCache()
+        {
+            TargetFrameRate = GetFramrate(XConfig.RefreshRate.Value);
+            IsRefreshRateEnabled = TargetFrameRate != (DeviceManager.Instance != null ? DeviceManager.Instance.HMDRefreshRate : HMDRefreshRate);
+        }
+
         public static bool IsRefreshRateEnable()
         {
-            return GetFramrate(XConfig.RefreshRate.Value) != DeviceManager.Instance.HMDRefreshRate;
+            return IsRefreshRateEnabled;
         }
 
         private static bool IsOnlyHoverOverlay()
