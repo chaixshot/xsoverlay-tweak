@@ -60,9 +60,12 @@ namespace xsoverlay_tweak.Utils
                 XSOEventSystem.OnSwitchHoveringOverlay += (raycaster, overlay) =>
                 {
                     IsHoverAnyOverlay = true;
-                    IsHoverAnyDesktopOrWindowCapture = overlay?.IsDesktopOrWindowCapture == true;
-                    IsHoverAnyDesktopCapture = overlay?.IsDesktopCapture == true;
-                    IsHoverAnyWindowCapture = overlay?.IsWindowCapture == true;
+                    if (overlay?.IsDesktopOrWindowCapture == true)
+                        IsHoverAnyDesktopOrWindowCapture = true;
+                    if (overlay?.IsDesktopCapture == true)
+                        IsHoverAnyDesktopCapture = true;
+                    if (overlay?.IsWindowCapture == true)
+                        IsHoverAnyWindowCapture = true;
                     CurrentHoveringOverlay = overlay;
                     Ref_DeviceManager.GetHMDRefreshRate(__instance);
 
@@ -72,9 +75,6 @@ namespace xsoverlay_tweak.Utils
                 XSOEventSystem.OnTakeControlOfDesktopCursor += (raycaster) =>
                 {
                     IsHoverAnyOverlay = true;
-                    IsHoverAnyDesktopOrWindowCapture = raycaster?.HoveringOverlay?.IsDesktopOrWindowCapture == true;
-                    IsHoverAnyDesktopCapture = raycaster?.HoveringOverlay?.IsDesktopCapture == true;
-                    IsHoverAnyWindowCapture = raycaster?.HoveringOverlay?.IsWindowCapture == true;
                     Ref_DeviceManager.GetHMDRefreshRate(__instance);
 
                     if (CurrentHoveringOverlayCoroutine != null)
