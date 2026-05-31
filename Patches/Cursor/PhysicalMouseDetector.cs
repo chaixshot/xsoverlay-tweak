@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using XSOverlay;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Cursor
@@ -26,7 +27,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             if (IsPhysicalMovement)
             {
                 IsPhysicalMovement = false;
-                EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
+                XSOEventSystem.Current.EventTakeControlOfDesktopCursor(__instance);
 
                 return false;
             }
