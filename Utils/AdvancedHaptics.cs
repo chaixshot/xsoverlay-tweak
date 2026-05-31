@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿﻿using System.Collections;
 using UnityEngine;
 using Valve.VR;
 
@@ -33,13 +33,14 @@ namespace xsoverlay_tweak.Utils
             float targetFrequency = Mathf.Clamp(frequency, 10f, 500f);
             float timeBetweenPulses = 1f / targetFrequency;
 
+            var wait = new WaitForSecondsRealtime(timeBetweenPulses);
             while (elapsed < duration)
             {
                 // Trigger a single sharp pulse
                 OpenVR.System.TriggerHapticPulse(deviceIndex, 0U, pulseWidth);
 
                 // Wait for the calculated interval before pulsing again
-                yield return new WaitForSecondsRealtime(timeBetweenPulses);
+                yield return wait;
 
                 elapsed += timeBetweenPulses;
             }

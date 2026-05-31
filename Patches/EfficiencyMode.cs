@@ -56,6 +56,8 @@ namespace xsoverlay_tweak.Patches
 
     internal class EfficiencyModeController
     {
+        private static readonly IntPtr ProcessHandle = GetCurrentProcess();
+
         // --- Windows API Imports ---
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetCurrentProcess();
@@ -101,10 +103,8 @@ namespace xsoverlay_tweak.Patches
                 return false;
             }
 
-            IntPtr hProcess = GetCurrentProcess();
-
             // 1. Configure EcoQoS (Power Throttling)
-            PROCESS_POWER_THROTTLING_STATE throttlingState = new PROCESS_POWER_THROTTLING_STATE
+            PROCESS_POWER_THROTTLING_STATE throttlingState = new()
             {
                 Version = PROCESS_POWER_THROTTLING_CURRENT_VERSION,
                 ControlMask = PROCESS_POWER_THROTTLING_EXECUTION_SPEED_RELIABILITY,
@@ -113,12 +113,12 @@ namespace xsoverlay_tweak.Patches
             };
 
             uint structureSize = (uint)Marshal.SizeOf(throttlingState);
-            bool powerResult = SetProcessInformation(hProcess, ProcessPowerThrottling, ref throttlingState, structureSize);
+            bool powerResult = SetProcessInformation(ProcessHandle, ProcessPowerThrottling, ref throttlingState, structureSize);
 
             // 2. Configure Process Priority Class
             // Windows drops a process to Idle priority when Efficiency Mode is turned on.
             uint priorityClass = enable ? IDLE_PRIORITY_CLASS : NORMAL_PRIORITY_CLASS;
-            bool priorityResult = SetPriorityClass(hProcess, priorityClass);
+            bool priorityResult = SetPriorityClass(ProcessHandle, priorityClass);
 
             return powerResult && priorityResult;
         }

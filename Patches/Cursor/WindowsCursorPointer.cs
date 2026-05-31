@@ -31,8 +31,10 @@ namespace xsoverlay_tweak.Patches.Cursor
             public UI_RelativeTransformManipulator RelativeTransform;
             public bool IsCursor = false;
         }
+
+        private class XSWindowResult { public bool IsMatch; }
         private static readonly ConditionalWeakTable<Raycaster, CursorData> CursorDictionary = new();
-        private static readonly ConditionalWeakTable<Unity_Overlay, object> IsXSWindowCache = new();
+        private static readonly ConditionalWeakTable<Unity_Overlay, XSWindowResult> IsXSWindowCache = new();
 
         private static readonly AccessTools.FieldRef<UI_RelativeTransformManipulator, bool> ScaleByDistance_Ref = AccessTools.FieldRefAccess<UI_RelativeTransformManipulator, bool>("ScaleByDistance");
         private static readonly AccessTools.FieldRef<Raycaster, bool> CursorLocked_Ref = AccessTools.FieldRefAccess<Raycaster, bool>("CursorLocked");
@@ -133,12 +135,12 @@ namespace xsoverlay_tweak.Patches.Cursor
 
         private static bool IsTargetWindow(Unity_Overlay overlay)
         {
-            if (IsXSWindowCache.TryGetValue(overlay, out object result))
-                return (bool)result;
+            if (IsXSWindowCache.TryGetValue(overlay, out XSWindowResult result))
+                return result.IsMatch;
 
             // XSOverlay Window names are consistent, we only check this once per overlay instance
             bool isMatch = overlay.overlayName.IndexOf("XSOverlay Window", StringComparison.Ordinal) >= 0;
-            IsXSWindowCache.Add(overlay, isMatch);
+            IsXSWindowCache.Add(overlay, new XSWindowResult { IsMatch = isMatch });
             return isMatch;
         }
 
@@ -262,7 +264,7 @@ namespace xsoverlay_tweak.Patches.Cursor
         [DllImport("gdi32.dll")]
         static extern bool DeleteObject(IntPtr hObject);
 
-        private static Texture2D ExtractCurrentWindowsCursor(IntPtr hCursor, CursorData data, out Vector2 hotSpot)
+        private unsafe static Texture2D ExtractCurrentWindowsCursor(IntPtr hCursor, CursorData data, out Vector2 hotSpot)
         {
             hotSpot = Vector2.zero;
 
@@ -315,16 +317,23 @@ namespace xsoverlay_tweak.Patches.Cursor
             int targetYBase = H - 1 - offsetY;
             int stride = bm.bmWidthBytes;
 
-            for (int y = 0; y < h; y++)
+            fixed (Color32* pColors = data.ColorBuffer)
+            fixed (byte* pPixels = _rawPixelBuffer)
             {
-                int srcRow = y * stride;
-                int targetRow = (targetYBase - y) * W + offsetX;
-
-                for (int x = 0; x < w; x++)
+                for (int y = 0; y < h; y++)
                 {
-                    int srcIdx = srcRow + (x << 2); // x * 4 bytes (BGRA)
-                    data.ColorBuffer[targetRow + x] = new Color32(
-                        _rawPixelBuffer[srcIdx + 2], _rawPixelBuffer[srcIdx + 1], _rawPixelBuffer[srcIdx], _rawPixelBuffer[srcIdx + 3]);
+                    byte* srcRowPtr = pPixels + (y * stride);
+                    Color32* targetRowPtr = pColors + ((targetYBase - y) * W + offsetX);
+
+                    for (int x = 0; x < w; x++)
+                    {
+                        // BGRA (Windows) to RGBA (Unity) conversion with pointer arithmetic
+                        targetRowPtr[x].r = srcRowPtr[2];
+                        targetRowPtr[x].g = srcRowPtr[1];
+                        targetRowPtr[x].b = srcRowPtr[0];
+                        targetRowPtr[x].a = srcRowPtr[3];
+                        srcRowPtr += 4;
+                    }
                 }
             }
 

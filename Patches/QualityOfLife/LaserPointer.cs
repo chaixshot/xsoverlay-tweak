@@ -64,14 +64,14 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             if (!IsHand(__instance)) return;
 
             if (LaserDictionary.TryGetValue(__instance, out LaserData Data))
-                if (Overlay_Manager.Instance.editMode || __instance.HoveringOverlay != null)
-                {
+            {
+                bool shouldBeActive = Overlay_Manager.Instance.editMode || __instance.HoveringOverlay != null;
+                if (shouldBeActive)
                     __instance.IsActiveRaycaster = true;
 
-                    Data.Laser.gameObject.SetActive(true);
-                }
-                else
-                    Data.Laser.gameObject.SetActive(false);
+                if (Data.Laser.gameObject.activeSelf != shouldBeActive)
+                    Data.Laser.gameObject.SetActive(shouldBeActive);
+            }
         }
 
         // Change lasers position, rotation and length
@@ -124,27 +124,32 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
                 // Handle active color
                 {
+                    Color targetColor;
+                    float targetOpacity;
+
                     if (___VisualCursorElement.activeSelf) // Hover any Overlay
                     {
                         if (!InactivePointerColor.IsEnable() || EventBridge.IsActiveHand(__instance) || EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay))
                         {
-                            Data.Laser.colorTint = XSettingsManager.Instance.Settings.AccentColor;
-                            Data.Laser.opacity = 1f;
+                            targetColor = XSettingsManager.Instance.Settings.AccentColor;
+                            targetOpacity = 1f;
                         }
                         else
                         {
-                            Data.Laser.colorTint = Color.red;
-                            Data.Laser.opacity = XConfig.InactivePointerOpacity.Value / 100f;
+                            targetColor = Color.red;
+                            targetOpacity = XConfig.InactivePointerOpacity.Value / 100f;
                         }
                     }
                     else
                     {
-                        Data.Laser.colorTint = Color.gray;
-                        Data.Laser.opacity = XConfig.InactivePointerOpacity.Value / 100f;
+                        targetColor = Color.gray;
+                        targetOpacity = XConfig.InactivePointerOpacity.Value / 100f;
                     }
 
-                    Data.Laser.overlay.overlayColor = Data.Laser.colorTint;
-                    Data.Laser.overlay.overlayRenderModelColor = Data.Laser.colorTint;
+                    Data.Laser.colorTint = targetColor;
+                    Data.Laser.opacity = targetOpacity;
+                    Data.Laser.overlay.overlayColor = targetColor;
+                    Data.Laser.overlay.overlayRenderModelColor = targetColor;
                 }
             }
         }
@@ -180,6 +185,8 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             if (LaserDictionary.TryGetValue(hovering, out LaserData Data))
             {
                 int newHeight = Mathf.Max(1, (int)(Data.Distance * 500));
+
+                if (Data.Texture.height == newHeight) return;
 
                 Data.Texture.Reinitialize(1, newHeight);
                 Data.Texture.Apply(); // Apply changes to the GPU.

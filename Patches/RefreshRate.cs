@@ -11,6 +11,7 @@ namespace xsoverlay_tweak.Patches
         private static int HMDRefreshRate = 90;
         private static float LastGrabTime;
         private static float GrabbedDistance = 0f;
+        private static float MinGrabInterval = 0.011f;
 
         private static int TargetFrameRate = -1;
         private static bool IsRefreshRateEnabled = false;
@@ -50,6 +51,7 @@ namespace xsoverlay_tweak.Patches
             if (deviceId == __instance.PoseHandler.hmdIndex)
             {
                 HMDRefreshRate = __instance.FetchHMDRefreshRate();
+                MinGrabInterval = 1f / HMDRefreshRate;
 
                 // Set default refresh rate to HMD refresh rate if it's not set by user
                 if (XConfig.RefreshRate.Value == "Unknow")
@@ -100,7 +102,8 @@ namespace xsoverlay_tweak.Patches
 
                     XSTools.ExecuteOnMainThread(delegate
                     {
-                        Application.targetFrameRate = targetFrameRate;
+                        if (Application.targetFrameRate != targetFrameRate)
+                            Application.targetFrameRate = targetFrameRate;
                     });
                 }
             }
@@ -115,7 +118,7 @@ namespace xsoverlay_tweak.Patches
             if (!IsRefreshRateEnable()) return;
 
             float currentTime = Time.unscaledTime;
-            if (currentTime - LastGrabTime < (1f / HMDRefreshRate))
+            if (currentTime - LastGrabTime < MinGrabInterval)
                 ___GrabbedDistance = GrabbedDistance;
             else
             {

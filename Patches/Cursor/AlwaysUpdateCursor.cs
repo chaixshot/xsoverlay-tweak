@@ -59,8 +59,8 @@ namespace xsoverlay_tweak.Patches.Cursor
             if (!IsEnable()) return;
 
             // Invoke the delegate stored in the array
-            foreach (Raycaster __instance in RaycasterInstances)
-                SyncedOverlayUpdate.Invoke(__instance, EmptyOverlay);
+            for (int i = 0; i < RaycasterInstances.Count; i++)
+                SyncedOverlayUpdate.Invoke(RaycasterInstances[i], EmptyOverlay);
         }
 
         private static void AddUpdatedOverlay(Raycaster __instance)

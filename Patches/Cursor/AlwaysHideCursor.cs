@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using XSOverlay;
+using System.Runtime.CompilerServices;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Cursor
@@ -9,8 +10,11 @@ namespace xsoverlay_tweak.Patches.Cursor
     internal class AlwaysHideCursor
     {
         private static readonly AccessTools.FieldRef<WindowComponentManager, bool> WindowCanShowDesktopCursor = AccessTools.FieldRefAccess<WindowComponentManager, bool>("WindowCanShowDesktopCursor");
+        private static readonly ConditionalWeakTable<Unity_Overlay, WindowComponentManager> WindowManagerCache = new();
 
         private static bool IsPhysicalMovement = false;
+        private static readonly ConditionalWeakTable<WindowComponentManager, Coroutine> ActiveHideCoroutines = new();
+        private static readonly WaitForSecondsRealtime HideDelayWait = new(0.05f);
 
         [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
         [HarmonyPostfix]
@@ -20,15 +24,17 @@ namespace xsoverlay_tweak.Patches.Cursor
             {
                 if (!IsEnable()) return;
 
-                if (PhysicalMouseDetector.IsPhysicalMovement)
+                if (PhysicalMouseDetector.IsPhysicalMovement && !IsPhysicalMovement)
                 {
                     IsPhysicalMovement = true;
 
-                    foreach (Unity_Overlay overlay in Overlay_Manager.Instance.ActiveOverlayComponents)
+                    var activeOverlays = Overlay_Manager.Instance.ActiveOverlayComponents;
+                    for (int i = 0; i < activeOverlays.Count; i++)
                     {
+                        Unity_Overlay overlay = activeOverlays[i];
                         if (overlay?.WindowCaptureAPI?.window?.isDesktop == true)
                         {
-                            WindowComponentManager component = overlay.overlayRootObject.GetComponentInChildren<WindowComponentManager>();
+                            WindowComponentManager component = GetWindowManager(overlay);
 
                             WindowCanShowDesktopCursor(component) = true;
                         }
@@ -48,13 +54,21 @@ namespace xsoverlay_tweak.Patches.Cursor
                     {
                         if (overlay?.WindowCaptureAPI?.window?.isDesktop == true)
                         {
-                            WindowComponentManager component = overlay.overlayRootObject.GetComponentInChildren<WindowComponentManager>();
+                            WindowComponentManager component = GetWindowManager(overlay);
 
                             WindowCanShowDesktopCursor(component) = false;
                         }
                     }
                 }
             };
+        }
+
+        private static WindowComponentManager GetWindowManager(Unity_Overlay overlay)
+        {
+            if (WindowManagerCache.TryGetValue(overlay, out var comp)) return comp;
+            comp = overlay.overlayRootObject.GetComponentInChildren<WindowComponentManager>();
+            WindowManagerCache.Add(overlay, comp);
+            return comp;
         }
 
         [HarmonyPatch(typeof(WindowComponentManager), "OnSwitchHoveringOverlay"), HarmonyPatch(typeof(WindowComponentManager), "SetupWindow")]
@@ -66,14 +80,21 @@ namespace xsoverlay_tweak.Patches.Cursor
             ___WindowCanShowDesktopCursor = true; // SteamVR Dashboard Desktop make cursor reappear
 
             if (__instance?.WindowAPI?.window?.isDesktop == true) // Disable for Window Capture Mode, Cursor offsetting from Pointer
-                Plugin.Instance.StartCoroutine(HideDelay(__instance));
+            {
+                // Avoid overlapping coroutines for the same instance
+                if (ActiveHideCoroutines.TryGetValue(__instance, out _)) return;
+                
+                var routine = Plugin.Instance.StartCoroutine(HideDelay(__instance));
+                ActiveHideCoroutines.Add(__instance, routine);
+            }
         }
 
         private static IEnumerator HideDelay(WindowComponentManager __instance)
         {
-            yield return new WaitForSecondsRealtime(0.05f);
+            yield return HideDelayWait;
 
             WindowCanShowDesktopCursor(__instance) = false;
+            ActiveHideCoroutines.Remove(__instance);
         }
 
         private static bool IsEnable()
