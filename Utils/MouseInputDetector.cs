@@ -13,6 +13,8 @@ namespace xsoverlay_tweak.Utils
         private const int RID_INPUT = 0x10000003;
         private const uint RIDEV_INPUTSINK = 0x00000100;
 
+        private const int MOVEMENT_THRESHOLD = 2; // Jitter threshold to filter out micro-movements
+
         // Cache sizes and buffers to avoid allocations in the loop
         private readonly uint _headerSize = (uint)Marshal.SizeOf(typeof(RAWINPUTHEADER));
         private byte[] _inputBuffer = new byte[128];
@@ -64,8 +66,9 @@ namespace xsoverlay_tweak.Utils
                             // Move pointer forward past the header to the mouse data
                             RAWMOUSE* mouse = (RAWMOUSE*)(pBuffer + _headerSize);
 
-                            // Trigger event with relative movement deltas
-                            PhysicalMouseMoved?.Invoke(mouse->lLastX, mouse->lLastY);
+                            // Performance Optimization: Only notify movement if deltas exceed threshold
+                            if (Math.Abs(mouse->lLastX) >= MOVEMENT_THRESHOLD || Math.Abs(mouse->lLastY) >= MOVEMENT_THRESHOLD)
+                                PhysicalMouseMoved?.Invoke(mouse->lLastX, mouse->lLastY);
                         }
                     }
                 }

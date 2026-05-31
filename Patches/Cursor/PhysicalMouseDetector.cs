@@ -6,18 +6,16 @@ namespace xsoverlay_tweak.Patches.Cursor
     internal class PhysicalMouseDetector
     {
         public static bool IsPhysicalMovement = false;
-        private static MouseInputDetector mouseDetector;
+        public static readonly MouseInputDetector mouseDetector = new();
 
         [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
         [HarmonyPostfix]
         public static void InitializeEvents()
         {
-            mouseDetector = new MouseInputDetector();
             mouseDetector.PhysicalMouseMoved += (x, y) =>
             {
                 if (IsEnable())
-                    if (EventBridge.IsHoverAnyDesktopOrWindowCapture)
-                        IsPhysicalMovement = true;
+                    IsPhysicalMovement = true;
             };
         }
 
