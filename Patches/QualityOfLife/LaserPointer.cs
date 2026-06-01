@@ -3,6 +3,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Cursor;
 using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Utils;
 
@@ -92,8 +93,6 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     Vector3 CurrentRayDirection = ___CurrentRayDirection;
                     Vector3 RayHitPoint = ___RayHitPoint;
 
-                    bool IsHeldOverlayLocked = __instance?.HeldOverlay?.IsHeld == true && __instance?.HeldOverlay?.IsLocked == true;
-
                     // Capture overlay UseCursorSmoothing
                     if (!IsEnableMouseSmooth() && __instance?.HoveringOverlay?.UseCursorSmoothing == true)
                     {
@@ -105,7 +104,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
                         RayHitPoint = (CurrentRayPosition + CurrentRayDirection * __instance.FinalSteamVRRaycastResults.fDistance) - (CurrentRayDirection * 0.05f);
 
-                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || DoubleClickDelayState?.IsBlock == true) || IsHeldOverlayLocked) // PointerDoubleClickDelay lock RayHitPoint in place
+                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || DoubleClickDelayState?.IsBlock == true)) // PointerDoubleClickDelay lock RayHitPoint in place
                     {
                         RayHitPoint = Data.RayHitPoint_last;
                         CurrentRayDirection = -(CurrentRayPosition - RayHitPoint).normalized;
@@ -124,25 +123,22 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
                 // Handle active color
                 {
-                    Color targetColor;
-                    float targetOpacity;
+                    Color targetColor = XSettingsManager.Instance.Settings.AccentColor;
+                    float targetOpacity = 1f;
 
-                    if (___VisualCursorElement.activeSelf) // Hover any Overlay
-                    {
-                        if (!InactivePointerColor.IsEnable() || EventBridge.IsActiveHand(__instance) || EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay))
-                        {
-                            targetColor = XSettingsManager.Instance.Settings.AccentColor;
-                            targetOpacity = 1f;
-                        }
-                        else
-                        {
-                            targetColor = Color.red;
-                            targetOpacity = XConfig.InactivePointerOpacity.Value / 100f;
-                        }
-                    }
-                    else
+                    if (!___VisualCursorElement.activeSelf)
                     {
                         targetColor = Color.gray;
+                        targetOpacity = XConfig.InactivePointerOpacity.Value / 100f;
+                    }
+                    else if (PhysicalMouseDetector.IsPhysicalMovement)
+                    {
+                        targetColor = Color.gray;
+                        targetOpacity = XConfig.InactivePointerOpacity.Value / 100f;
+                    }
+                    else if (InactivePointerColor.IsEnable() && !EventBridge.IsActiveHand(__instance) && !EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay))
+                    {
+                        targetColor = Color.red;
                         targetOpacity = XConfig.InactivePointerOpacity.Value / 100f;
                     }
 

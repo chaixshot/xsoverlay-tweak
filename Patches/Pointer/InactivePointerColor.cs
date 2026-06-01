@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Cursor;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
@@ -17,6 +18,8 @@ namespace xsoverlay_tweak.Patches.Pointer
 
             if (EventBridge.IsActiveHand(__instance) || EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay))
                 ___VisualCursorElementOverlay.colorTint = XSettingsManager.Instance.Settings.AccentColor;
+            else if (PhysicalMouseDetector.IsPhysicalMovement)
+                ___VisualCursorElementOverlay.colorTint = Color.gray;
             else if (__instance?.HoveringOverlay?.IsLocked == false)
                 ___VisualCursorElementOverlay.colorTint = Color.red;
         }
