@@ -67,6 +67,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.KeyboardKeyHaptic"] = XConfig.KeyboardKeyHaptic.Value,
                 ["XSOverlayTweak.KeyboardPressHaptic"] = XConfig.KeyboardPressHaptic.Value,
                 ["XSOverlayTweak.OverlaySwapHaptic"] = XConfig.OverlaySwapHaptic.Value,
+                ["XSOverlayTweak.StickyKeyHaptic"] = XConfig.StickyKeyHaptic.Value,
                 ["XSOverlayTweak.PullTriggerPointerLockHaptic"] = XConfig.PullTriggerPointerLockHaptic.Value,
                 ["XSOverlayTweak.ToggleEditModeHaptic"] = XConfig.ToggleEditModeHaptic.Value,
                 ["XSOverlayTweak.WebViewHaptic"] = XConfig.WebViewHaptic.Value,
@@ -200,6 +201,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.PullTriggerPointerLockHaptic":
                     XConfig.PullTriggerPointerLockHaptic.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.StickyKeyHaptic":
+                    XConfig.StickyKeyHaptic.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.ToggleEditModeHaptic":
                     XConfig.ToggleEditModeHaptic.Value = bool.Parse(value);
