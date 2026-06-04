@@ -53,6 +53,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> WebViewWiderScroll;
         public static ConfigEntry<bool> WristOverPosition;
 
+        public static ConfigEntry<bool> CtrlKeyStickyFix;
         public static ConfigEntry<bool> LoadLayoutScaleFix;
         public static ConfigEntry<bool> OverlayRollCurveFix;
         public static ConfigEntry<bool> WebViewFix;
@@ -119,6 +120,7 @@ namespace xsoverlay_tweak
             WristOverPosition = cfg.Bind("QualityOfLife", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
 
             // Fix
+            CtrlKeyStickyFix = cfg.Bind("Fix", "CtrlKeyStickyFix", true, "Fix where double-tapping the Ctrl key does not sticky.");
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
             OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
             WebViewFix = cfg.Bind("Fix", "WebViewFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");

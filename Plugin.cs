@@ -63,6 +63,7 @@ public class Plugin : BaseUnityPlugin
 
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
         harmony.PatchAll(typeof(Patches.Fix.OverlayRollCurveFix));
+        harmony.PatchAll(typeof(Patches.Fix.CtrlKeyStickyFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewFix));
 
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));
