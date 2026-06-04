@@ -61,7 +61,7 @@ function InjectKBOSCTab() {
                 name: 'Haptic Feedback', priority: 6, settings: [
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.GrabHaptic', name: 'Grab', description: 'Plays a haptic feedback when grab any Overlay.', default: 50, options: [0, 100, 5], unit: '%' },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardKeyHaptic', name: 'Keyboard Key', description: 'Plays a haptic feedback when Pointer is hovering a Keyboard key.', default: 30, options: [0, 100, 5], unit: '%' },
-                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardPressHaptic', name: 'KeyboardPressHaptic', description: 'Plays a haptic feedback when Pointer is pressing a Keyboard key.', default: 30, options: [0, 100, 5], unit: '%' },
+                    { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardPressHaptic', name: 'Keyboard Press', description: 'Plays a haptic feedback when Pointer is pressing a Keyboard key.', default: 30, options: [0, 100, 5], unit: '%' },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.OverlaySwapHaptic', name: 'Overlay Swapping', description: 'Plays a haptic feedback when Pointer is switching Overlay.', default: 30, options: [0, 100, 5], unit: '%' },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.StickyKeyHaptic', name: 'Sticky Key Haptic', description: 'Plays a haptic feedback when a sticky key is pressed.', default: true },
                     { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.PullTriggerPointerLockHaptic', name: 'Pull Trigger Pointer Lock Haptic', description: 'Plays a haptic feedback when Pull Trigger Pointer Lock.', default: 30, options: [0, 100, 5], unit: '%' },
