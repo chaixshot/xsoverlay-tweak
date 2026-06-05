@@ -14,7 +14,8 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
     {
         private class LaserData
         {
-            public Unity_Overlay Laser;
+            public Unity_Overlay LaserA;
+            public Unity_Overlay LaserB;
             public Texture2D Texture = new(1, 250, TextureFormat.RGB24, false);
             public float Distance = 1f;
             public float Distance_Last = 1f;
@@ -23,7 +24,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
         private static readonly ConditionalWeakTable<Raycaster, LaserData> LaserDictionary = new();
 
-        // Create laser overlay
+        // Create Laser_A overlay
         [HarmonyPatch("Start")]
         [HarmonyPostfix]
         public static void Start(Raycaster __instance)
@@ -32,7 +33,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             if (IsEnable())
                 CreateLaser(__instance);
 
-            // Listen for hovering DoubleClickDelayState changes to update laser length immediately when hovering something new
+            // Listen for hovering DoubleClickDelayState changes to update Laser_A length immediately when hovering something new
             XSOEventSystem.OnSwitchHoveringOverlay += (hovering, overlay) =>
             {
                 if (IsEnable())
@@ -48,7 +49,8 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                 {
                     if (LaserDictionary.TryGetValue(__instance, out LaserData Data))
                     {
-                        Object.Destroy(Data.Laser.gameObject);
+                        Object.Destroy(Data.LaserA.gameObject);
+                        Object.Destroy(Data.LaserB.gameObject);
                         Object.Destroy(Data.Texture); // Prevent GPU memory leak
                     }
                     LaserDictionary.Remove(__instance);
@@ -70,8 +72,11 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                 if (shouldBeActive)
                     __instance.IsActiveRaycaster = true;
 
-                if (Data.Laser.gameObject.activeSelf != shouldBeActive)
-                    Data.Laser.gameObject.SetActive(shouldBeActive);
+                if (Data.LaserA.gameObject.activeSelf != shouldBeActive)
+                {
+                    Data.LaserA.gameObject.SetActive(shouldBeActive);
+                    Data.LaserB.gameObject.SetActive(shouldBeActive);
+                }
             }
         }
 
@@ -113,9 +118,15 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                         Data.RayHitPoint_last = RayHitPoint;
 
                     Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(CurrentRayPosition, RayHitPoint) : 0.5f;
-                    Data.Laser.transform.position = CurrentRayPosition + (CurrentRayDirection * (Data.Distance / 2));
-                    Data.Laser.transform.up = CurrentRayDirection;
-                    Data.Laser.transform.Rotate(0, 180 * (__instance.transform.rotation.y - (__instance.transform.rotation.y - Overlay_Manager.Instance.head.rotation.y)), 0, Space.Self);
+
+                    Data.LaserA.transform.position = CurrentRayPosition + (CurrentRayDirection * (Data.Distance / 2));
+                    Data.LaserA.transform.up = CurrentRayDirection;
+                    Data.LaserA.transform.Rotate(0, 180 * (__instance.transform.rotation.y - (__instance.transform.rotation.y - Overlay_Manager.Instance.head.rotation.y)), 0, Space.Self);
+
+                    Data.LaserB.transform.position = CurrentRayPosition + (CurrentRayDirection * (Data.Distance / 2));
+                    Data.LaserB.transform.up = CurrentRayDirection;
+                    Data.LaserB.transform.Rotate(0, 180 * (__instance.transform.rotation.y - (__instance.transform.rotation.y - Overlay_Manager.Instance.head.rotation.y)), 0, Space.Self);
+                    Data.LaserB.transform.Rotate(0, 180, 0, Space.Self);
 
                     if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.01f)
                         UpdateLaserLength(__instance);
@@ -142,10 +153,15 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                         targetOpacity = XConfig.InactivePointerOpacity.Value / 100f;
                     }
 
-                    Data.Laser.colorTint = targetColor;
-                    Data.Laser.opacity = targetOpacity;
-                    Data.Laser.overlay.overlayColor = targetColor;
-                    Data.Laser.overlay.overlayRenderModelColor = targetColor;
+                    Data.LaserA.colorTint = targetColor;
+                    Data.LaserA.opacity = targetOpacity;
+                    Data.LaserA.overlay.overlayColor = targetColor;
+                    Data.LaserA.overlay.overlayRenderModelColor = targetColor;
+
+                    Data.LaserB.colorTint = targetColor;
+                    Data.LaserB.opacity = targetOpacity;
+                    Data.LaserB.overlay.overlayColor = targetColor;
+                    Data.LaserB.overlay.overlayRenderModelColor = targetColor;
                 }
             }
         }
@@ -155,17 +171,35 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             if (LaserDictionary.TryGetValue(instance, out _)) return;
 
             GameObject VisualCursorElementPrefab = (GameObject)AccessTools.Field(typeof(Raycaster), "VisualCursorElementPrefab").GetValue(instance);
-            GameObject VisualCursorElement = Object.Instantiate(VisualCursorElementPrefab);
-            Unity_Overlay laser = VisualCursorElement.GetComponent<Unity_Overlay>();
+            Unity_Overlay Laser_A;
+            Unity_Overlay Laser_B;
 
-            VisualCursorElement.name = string.Format("Raycaster.{0}.{1}", instance.gameObject.name, "LaserPointer");
+            {
+                GameObject VisualCursorElement_A = Object.Instantiate(VisualCursorElementPrefab);
+                Laser_A = VisualCursorElement_A.GetComponent<Unity_Overlay>();
 
-            laser.AutoUpdateOverlayTexture = false;
-            laser.overlayName = VisualCursorElement.name;
-            laser.overlayKey = VisualCursorElement.name.ToLower();
+                VisualCursorElement_A.name = string.Format("Raycaster.{0}.{1}", instance.gameObject.name, "LaserPointerA");
 
-            Object.Destroy(laser.GetComponent<UI_RelativeTransformManipulator>());
-            LaserDictionary.Add(instance, new LaserData { Laser = laser });
+                Laser_A.AutoUpdateOverlayTexture = false;
+                Laser_A.overlayName = VisualCursorElement_A.name;
+                Laser_A.overlayKey = VisualCursorElement_A.name.ToLower();
+
+                Object.Destroy(Laser_A.GetComponent<UI_RelativeTransformManipulator>());
+            }
+            {
+                GameObject VisualCursorElement_B = Object.Instantiate(VisualCursorElementPrefab);
+                Laser_B = VisualCursorElement_B.GetComponent<Unity_Overlay>();
+
+                VisualCursorElement_B.name = string.Format("Raycaster.{0}.{1}", instance.gameObject.name, "LaserPointerB");
+
+                Laser_B.AutoUpdateOverlayTexture = false;
+                Laser_B.overlayName = VisualCursorElement_B.name;
+                Laser_B.overlayKey = VisualCursorElement_B.name.ToLower();
+
+                Object.Destroy(Laser_B.GetComponent<UI_RelativeTransformManipulator>());
+            }
+
+            LaserDictionary.Add(instance, new LaserData { LaserA = Laser_A, LaserB = Laser_B });
             Plugin.Instance.StartCoroutine(UpdateLaserLengthDelay(instance));
         }
 
@@ -187,10 +221,15 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                 Data.Texture.Reinitialize(1, newHeight);
                 Data.Texture.Apply(); // Apply changes to the GPU.
 
-                Data.Laser.overlayTexture = Data.Texture;
-                Data.Laser.overlay.overlayTexture = Data.Texture;
-                Data.Laser.overlay.overlayWidthInMeters = 0.002f;
-                Data.Laser.isDashboardOverlay = false;
+                Data.LaserA.overlayTexture = Data.Texture;
+                Data.LaserA.overlay.overlayTexture = Data.Texture;
+                Data.LaserA.overlay.overlayWidthInMeters = 0.002f;
+                Data.LaserA.isDashboardOverlay = false;
+
+                Data.LaserB.overlayTexture = Data.Texture;
+                Data.LaserB.overlay.overlayTexture = Data.Texture;
+                Data.LaserB.overlay.overlayWidthInMeters = 0.002f;
+                Data.LaserB.isDashboardOverlay = false;
 
                 Data.Distance_Last = Data.Distance;
             }
