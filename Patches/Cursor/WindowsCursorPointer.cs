@@ -267,45 +267,49 @@ namespace xsoverlay_tweak.Patches.Cursor
         private unsafe static Texture2D ExtractCurrentWindowsCursor(IntPtr hCursor, CursorData data, out Vector2 hotSpot)
         {
             hotSpot = Vector2.zero;
-
-            // Extract properties and bitmap references
             if (!GetIconInfo(hCursor, out ICONINFO iconInfo)) return null;
 
-            // Keep track of the click hotspot (usually 0,0 for standard arrow tips)
             hotSpot = new Vector2(iconInfo.xHotspot, iconInfo.yHotspot);
 
-            // Process the color bitmap structure
-            if (iconInfo.hbmColor == IntPtr.Zero)
+            int w = 0, h = 0;
+            bool isMonochrome = iconInfo.hbmColor == IntPtr.Zero;
+
+            if (!isMonochrome)
             {
-                DeleteObject(iconInfo.hbmMask);
-                return null;
+                GetObject(iconInfo.hbmColor, BITMAP_SIZE, out BITMAP bm);
+                w = bm.bmWidth;
+                h = bm.bmHeight;
+
+                int totalBytes = bm.bmWidthBytes * bm.bmHeight;
+                if (_rawPixelBuffer.Length < totalBytes) _rawPixelBuffer = new byte[totalBytes];
+
+                GetBitmapBits(iconInfo.hbmColor, totalBytes, _rawPixelBuffer);
+            }
+            else
+            {
+                GetObject(iconInfo.hbmMask, BITMAP_SIZE, out BITMAP bmMask);
+                w = bmMask.bmWidth;
+                h = bmMask.bmHeight / 2;
+
+                int maskBytes = bmMask.bmWidthBytes * bmMask.bmHeight;
+                if (_rawPixelBuffer.Length < maskBytes) _rawPixelBuffer = new byte[maskBytes];
+
+                GetBitmapBits(iconInfo.hbmMask, maskBytes, _rawPixelBuffer);
             }
 
-            GetObject(iconInfo.hbmColor, BITMAP_SIZE, out BITMAP bm);
-
-            int totalBytes = bm.bmWidthBytes * bm.bmHeight;
-            if (_rawPixelBuffer.Length < totalBytes) _rawPixelBuffer = new byte[totalBytes];
-
-            GetBitmapBits(iconInfo.hbmColor, totalBytes, _rawPixelBuffer);
-
-            // Instantiate our target Unity texture format (Windows uses BGRA)
-            int w = bm.bmWidth;
-            int h = bm.bmHeight;
             int hx = iconInfo.xHotspot;
             int hy = iconInfo.yHotspot;
 
-            // Use a square canvas based on the largest required dimension to keep the hotspot centered.
-            // This simplifies the physical scaling math in the Update loop.
             int size = Math.Max(Math.Max(hx, w - hx), Math.Max(hy, h - hy)) * 2;
-            int W = size;
-            int H = size;
+            int W = Math.Max(32, size);
+            int H = Math.Max(32, size);
 
-            // Optimization: Reuse existing texture if dimensions match to avoid GPU re-allocation
+            // FIX: If data.CursorTexture was destroyed externally, this logic handles re-creation safely.
+            // When it persists, it skips instantiation completely and simply rewrites the byte data pool.
             Texture2D texture = data.CursorTexture;
             if (texture == null || texture.width != W || texture.height != H)
             {
-                if (texture != null)
-                    UnityEngine.Object.Destroy(texture);
+                if (texture != null) UnityEngine.Object.Destroy(texture);
                 texture = new Texture2D(W, H, TextureFormat.RGBA32, false);
                 data.ColorBuffer = new Color32[W * H];
             }
@@ -315,24 +319,62 @@ namespace xsoverlay_tweak.Patches.Cursor
             int offsetX = (W / 2) - hx;
             int offsetY = (H / 2) - hy;
             int targetYBase = H - 1 - offsetY;
-            int stride = bm.bmWidthBytes;
 
-            fixed (Color32* pColors = data.ColorBuffer)
-            fixed (byte* pPixels = _rawPixelBuffer)
+            if (!isMonochrome)
             {
-                for (int y = 0; y < h; y++)
-                {
-                    byte* srcRowPtr = pPixels + (y * stride);
-                    Color32* targetRowPtr = pColors + ((targetYBase - y) * W + offsetX);
+                GetObject(iconInfo.hbmColor, BITMAP_SIZE, out BITMAP bm);
+                int stride = bm.bmWidthBytes;
 
-                    for (int x = 0; x < w; x++)
+                fixed (Color32* pColors = data.ColorBuffer)
+                fixed (byte* pPixels = _rawPixelBuffer)
+                {
+                    for (int y = 0; y < h; y++)
                     {
-                        // BGRA (Windows) to RGBA (Unity) conversion with pointer arithmetic
-                        targetRowPtr[x].r = srcRowPtr[2];
-                        targetRowPtr[x].g = srcRowPtr[1];
-                        targetRowPtr[x].b = srcRowPtr[0];
-                        targetRowPtr[x].a = srcRowPtr[3];
-                        srcRowPtr += 4;
+                        byte* srcRowPtr = pPixels + (y * stride);
+                        Color32* targetRowPtr = pColors + ((targetYBase - y) * W + offsetX);
+
+                        for (int x = 0; x < w; x++)
+                        {
+                            targetRowPtr[x].r = srcRowPtr[2];
+                            targetRowPtr[x].g = srcRowPtr[1];
+                            targetRowPtr[x].b = srcRowPtr[0];
+                            targetRowPtr[x].a = srcRowPtr[3];
+                            srcRowPtr += 4;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                GetObject(iconInfo.hbmMask, BITMAP_SIZE, out BITMAP bmMask);
+                int stride = bmMask.bmWidthBytes;
+
+                fixed (Color32* pColors = data.ColorBuffer)
+                fixed (byte* pPixels = _rawPixelBuffer)
+                {
+                    for (int y = 0; y < h; y++)
+                    {
+                        byte* andRowPtr = pPixels + (y * stride);
+                        byte* xorRowPtr = pPixels + ((y + h) * stride);
+                        Color32* targetRowPtr = pColors + ((targetYBase - y) * W + offsetX);
+
+                        for (int x = 0; x < w; x++)
+                        {
+                            int byteIdx = x / 8;
+                            int bitIdx = 7 - (x % 8);
+
+                            bool andBit = ((andRowPtr[byteIdx] >> bitIdx) & 1) != 0;
+                            bool xorBit = ((xorRowPtr[byteIdx] >> bitIdx) & 1) != 0;
+
+                            if (!andBit && !xorBit)
+                                targetRowPtr[x] = new Color32(0, 0, 0, 255);
+                            else if (andBit && xorBit)
+                                targetRowPtr[x] = new Color32(255, 255, 255, 255);
+                            else if (!andBit && xorBit)
+                                targetRowPtr[x] = new Color32(255, 255, 255, 255);
+                            else
+                                targetRowPtr[x] = new Color32(0, 0, 0, 0);
+                        }
                     }
                 }
             }
@@ -340,10 +382,10 @@ namespace xsoverlay_tweak.Patches.Cursor
             texture.SetPixels32(data.ColorBuffer, 0);
             texture.Apply();
 
-            // The new hotspot is now the center of the padded texture
             hotSpot = new Vector2(W / 2f, H / 2f);
 
-            DeleteObject(iconInfo.hbmColor);
+            if (iconInfo.hbmColor != IntPtr.Zero)
+                DeleteObject(iconInfo.hbmColor);
             DeleteObject(iconInfo.hbmMask);
 
             return texture;
