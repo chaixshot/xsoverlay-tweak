@@ -94,8 +94,10 @@ namespace xsoverlay_tweak.Patches.Cursor
                         ___VisualCursorElementOverlay.AutoUpdateOverlayTexture = false;
                         ___VisualCursorElementOverlay.colorTint = Color.white;
 
-                        // Only update the texture if the cursor handle has actually changed
-                        if (ci.hCursor != Data.LastCursorHandle || IsPossiblyAnimatedCursor(ci.hCursor) || Data.CursorTexture == null || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture)
+                        bool isAnimated = IsPossiblyAnimatedCursor(ci.hCursor);
+                        bool shouldUpdate = ci.hCursor != Data.LastCursorHandle || (isAnimated && Time.time - Data.LastFrameUpdateTime > 0.066f) || Data.CursorTexture == null || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture;
+
+                        if (shouldUpdate)
                         {
                             if (ci.hCursor != Data.LastCursorHandle)
                             {
@@ -334,7 +336,7 @@ namespace xsoverlay_tweak.Patches.Cursor
                 // This fixes the 'stuck at first frame' issue while preserving static cursors like resize handles.
                 if (isAnimated)
                 {
-                    if (Time.time - data.LastFrameUpdateTime > 0.05f) // ~20 FPS
+                    if (Time.time - data.LastFrameUpdateTime > 0.066f) // ~15 FPS
                     {
                         data.AnimationFrame++;
                         data.LastFrameUpdateTime = Time.time;
