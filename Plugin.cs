@@ -54,6 +54,7 @@ public class Plugin : BaseUnityPlugin
 
         harmony.PatchAll(typeof(Patches.QualityOfLife.DefaultCaptureOverlayTexture));
         harmony.PatchAll(typeof(Patches.QualityOfLife.DoubleClickConfirm));
+        harmony.PatchAll(typeof(Patches.QualityOfLife.fpsVRSocket));
         harmony.PatchAll(typeof(Patches.QualityOfLife.LaserPointer));
         harmony.PatchAll(typeof(Patches.QualityOfLife.OverlayCurveAutoRefresh));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PinBlockInputNonEditMode));

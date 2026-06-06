@@ -46,6 +46,7 @@ namespace xsoverlay_tweak
 
         public static ConfigEntry<bool> DefaultCaptureOverlayTexture;
         public static ConfigEntry<bool> DoubleClickConfirm;
+        public static ConfigEntry<int> fpsVRSocket;
         public static ConfigEntry<int> LaserPointer;
         public static ConfigEntry<bool> OverlayCurveAutoRefresh;
         public static ConfigEntry<bool> PinBlockInputNonEditMode;
@@ -113,6 +114,7 @@ namespace xsoverlay_tweak
             // Quality of Life
             DefaultCaptureOverlayTexture = cfg.Bind("QualityOfLife", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
             DoubleClickConfirm = cfg.Bind("QualityOfLife", "DoubleClickConfirm", true, "Ensures that a Double Click is always sent reliably when using Emulate Mouse mode.");
+            fpsVRSocket = cfg.Bind("QualityOfLife", "fpsVRSocket", 0, "Attaches the fpsVR overlay to a specific socket position of XSOverlay.");
             LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
             OverlayCurveAutoRefresh = cfg.Bind("QualityOfLife", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
             PinBlockInputNonEditMode = cfg.Bind("QualityOfLife", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' or 'Block Input' Overlay unless Layout Mode is active.");
