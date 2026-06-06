@@ -4,6 +4,9 @@
   ### A comprehensive enhancement mod for  [XSOverlay](https://store.steampowered.com/app/1173510/XSOverlay/) that provides advanced performance tuning, cursor improvements, custom interaction mechanics, and various quality-of-life fixes.
 </div>
 
+## 🖥️ Screenshot
+<img src="./img/screenshot_1.jpeg" width="800"> <img src="./img/screenshot_2.jpeg" width="400"> <img src="./img/screenshot_3.jpeg" width="400">
+
 ## Features
 
 ### 🚀 Refresh Rate
@@ -45,7 +48,7 @@
 ### ✨ Quality of Life
 - **Laser Pointer**: Renders a laser from controllers (mimicking SteamVR) for more accurate targeting.
 - **Trigger Lock**: "Pull Trigger Pointer Lock" keeps the pointer steady while clicking to prevent accidental movement.
-- **Interaction Logic**: Enhance "Pinned" or "Block Input" overlays to only allow interaction when Layout Mode is active.
+- **Interaction Logic**: Enhances "Pinned" or "Block Input" overlays to only allow interaction when Layout Mode is active.
 - **WebView Enhancements**: Wider scrollbars for easier VR interaction.
 - **Wrist Improvements**: Increased allowed positioning radius for the Wrist Overlay.
 - **Visual Fixes**: Initializes capture overlays with a white texture to prevent them from appearing invisible on spawn.
@@ -56,15 +59,11 @@
 - **Rendering Fixes**: Prevents overlays from turning invisible during simultaneous rotation and curvature changes.
 - **WebView Click Fix**: Fixes unclickable UI elements in certain internal WebView displays.
 
----
-
 ## ⛏️ Installation
 1. Download the plugin ZIP from [Releases](https://github.com/chaixshot/xxsoverlay-tweak/releases/latest)
 2. Extract the ZIP and drop the files and folders inside ``xsoverlay-tweak`` to ``[Steam]/steamapps/common/[XSOverlay]``
 3. Launch XSOverlay.
 4. Enjoy!
-
----
 
 ## ⚙️ Configuration
 
@@ -74,15 +73,18 @@ This mod injects a custom settings page directly into the XSOverlay UI.
 2. Click on the **XSOverlay Tweak** (wrench icon) tab in the sidebar.
 3. Adjust settings in real-time.
 
----
-
-### 🖱️ Mouse Navigation Setup
+## 🖱️ Mouse Navigation Setup
 To use the Mouse Back/Forward features:
 1. Open XSOverlay Settings and go to the **Bindings** tab.
 2. This opens the SteamVR bindings menu.
 3. Edit your current binding and add a button for the `MouseBack` or `MouseForward` actions.
 
-## Credits
+## ⛔ Disable
+Go to ``[Steam]/steamapps/common/[XSOverlay]/BepInEx/plugins/`` and remove ``xsoverlay_tweak.dll``
 
+## 🗑️ Uninstall
+Go to ``[Steam]/steamapps/common/[XSOverlay]`` and remove ``BepInEx``, ``doorstop_config.ini``, ``winhttp.dll``
+
+## Credits
 - **[XSOverlay](https://store.steampowered.com/app/1173510/XSOverlay/):** The original application by XiS.
 - **[BepInEx](https://github.com/bepinex/bepinex):** For the plugin framework.
