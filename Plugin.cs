@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using System.Threading.Tasks;
 using xsoverlay_tweak.Utils;
+using xsoverlay_tweak.Utils.API;
 
 namespace xsoverlay_tweak;
 
@@ -20,6 +21,7 @@ public class Plugin : BaseUnityPlugin
         Logger = base.Logger;
         XConfig.AllConfig(Config);
 
+        harmony.PatchAll(typeof(CustomAPI));
         harmony.PatchAll(typeof(EventBridge));
 
         harmony.PatchAll(typeof(Patches.RefreshRate));

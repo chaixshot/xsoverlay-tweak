@@ -21,10 +21,12 @@
   
   <ItemGroup>
     <None Remove="Patches\Setting\setting.js" />
+    <None Remove="Utils\API\toolbar.js" />
   </ItemGroup>
   
   <ItemGroup>
     <EmbeddedResource Include="Patches\Setting\setting.js" />
+    <EmbeddedResource Include="Utils\API\toolbar.js" />
   </ItemGroup>
   
   <ItemGroup>
