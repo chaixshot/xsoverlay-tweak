@@ -70,6 +70,8 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.CtrlKeyStickyFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewFix));
 
+        harmony.PatchAll(typeof(Patches.CommunityReqeust.WristStateSave));
+
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));
 
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
