@@ -3,6 +3,7 @@ using System.IO;
 using XSOverlay;
 using XSOverlay.WebApp;
 using XSOverlay.Websockets.API;
+using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.CommunityReqeust
 {
@@ -55,7 +56,7 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
         {
             if (!IsEnable()) return;
 
-            if (___keyboardManager?.HasKeyboardBeenOpened == true)
+            if (EventBridge.CurrentHoveringOverlay?.overlayName == "window.toolbar" && ___keyboardManager?.HasKeyboardBeenOpened == true)
             {
                 __instance.Keyboard_Overlay.transform.position = OverlaySwitcher.Instance.ToolBarWindowOverlay.transform.position;
                 __instance.Keyboard_Overlay.transform.rotation = OverlaySwitcher.Instance.ToolBarWindowOverlay.transform.rotation;
