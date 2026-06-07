@@ -41,11 +41,9 @@ namespace xsoverlay_tweak.Utils
 
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void InjectWristCustomAPI(ref OverlayWebView wv)
+        public static void InjectWristCustomAPI(OverlayWebView wv)
         {
-            OverlayWebView _wv = wv;
-
-            if (_wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Wrist)
+            if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Wrist)
             {
                 string jsCode = @"
                     (function() {
@@ -67,7 +65,7 @@ namespace xsoverlay_tweak.Utils
                     })();
                 ";
 
-                _wv._webView.WebView.LoadProgressChanged += (sender, args) =>
+                wv._webView.WebView.LoadProgressChanged += (sender, args) =>
                 {
                     if (args.Type == ProgressChangeType.Finished)
                     {
@@ -75,9 +73,9 @@ namespace xsoverlay_tweak.Utils
                         {
                             await Task.Delay(1000);
 
-                            _wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
+                            wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
                             {
-                                //Plugin.Logger.LogError($"[{_wv.UserInterfaceSelection}] {result}");
+                                //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
                             });
                         });
                     }

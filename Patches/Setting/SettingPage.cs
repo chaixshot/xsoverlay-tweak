@@ -15,7 +15,7 @@ namespace xsoverlay_tweak.Patches.Setting
     {
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void WebviewOverlay(ref OverlayWebView wv)
+        public static void WebviewOverlay(OverlayWebView wv)
         {
             if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Settings)
                 InjectSettingsModule(wv);

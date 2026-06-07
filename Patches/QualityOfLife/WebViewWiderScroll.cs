@@ -30,13 +30,11 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void WebviewOverlay(ref OverlayWebView wv)
+        public static void WebviewOverlay(OverlayWebView wv)
         {
-            OverlayWebView _wv = wv;
-
             if (IsEnable())
-                if (_wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Settings || _wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.WindowSettings)
-                    _wv._webView.WebView.LoadProgressChanged += (sender, args) =>
+                if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Settings || wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.WindowSettings)
+                    wv._webView.WebView.LoadProgressChanged += (sender, args) =>
                     {
                         if (args.Type == ProgressChangeType.Finished)
                         {
@@ -44,9 +42,9 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                             {
                                 await Task.Delay(1000);
 
-                                if (!WebViews.Contains(_wv))
-                                    WebViews.Add(_wv);
-                                AddCSS(_wv);
+                                if (!WebViews.Contains(wv))
+                                    WebViews.Add(wv);
+                                AddCSS(wv);
                             });
                         }
                     };
