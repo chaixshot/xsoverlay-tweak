@@ -52,7 +52,7 @@ namespace xsoverlay_tweak.Utils
                         MiniToolbar.MediaPlayer.addEventListener(""click"", function (e) {
                             setTimeout(function () { 
                                 Api.Send('Tweak_ClickToggleMediaPlayer', GetShowMediaPlayer(), null);
-                            }, 150);
+                            }, 10);
 
                             e.preventDefault();
                         });

@@ -26,7 +26,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             {
                 if (!IsEnabled()) return;
 
-                if (XConfig.fpsVRSocket.Value == 1) // Top
+                if (XConfig.fpsVRSocket.Value == 1 || XConfig.fpsVRSocket.Value == 2) // Top, Bottom
                 {
                     if (ClosingCoroutine != null)
                     {
@@ -37,11 +37,9 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     IsClosing = !enable;
 
                     if (IsClosing)
-                        ChangefpsVRTranform();
-                    else
-                    {
                         ClosingCoroutine = Plugin.Instance.StartCoroutine(ClosingDelay());
-                    }
+                    else
+                        ChangefpsVRTranform();
                 }
             };
 
@@ -51,7 +49,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
                 IsPerformanceMonitor = enable;
 
-                if (XConfig.fpsVRSocket.Value == 1) // Top
+                if (XConfig.fpsVRSocket.Value == 1 || XConfig.fpsVRSocket.Value == 2) // Top, Bottom
                 {
                     if (ClosingCoroutine != null)
                     {
@@ -62,13 +60,36 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     IsClosing = !enable;
 
                     if (IsClosing)
-                        ChangefpsVRTranform();
-                    else
                         ClosingCoroutine = Plugin.Instance.StartCoroutine(ClosingDelay());
+                    else
+                        ChangefpsVRTranform();
                 }
             };
 
             CustomAPI.OnToggleMediaPlayer += (enable) =>
+            {
+                if (!IsEnabled()) return;
+
+                IsMediaPlayer = enable;
+
+                if (XConfig.fpsVRSocket.Value == 2) // Bottom
+                {
+                    if (ClosingCoroutine != null)
+                    {
+                        Plugin.Instance.StopCoroutine(ClosingCoroutine);
+                        ClosingCoroutine = null;
+                    }
+
+                    IsClosing = !enable;
+
+                    if (IsClosing)
+                        ClosingCoroutine = Plugin.Instance.StartCoroutine(ClosingDelay());
+                    else
+                        ChangefpsVRTranform();
+                }
+            };
+
+            CustomAPI.OnClickToggleMediaPlayer += (enable) =>
             {
                 if (!IsEnabled()) return;
 
@@ -182,6 +203,8 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
                 if (IsMediaPlayer)
                     yOffset += (xsoHeightInMeters * +0.15f);
+                else if (IsPerformanceMonitor && Overlay_Manager.Instance.editMode)
+                    yOffset += (xsoHeightInMeters * +0.23f);
                 else
                     yOffset += (xsoHeightInMeters * +0.3f);
 
