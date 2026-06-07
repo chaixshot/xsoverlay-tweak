@@ -27,7 +27,8 @@ namespace xsoverlay_tweak.Utils
                 "window.Api = Api;",
                 "window.MiniToolbar = MiniToolbar;",
                 "window.OnToggleMediaPlayer = OnToggleMediaPlayer;",
-                "window.GetShowMediaPlayer = () => ShowMediaPlayer;"
+                "window.GetShowMediaPlayer = () => ShowMediaPlayer;",
+                "window.globalToolbarLookup = globalToolbarLookup;",
             ];
 
             string toAppend = "";
