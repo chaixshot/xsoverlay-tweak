@@ -27,7 +27,7 @@ namespace xsoverlay_tweak.Utils
                 "window.Api = Api;",
                 "window.MiniToolbar = MiniToolbar;",
                 "window.OnToggleMediaPlayer = OnToggleMediaPlayer;",
-                "window.ShowMediaPlayer = ShowMediaPlayer;"
+                "window.GetShowMediaPlayer = () => ShowMediaPlayer;"
             ];
 
             string toAppend = "";
@@ -41,7 +41,7 @@ namespace xsoverlay_tweak.Utils
 
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void WebviewOverlay(ref OverlayWebView wv)
+        public static void InjectWristCustomAPI(ref OverlayWebView wv)
         {
             OverlayWebView _wv = wv;
 
@@ -51,16 +51,16 @@ namespace xsoverlay_tweak.Utils
                     (function() {
                         MiniToolbar.MediaPlayer.addEventListener(""click"", function (e) {
                             setTimeout(function () { 
-                                Api.Send('Tweak_ClickToggleMediaPlayer', ShowMediaPlayer, null);
+                                Api.Send('Tweak_ClickToggleMediaPlayer', GetShowMediaPlayer(), null);
                             }, 150);
 
-                            e.preventDefault;
+                            e.preventDefault();
                         });
                         
                         const original = OnToggleMediaPlayer;
                         OnToggleMediaPlayer = function(override) {
                             original(override);
-                            Api.Send('Tweak_ToggleMediaPlayer', ShowMediaPlayer, null);
+                            Api.Send('Tweak_ToggleMediaPlayer', GetShowMediaPlayer(), null);
                         };
 
                         return OnToggleMediaPlayer;
@@ -77,7 +77,7 @@ namespace xsoverlay_tweak.Utils
 
                             _wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
                             {
-                                Plugin.Logger.LogError($"[{_wv.UserInterfaceSelection}] {result}");
+                                //Plugin.Logger.LogError($"[{_wv.UserInterfaceSelection}] {result}");
                             });
                         });
                     }
