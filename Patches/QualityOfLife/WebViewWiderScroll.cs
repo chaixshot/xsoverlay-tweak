@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Vuplex.WebView;
 using XSOverlay;
 using XSOverlay.WebApp;
@@ -39,9 +40,14 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     {
                         if (args.Type == ProgressChangeType.Finished)
                         {
-                            if (!WebViews.Contains(_wv))
-                                WebViews.Add(_wv);
-                            AddCSS(_wv);
+                            Task.Run(async () =>
+                            {
+                                await Task.Delay(1000);
+
+                                if (!WebViews.Contains(_wv))
+                                    WebViews.Add(_wv);
+                                AddCSS(_wv);
+                            });
                         }
                     };
         }

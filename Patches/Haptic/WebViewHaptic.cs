@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Vuplex.WebView;
 using XSOverlay;
 using xsoverlay_tweak.Utils;
@@ -61,7 +62,12 @@ namespace xsoverlay_tweak.Patches.Haptic
                 webView.LoadProgressChanged += (s, e) =>
                 {
                     if (e.Type == ProgressChangeType.Finished)
-                        webView.ExecuteJavaScript(HapticJS);
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(1000);
+
+                            webView.ExecuteJavaScript(HapticJS);
+                        });
                 };
 
                 // Listen for messages from the web side
