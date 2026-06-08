@@ -94,6 +94,11 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.WebViewFix"] = XConfig.WebViewFix.Value,
 
+                // Community Reqeust
+                ["XSOverlayTweak.LoadLayoutKeyboard"] = XConfig.LoadLayoutKeyboard.Value,
+                ["XSOverlayTweak.WindowToolbarKeyboard"] = XConfig.WindowToolbarKeyboard.Value,
+                ["XSOverlayTweak.WristStateRestore"] = XConfig.WristStateRestore.Value,
+
                 // About
                 ["XSOverlayTweak.UpdateNotification"] = XConfig.UpdateNotification.Value,
             };
@@ -267,6 +272,16 @@ namespace xsoverlay_tweak.Patches.Setting
                     XConfig.WebViewFix.Value = bool.Parse(value);
                     break;
 
+                // Community Reqeust
+                case "XSOverlayTweak.LoadLayoutKeyboard":
+                    XConfig.LoadLayoutKeyboard.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.WindowToolbarKeyboard":
+                    XConfig.WindowToolbarKeyboard.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.WristStateRestore":
+                    XConfig.WristStateRestore.Value = bool.Parse(value);
+                    break;
 
                 // About
                 case "XSOverlayTweak.CheckForUpdate":

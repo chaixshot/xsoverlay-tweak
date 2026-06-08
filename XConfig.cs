@@ -60,6 +60,10 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> OverlayRollCurveFix;
         public static ConfigEntry<bool> WebViewFix;
 
+        public static ConfigEntry<bool> LoadLayoutKeyboard;
+        public static ConfigEntry<bool> WindowToolbarKeyboard;
+        public static ConfigEntry<bool> WristStateRestore;
+
         public static ConfigEntry<bool> UpdateNotification;
 
         public static void AllConfig(ConfigFile cfg)
@@ -128,6 +132,11 @@ namespace xsoverlay_tweak
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
             OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
             WebViewFix = cfg.Bind("Fix", "WebViewFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
+
+            // Community Reqeust
+            LoadLayoutKeyboard = cfg.Bind("CommunityReqeust", "Layout Keyboard State", true, "Layout will save the current keyboard state to the selected profile.");
+            WindowToolbarKeyboard = cfg.Bind("CommunityReqeust", "Window Toolbar Keyboard", false, "Add keyboard summon button to the Capture Overlay Toolbar.");
+            WristStateRestore = cfg.Bind("CommunityReqeust", "Wrist State Restore", true, "Restore the last Wrist Overlay state at launch.");
 
             // About
             UpdateNotification = cfg.Bind("About", "UpdateNotifications", true, "Displays a notification when a new version is available.");

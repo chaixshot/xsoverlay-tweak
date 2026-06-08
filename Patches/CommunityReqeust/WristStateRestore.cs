@@ -16,12 +16,16 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
         {
             XSOEventSystem.OnStartStopPerformanceMonitor += (enable) =>
             {
+                if (!IsEnable()) return;
+
                 CustomSettings.Settings.IsPerformanceMonitorOpened = enable;
                 CustomSettings.SaveSettings();
             };
 
             CustomAPI.OnClickToggleMediaPlayer += (enable) =>
             {
+                if (!IsEnable()) return;
+
                 CustomSettings.Settings.IsMediaPlayerOpened = enable;
                 CustomSettings.SaveSettings();
             };
@@ -31,6 +35,8 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
         [HarmonyPostfix]
         public static void RestoreWristState(OverlayWebView wv)
         {
+            if (!IsEnable()) return;
+
             if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Wrist)
             {
                 string jsCode = string.Format(@"(function() {{
@@ -59,6 +65,11 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
                     }
                 };
             }
+        }
+
+        private static bool IsEnable()
+        {
+            return XConfig.WindowToolbarKeyboard.Value;
         }
     }
 }

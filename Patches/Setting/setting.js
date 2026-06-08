@@ -99,7 +99,14 @@ function InjectKBOSCTab() {
                 ]
             },
             {
-                name: 'About', priority: 9, settings: [
+                name: 'Community Reqeust', priority: 10, settings: [
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarKeyboard', name: 'Window Toolbar Keyboard', description: 'Add keyboard summon button to the Capture Overlay Toolbar.', default: false },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristStateRestore', name: 'Wrist State Restore', description: 'Restore the last Wrist Overlay state at launch.', default: true },
+                ]
+            },
+            {
+                name: 'About', priority: 11, settings: [
                     { type: Ui.ComponentType.Text, description: '<br>Version: <<Version>>'},
                     { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.CheckForUpdate', name: 'Check for Updates', description: 'Check for the latest version of XSOverlay Tweak.', default: true },
                     { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.OpenGitHub', name: 'Open GitHub', description: 'Visit the XSOverlay Tweak GitHub page.', default: true },

@@ -15,6 +15,8 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
         [HarmonyPostfix]
         public static void SaveKeyboardToLayout(LayoutHandler __instance, string ___LayoutAssetPath)
         {
+            if (!IsEnable()) return;
+
             if (Overlay_Manager.Instance.Keyboard.activeSelf)
             {
                 string text = ___LayoutAssetPath + "/Layout_" + __instance.SelectedLayout.ToString() + ".json";
@@ -41,6 +43,8 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
         [HarmonyPostfix]
         public static void LoadKeyboardFromLayout(LayoutHandler __instance, string ___LayoutAssetPath)
         {
+            if (!IsEnable()) return;
+
             string text = ___LayoutAssetPath + "/Layout_" + __instance.SelectedLayout.ToString() + ".json";
             if (Application.isEditor)
                 text = ___LayoutAssetPath + "/Editor_Layout_" + __instance.SelectedLayout.ToString() + ".json";
@@ -78,6 +82,11 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
                         keyboard.widthInMeters = float.Parse(keyboardData["widthInMeters"].ToString());
                 });
             }
+        }
+
+        public static bool IsEnable()
+        {
+            return XConfig.LoadLayoutKeyboard.Value;
         }
     }
 }

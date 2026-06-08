@@ -13,29 +13,13 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
         [HarmonyPostfix]
         public static void AddWindowToolbarKeybordButton(ApiHandler __instance)
         {
-            string filePath = @".\XSOverlay_Data\StreamingAssets\Plugins\Applications\_UI\Default\_Shared\js\toolbar.js";
-            if (!File.Exists(filePath)) return;
+            EditFile();
 
-            string content = File.ReadAllText(filePath);
-            string original = "var windowToolbarLookup = {\r\n    \"WindowSettings\": \"gear-fill\",";
-            string edited = "var windowToolbarLookup = {\r\n    \"Keyboard\": \"keyboard-fill\",\r\n\t\"WindowSettings\": \"gear-fill\",";
-
-            if (content.Contains(edited))
+            XConfig.WindowToolbarKeyboard.SettingChanged += (sender, args) =>
             {
-                if (!IsEnable())
-                {
-                    string patched = content.Replace(edited, original);
-                    File.WriteAllText(filePath, patched);
-                }
-            }
-            else
-            {
-                if (content.Contains(original))
-                {
-                    string patched = content.Replace(original, edited);
-                    File.WriteAllText(filePath, patched);
-                }
-            }
+                EditFile();
+                Notification.Send($"{MyPluginInfo.PLUGIN_NAME} - Window Toolbar Keyboard", $"Restart XSOverlay to take effect.", 10);
+            };
         }
 
         [HarmonyPatch(typeof(OverlayWebView), "Awake")]
@@ -64,9 +48,30 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
             }
         }
 
+        private static void EditFile()
+        {
+            string filePath = @".\XSOverlay_Data\StreamingAssets\Plugins\Applications\_UI\Default\_Shared\js\toolbar.js";
+            if (!File.Exists(filePath)) return;
+
+            string content = File.ReadAllText(filePath);
+            string original = "var windowToolbarLookup = {\r\n    \"WindowSettings\": \"gear-fill\",";
+            string edited = "var windowToolbarLookup = {\r\n    \"Keyboard\": \"keyboard-fill\",\r\n\t\"WindowSettings\": \"gear-fill\",";
+
+            if (content.Contains(original) && IsEnable())
+            {
+                string patched = content.Replace(original, edited);
+                File.WriteAllText(filePath, patched);
+            }
+            else if (content.Contains(edited) && !IsEnable())
+            {
+                string patched = content.Replace(edited, original);
+                File.WriteAllText(filePath, patched);
+            }
+        }
+
         private static bool IsEnable()
         {
-            return true;
+            return XConfig.WindowToolbarKeyboard.Value;
         }
     }
 }
