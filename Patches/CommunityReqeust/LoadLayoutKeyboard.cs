@@ -56,23 +56,30 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
             JObject root = JObject.Parse(File.ReadAllText(text));
             JToken keyboardData = root["keyboard"];
             Overlay_Manager overlay_Manager = Overlay_Manager.Instance;
+            Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
             KeyboardGlobalManager keyboardManager = (KeyboardGlobalManager)AccessTools.Field(typeof(Overlay_Manager), "keyboardManager").GetValue(overlay_Manager);
 
             if (keyboardData == null) // No keyboard save in Layout
             {
                 if (overlay_Manager.Keyboard.activeSelf && keyboardManager?.HasKeyboardBeenOpened == true) // Hide keyboard if summoned
+                {
+                    if (keyboard.isPinned) // Pinned keyboard can't unsummon
+                    {
+                        overlay_Manager.PinKeyboard();
+                        overlay_Manager.PinWindowSpecificWindow(keyboard);
+                    }
                     ServerClientBridge.Instance.Api.Commands["Keyboard"]("", "", "");
+                }
             }
             else
             {
-                if (!overlay_Manager.Keyboard.activeSelf || keyboardManager?.HasKeyboardBeenOpened == false) // Show keyboard if no spawned
+                if (!overlay_Manager.Keyboard.activeSelf || keyboardManager?.HasKeyboardBeenOpened == false) // Show keyboard if unsummoned
                     ServerClientBridge.Instance.Api.Commands["Keyboard"]("", "", "");
 
                 Task.Run(async () =>
                 {
                     await Task.Delay(50); // Wait for re-center
 
-                    Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
 
                     if (keyboardData["position"] is JArray pos && pos.Count == 3)
                         keyboard.transform.localPosition = new Vector3((float)pos[0], (float)pos[1], (float)pos[2]);
