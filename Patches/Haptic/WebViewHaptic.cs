@@ -18,6 +18,7 @@ namespace xsoverlay_tweak.Patches.Haptic
 
                 const selector = '.side-bar-button, .button, .settings-button, .settings-button-basic, .switch, .slider-container, .select, .selectopt, .dropdown-item, .dropdown-button, .item-list-opt-list';
                 let wasOverScrollbar = false;
+                let lastMove = 0;
 
                 document.addEventListener('mouseover', (e) => {
                     const target = e.target.closest(selector);
@@ -27,14 +28,20 @@ namespace xsoverlay_tweak.Patches.Haptic
                 }, true);
 
                 document.addEventListener('mousemove', (e) => {
+                    const now = Date.now();
+                    if (now - lastMove < 50) return; 
+                    lastMove = now;
+
                     const t = e.target;
                     if (!t || !t.getBoundingClientRect) return;
 
-                    const hasScroll = t.scrollHeight > t.clientHeight || t.scrollWidth > t.clientWidth;
-                    if (!hasScroll) { wasOverScrollbar = false; return; }
+                    const hasScrollX = t.offsetWidth > t.clientWidth;
+                    const hasScrollY = t.offsetHeight > t.clientHeight;
+                    if (!hasScrollX && !hasScrollY) { wasOverScrollbar = false; return; }
 
                     const rect = t.getBoundingClientRect();
-                    const isOver = (e.clientX >= rect.left + t.clientWidth) || (e.clientY >= rect.top + t.clientHeight);
+                    const isOver = (hasScrollY && e.clientX >= rect.left + t.clientWidth) || 
+                                   (hasScrollX && e.clientY >= rect.top + t.clientHeight);
 
                     if (isOver && !wasOverScrollbar)
                         window.vuplex.postMessage('XSOverlayTweak-Haptic-Hover');
