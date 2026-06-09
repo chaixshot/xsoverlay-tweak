@@ -33,6 +33,8 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
                     ["position"] = new JArray(keyboard.transform.localPosition.x, keyboard.transform.localPosition.y, keyboard.transform.localPosition.z),
                     ["rotation"] = new JArray(keyboard.transform.localRotation.x, keyboard.transform.localRotation.y, keyboard.transform.localRotation.z, keyboard.transform.localRotation.w),
                     ["widthInMeters"] = keyboard.widthInMeters,
+                    ["isPinned"] = keyboard.isPinned,
+                    ["isLocked"] = keyboard.IsWindowInteractionLocked,
                 };
 
                 File.WriteAllText(text, root.ToString(Formatting.Indented));
@@ -53,24 +55,24 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
 
             JObject root = JObject.Parse(File.ReadAllText(text));
             JToken keyboardData = root["keyboard"];
+            Overlay_Manager overlay_Manager = Overlay_Manager.Instance;
+            KeyboardGlobalManager keyboardManager = (KeyboardGlobalManager)AccessTools.Field(typeof(Overlay_Manager), "keyboardManager").GetValue(overlay_Manager);
 
-            KeyboardGlobalManager keyboardManager = (KeyboardGlobalManager)AccessTools.Field(typeof(Overlay_Manager), "keyboardManager").GetValue(Overlay_Manager.Instance);
-
-            if (keyboardData == null)
+            if (keyboardData == null) // No keyboard save in Layout
             {
-                if (Overlay_Manager.Instance.Keyboard.activeSelf && keyboardManager?.HasKeyboardBeenOpened == true)
+                if (overlay_Manager.Keyboard.activeSelf && keyboardManager?.HasKeyboardBeenOpened == true) // Hide keyboard if summoned
                     ServerClientBridge.Instance.Api.Commands["Keyboard"]("", "", "");
             }
             else
             {
-                if (!Overlay_Manager.Instance.Keyboard.activeSelf || keyboardManager?.HasKeyboardBeenOpened == false)
+                if (!overlay_Manager.Keyboard.activeSelf || keyboardManager?.HasKeyboardBeenOpened == false) // Show keyboard if no spawned
                     ServerClientBridge.Instance.Api.Commands["Keyboard"]("", "", "");
 
                 Task.Run(async () =>
                 {
-                    await Task.Delay(50);
+                    await Task.Delay(50); // Wait for re-center
 
-                    Unity_Overlay keyboard = Overlay_Manager.Instance.Keyboard_Overlay;
+                    Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
 
                     if (keyboardData["position"] is JArray pos && pos.Count == 3)
                         keyboard.transform.localPosition = new Vector3((float)pos[0], (float)pos[1], (float)pos[2]);
@@ -79,7 +81,26 @@ namespace xsoverlay_tweak.Patches.CommunityReqeust
                         keyboard.transform.localRotation = new Quaternion((float)rot[0], (float)rot[1], (float)rot[2], (float)rot[3]);
 
                     if (keyboardData["widthInMeters"] != null)
-                        keyboard.widthInMeters = float.Parse(keyboardData["widthInMeters"].ToString());
+                        keyboard.widthInMeters = (float)keyboardData["widthInMeters"];
+
+                    if (keyboardData["isPinned"] != null)
+                    {
+                        bool shouldPin = (bool)keyboardData["isPinned"];
+
+                        if (shouldPin != keyboard.isPinned)
+                        {
+                            overlay_Manager.PinKeyboard();
+                            overlay_Manager.PinWindowSpecificWindow(keyboard);
+                        }
+                    }
+
+                    if (keyboardData["isLocked"] != null)
+                    {
+                        bool shouldLock = (bool)keyboardData["isLocked"];
+
+                        if (shouldLock != keyboard.IsWindowInteractionLocked)
+                            overlay_Manager.LockKeyboard();
+                    }
                 });
             }
         }
