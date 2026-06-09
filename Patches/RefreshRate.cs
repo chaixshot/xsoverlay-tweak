@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Optimization;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches
