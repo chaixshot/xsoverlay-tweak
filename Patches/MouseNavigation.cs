@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Valve.Newtonsoft.Json;
@@ -23,10 +24,17 @@ namespace xsoverlay_tweak.Patches
         private static bool BackWasPressedLastFrame = false;
         private static bool ForwardWasPressedLastFrame = false;
 
-        private static bool IsDesktopHover = false;
-        private static Raycaster CurrentRaycaster;
+        private class ActionsData
+        {
+            public string Path;
+            public string Label;
+        }
 
-        private static readonly string[] ActionNames = ["/actions/xsoverlay/in/MouseBack", "/actions/xsoverlay/in/MouseForward"];
+        private static class Actions
+        {
+            public static ActionsData MouseBack = new() { Path = "/actions/xsoverlay/in/MouseBack", Label = "Mouse Back" };
+            public static ActionsData MouseForward = new() { Path = "/actions/xsoverlay/in/MouseForward", Label = "Mouse Forward" };
+        }
 
         // Define this once at the class level to avoid Marshal.SizeOf and repeated allocations
         private static readonly uint DigitalDataSize = (uint)Marshal.SizeOf(typeof(InputDigitalActionData_t));
@@ -37,28 +45,7 @@ namespace xsoverlay_tweak.Patches
         [HarmonyPostfix]
         public static void InitializeEvents()
         {
-            if (IsEnable())
-                ApplySteamVRActionBinding();
-
-            XSOEventSystem.OnTakeControlOfDesktopCursor += raycaster =>
-            {
-                CurrentRaycaster = raycaster;
-            };
-
-            XConfig.MouseNavigation.SettingChanged += (sender, args) =>
-            {
-                if (IsEnable())
-                    if (ApplySteamVRActionBinding())
-                        Utils.Notification.Send($"{MyPluginInfo.PLUGIN_NAME} - Mouse Navigation", $"When enabling Mouse Navigation for the first time, you have to restart XSOverlay to take effect.", 10);
-            };
-        }
-
-        // Is active hand hover desktop overlay
-        [HarmonyPatch(typeof(Raycaster), "Update")]
-        [HarmonyPostfix]
-        public static void CheckIfHoveringDesktop()
-        {
-            IsDesktopHover = CurrentRaycaster?.HoveringOverlay && CurrentRaycaster.HoveringOverlay.IsDesktopOrWindowCapture;
+            ApplySteamVRActionBinding();
         }
 
         // SteamVR input listen
@@ -69,8 +56,8 @@ namespace xsoverlay_tweak.Patches
             if (!IsEnable()) return;
 
             // Back Navigation
-            if (CheckActionTriggered("/actions/xsoverlay/in/MouseBack", ref ActionHandleBack, ref BackWasPressedLastFrame))
-                if (IsDesktopHover)
+            if (EventBridge.IsHoverAnyDesktopOrWindowCapture)
+                if (CheckActionTriggered(Actions.MouseBack.Path, ref ActionHandleBack, ref BackWasPressedLastFrame))
                 {
                     SimulateBackNavigation(XInputManager.sim);
 
@@ -78,8 +65,8 @@ namespace xsoverlay_tweak.Patches
                 }
 
             // Forward Navigation
-            if (CheckActionTriggered("/actions/xsoverlay/in/MouseForward", ref ActionHandleForward, ref ForwardWasPressedLastFrame))
-                if (IsDesktopHover)
+            if (EventBridge.IsHoverAnyDesktopOrWindowCapture)
+                if (CheckActionTriggered(Actions.MouseForward.Path, ref ActionHandleForward, ref ForwardWasPressedLastFrame))
                 {
                     SimulateForwardNavigation(XInputManager.sim);
 
@@ -134,59 +121,58 @@ namespace xsoverlay_tweak.Patches
                 sim.Mouse.XButtonClick(2);
         }
 
-        private static bool ApplySteamVRActionBinding()
+        private static void ApplySteamVRActionBinding()
         {
             string filePath = @".\XSOverlay_Data\StreamingAssets\SteamVR\actions.json";
 
+            if (!File.Exists(filePath)) return;
+
             string json = File.ReadAllText(filePath);
-            JObject root = JObject.Parse(json);
             bool modified = false;
+            JObject root = JObject.Parse(json);
 
-            // Update "actions" array
             JArray actions = (JArray)root["actions"];
-
-            foreach (string name in ActionNames)
-            {
-                if (!actions.Any(a => a["name"]?.ToString() == name))
-                {
-                    actions.Add(new JObject
-                    {
-                        ["name"] = name,
-                        ["type"] = "boolean",
-                        ["requirement"] = "optional"
-                    });
-                    modified = true;
-                }
-            }
-
-            // Update "localization" object
-            // Localization is an array of objects; we want the first one (usually en_US)
             JArray localization = (JArray)root["localization"];
-            if (localization?.HasValues == true)
+
+            // Grab the first language object safely
+            JObject langObject = localization?.HasValues == true ? (JObject)localization[0] : null;
+
+            // handle both the action array and localization at the same time
+            foreach (FieldInfo field in typeof(Actions).GetFields())
             {
-                JObject langObject = (JObject)localization[0];
-
-                if (langObject["/actions/xsoverlay/in/MouseBack"] == null)
+                if (field.GetValue(null) is ActionsData actionData)
                 {
-                    langObject["/actions/xsoverlay/in/MouseBack"] = "Mouse Back";
-                    modified = true;
-                }
+                    string actionPath = actionData.Path;
+                    string actionName = actionData.Label;
 
-                if (langObject["/actions/xsoverlay/in/MouseForward"] == null)
-                {
-                    langObject["/actions/xsoverlay/in/MouseForward"] = "Mouse Forward";
-                    modified = true;
+                    if (string.IsNullOrEmpty(actionPath)) continue;
+
+                    // Check and inject into the actions array
+                    if (actions != null && !actions.Any(a => a["name"]?.ToString() == actionPath))
+                    {
+                        actions.Add(new JObject
+                        {
+                            ["name"] = actionPath,
+                            ["type"] = "boolean",
+                            ["requirement"] = "optional"
+                        });
+                        modified = true;
+                    }
+
+                    // Check and inject into the localization object
+                    if (langObject != null && langObject[actionPath] == null)
+                    {
+                        langObject[actionPath] = actionName;
+                        modified = true;
+                    }
                 }
             }
 
-            // Save if changes were made
-            if (modified)
+            if (modified) // Save if changes were made
             {
                 File.WriteAllText(filePath, root.ToString(Formatting.Indented));
                 Console.WriteLine("Manifest updated with actions and localization.");
             }
-
-            return modified;
         }
 
         private static bool IsEnable()
