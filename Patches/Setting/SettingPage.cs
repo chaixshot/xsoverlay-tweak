@@ -75,6 +75,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Optimization
                 ["XSOverlayTweak.EfficiencyMode"] = XConfig.EfficiencyMode.Value,
                 ["XSOverlayTweak.InactiveRefreshRate"] = XConfig.InactiveRefreshRate.Value,
+                ["XSOverlayTweak.uOSCThreadLoop"] = XConfig.uOSCThreadLoop.Value,
 
                 // Quality of Life
                 ["XSOverlayTweak.DefaultCaptureOverlayTexture"] = XConfig.DefaultCaptureOverlayTexture.Value,
@@ -237,6 +238,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.InactiveRefreshRate":
                     XConfig.InactiveRefreshRate.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.uOSCThreadLoop":
+                    XConfig.uOSCThreadLoop.Value = bool.Parse(value);
                     break;
 
                 // Quality of Life

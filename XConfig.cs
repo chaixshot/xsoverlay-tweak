@@ -50,6 +50,7 @@ namespace xsoverlay_tweak
         // Optimization
         public static ConfigEntry<bool> EfficiencyMode;
         public static ConfigEntry<int> InactiveRefreshRate;
+        public static ConfigEntry<bool> uOSCThreadLoop;
 
         // Quality of Life
         public static ConfigEntry<bool> DefaultCaptureOverlayTexture;
@@ -137,6 +138,7 @@ namespace xsoverlay_tweak
             // Optimization
             EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", true, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.");
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.\nVery low value: the Layout Mode Toggle binding listener will miss some frames.");
+            uOSCThreadLoop = cfg.Bind("Optimization", "uOSCThreadLoop", true, "Instead of connecting to OSC in the loop thread, connect to OSC server when new data is sent.");
 
             // Quality of Life
             DefaultCaptureOverlayTexture = cfg.Bind("QualityOfLife", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
