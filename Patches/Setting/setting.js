@@ -93,6 +93,7 @@ function InjectKBOSCTab() {
             {
                 name: 'Fix', priority: 9, settings: [
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CtrlKeyStickyFix', name: 'Ctrl Key Sticky Fix', description: 'Fixes the issue where the Ctrl key is not sticky.', default: true },
+                    { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HandleScrollingFix', name: 'Handle Scrolling Fix', description: 'Normalize stick scrolling speed by the HMD refresh rate and support horizontal scrolling.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale Fix', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve Fix', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
                     { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFix', name: 'WebView Fix', description: 'Fixes an issue where certain WebView UI elements were not clickable.', default: true },

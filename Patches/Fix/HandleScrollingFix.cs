@@ -12,10 +12,11 @@ namespace xsoverlay_tweak.Patches.Fix
         [HarmonyPrefix]
         public static bool FixScrollingSpeed(Raycaster __instance, ref MouseInputDevice ___InputDevice, ref int ___ScrollClicksPerSecond, ref float ____tickAccumulator, ref Vector2 ___CursorUVNormalized)
         {
+            if (!IsEnable()) return true;
+
             float baseScrollSpeed = XSettingsManager.Instance.Settings.ScrollSpeed;
             float scrollFactor = baseScrollSpeed / RefreshRate.HMDRefreshRate;
-
-            float deadzone = 0.2f;
+            float deadzone = 0.15f;
 
             // Read BOTH horizontal (x)and vertical (y) axes from the input device
             float scrollX = ___InputDevice.NormalizedScrollAxis.x;
@@ -71,6 +72,11 @@ namespace xsoverlay_tweak.Patches.Fix
             EventBridge.HandleScrolling(___InputDevice.Scroll.axis, ___CursorUVNormalized);
 
             return false;
+        }
+
+        private static bool IsEnable()
+        {
+            return XConfig.HandleScrollingFix.Value;
         }
     }
 }
