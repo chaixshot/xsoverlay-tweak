@@ -87,7 +87,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.OverlayRollCurveFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewFix));
 
-        // Community Reqeust
+        // Community Request
         harmony.PatchAll(typeof(Patches.CommunityRequest.HideInvalidBattery));
         harmony.PatchAll(typeof(Patches.CommunityRequest.LoadLayoutKeyboard));
         harmony.PatchAll(typeof(Patches.CommunityRequest.OverlayConfirmClose));
