@@ -131,7 +131,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     Data.LaserB.transform.rotation = Data.LaserA.transform.rotation;
                     Data.LaserB.transform.Rotate(0, 180, 0, Space.Self);
 
-                    if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.01f)
+                    if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.015f)
                         UpdateLaserLength(__instance);
                 }
 
