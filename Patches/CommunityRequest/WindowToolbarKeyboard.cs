@@ -54,9 +54,8 @@ namespace xsoverlay_tweak.Patches.CommunityRequest
 
             if (EventBridge.CurrentHoveringOverlay?.overlayName == "window.toolbar" && ___keyboardManager?.HasKeyboardBeenOpened == true)
             {
-                __instance.Keyboard_Overlay.transform.position = OverlaySwitcher.Instance.ToolBarWindowOverlay.transform.position;
-                __instance.Keyboard_Overlay.transform.rotation = OverlaySwitcher.Instance.ToolBarWindowOverlay.transform.rotation;
-                __instance.Keyboard_Overlay.transform.position += __instance.Keyboard_Overlay.transform.forward * -0.2f;
+                __instance.Keyboard_Overlay.transform.position = __instance.head.transform.position + __instance.head.transform.forward * 0.5f;
+                __instance.Keyboard_Overlay.transform.rotation = __instance.head.transform.rotation;
             }
         }
 
