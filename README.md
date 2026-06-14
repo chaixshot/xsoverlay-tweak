@@ -67,17 +67,17 @@
 - **WebView Fix**: Fixes an issue where certain WebView UI elements were not clickable.
 
 ## 🆕 Incoming Update
-- **Cursor Moving Interaction Fix**: Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move system tray icon.
+- **Cursor Moving Interaction Fix**: Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.
 - **Handle Scrolling Fix**: Normalize stick scrolling speed by the HMD refresh rate and support horizontal scrolling.
 - **Hide Battery**: Hide Wrist Overlay battery information widget.
 - **Hide Invalid Battery**: Hide invalid battery device from Wrist Overlay.
 - **Load Layout Keyboard**: Layout will save the current keyboard state to the selected profile.
-- **Mouse Button Swap**: Detecting the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.
-- **Optimization OSC**: Instead of connecting to OSC in the loop thread, connect to OSC server when new data is sent.
+- **Mouse Button Swap**: Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.
+- **Optimization OSC**: Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.
 - **Overlay Confirm Close**: Requires pressing the close overlay button three times to close.
-- **Track Space HMD Smooth**: When Capture Overlay uses HMD Tracking Space, it will use Position Dampening and Rotation Dampening settings to smooth its movement.
-- **Window Toolbar Gesture**: When hovering over the Window Toolbar, right-click to switch to previous Window or thumbstick scrolling the Window list.
-- **Window Toolbar Keyboard**: Add keyboard summon button to the Capture Overlay Toolbar.
+- **Overlay Attach Smooth**: When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.
+- **Window Toolbar Gesture**: When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.
+- **Window Toolbar Keyboard**: Add a keyboard  summon button to the Capture Overlay Toolbar.
 - **Wrist State Restore**: Restore the last Wrist Overlay state at launch.
 - **fpsVR Socket**: Attaches the fpsVR overlay to a specific socket position of XSOverlay.
 

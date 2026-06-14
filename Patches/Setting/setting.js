@@ -69,7 +69,7 @@ const SECTIONS = [
         name: 'Optimization', priority: 7, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.', default: true },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.InactiveRefreshRate', name: 'Inactive Refresh Rate', description: 'The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.<br>Very low value: the Layout Mode Toggle binding listener will miss some frames.', default: 15, options: [5, <<HMDRefreshRate>>, 1], unit: 'FPS' },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.uOSCThreadLoop', name: 'OSC Thread Loop', description: 'Instead of connecting to OSC in the loop thread, connect to OSC server when new data is sent.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.uOSCThreadLoop', name: 'OSC Thread Loop', description: 'Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.', default: true },
         ]
     },
     {
@@ -89,7 +89,7 @@ const SECTIONS = [
     {
         name: 'Fix', priority: 9, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CtrlKeyStickyFix', name: 'Ctrl Key Sticky', description: 'Fixes the issue where the Ctrl key is not sticky.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CursorMovingInteractionFix', name: 'Cursor Moving Interaction', description: 'Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move system tray icon.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CursorMovingInteractionFix', name: 'Cursor Moving Interaction', description: 'Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HandleScrollingFix', name: 'Handle Scrolling', description: 'Normalize stick scrolling speed by the HMD refresh rate and support horizontal scrolling.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
@@ -102,11 +102,11 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HideBattery', name: 'Hide Battery', description: 'Hide Wrist Overlay battery information widget.', default: false },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HideInvalidBattery', name: 'Hide Invalid Battery', description: 'Hide invalid battery device from Wrist Overlay.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseButtonSwap', name: 'Mouse Button Swap', description: 'Detecting the Windows setting \'Switch primary and secondary buttons\' to auto-swap controller binding.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayAttachSmooth', name: 'Overlay Attach Smooth', description: 'When Capture Overlay attached to device, it will use Position Dampening and Rotation Dampening settings to smooth its movement.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseButtonSwap', name: 'Mouse Button Swap', description: 'Detect the Windows setting \'Switch primary and secondary buttons\' to auto-swap controller binding.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayAttachSmooth', name: 'Overlay Attach Smooth', description: 'When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayConfirmClose', name: 'Overlay Confirm Close', description: 'Requires pressing the close overlay button three times to close.', default: false },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarGesture', name: 'Window Toolbar Gesture', description: 'When hovering over the Window Toolbar, right-click to switch to previous Window or thumbstick scrolling the Window list.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarKeyboard', name: 'Window Toolbar Keyboard', description: 'Add keyboard summon button to the Capture Overlay Toolbar.', default: false },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarGesture', name: 'Window Toolbar Gesture', description: 'When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarKeyboard', name: 'Window Toolbar Keyboard', description: 'Add a keyboard  summon button to the Capture Overlay Toolbar.', default: false },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristStateRestore', name: 'Wrist State Restore', description: 'Restore the last Wrist Overlay state at launch.', default: true },
         ]
     },

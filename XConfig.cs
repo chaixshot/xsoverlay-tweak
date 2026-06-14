@@ -134,7 +134,7 @@ namespace xsoverlay_tweak
             // Optimization
             EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", true, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.");
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.\nVery low value: the Layout Mode Toggle binding listener will miss some frames.");
-            uOSCThreadLoop = cfg.Bind("Optimization", "uOSCThreadLoop", true, "Instead of connecting to OSC in the loop thread, connect to OSC server when new data is sent.");
+            uOSCThreadLoop = cfg.Bind("Optimization", "uOSCThreadLoop", true, "Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.");
 
             // Quality of Life
             DefaultCaptureOverlayTexture = cfg.Bind("QualityOfLife", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
@@ -150,7 +150,7 @@ namespace xsoverlay_tweak
 
             // Fix
             CtrlKeyStickyFix = cfg.Bind("Fix", "CtrlKeyStickyFix", true, "Fix where double-tapping the Ctrl key does not sticky.");
-            CursorMovingInteractionFix = cfg.Bind("Fix", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move system tray icon.");
+            CursorMovingInteractionFix = cfg.Bind("Fix", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.");
             HandleScrollingFix = cfg.Bind("Fix", "HandleScrollingFix", true, "Normalize stick scrolling speed by the HMD refresh rate and support horizontal scrolling.");
             KeyboardControlButtonStateFix = cfg.Bind("Fix", "KeyboardControlButtonStateFix", true, "Fix keyboard control button color not following the state when summoning.");
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
@@ -161,11 +161,11 @@ namespace xsoverlay_tweak
             HideBattery = cfg.Bind("CommunityRequest", "HideBattery", false, "Hide Wrist Overlay battery information widget.");
             HideInvalidBattery = cfg.Bind("CommunityRequest", "HideInvalidBattery", true, "Hide invalid battery device from Wrist Overlay.");
             LoadLayoutKeyboard = cfg.Bind("CommunityRequest", "LoadLayoutKeyboard", true, "Layout will save the current keyboard state to the selected profile.");
-            MouseButtonSwap = cfg.Bind("CommunityRequest", "MouseButtonSwap", true, "Detecting the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
-            OverlayAttachSmooth = cfg.Bind("CommunityRequest", "OverlayAttachSmooth", true, "When Capture Overlay attached to device,\nIt will use Position Dampening and Rotation Dampening settings to smooth its movement.");
+            MouseButtonSwap = cfg.Bind("CommunityRequest", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
+            OverlayAttachSmooth = cfg.Bind("CommunityRequest", "OverlayAttachSmooth", true, "When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.");
             OverlayConfirmClose = cfg.Bind("CommunityRequest", "OverlayConfirmClose", false, "Requires pressing the close overlay button three times to close.");
-            WindowToolbarGesture = cfg.Bind("CommunityRequest", "WindowToolbarGesture", true, "When hovering over the Window Toolbar, right-click to switch to previous Window or thumbstick scrolling the Window list.");
-            WindowToolbarKeyboard = cfg.Bind("CommunityRequest", "WindowToolbarKeyboard", false, "Add keyboard summon button to the Capture Overlay Toolbar.");
+            WindowToolbarGesture = cfg.Bind("CommunityRequest", "WindowToolbarGesture", true, "When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.");
+            WindowToolbarKeyboard = cfg.Bind("CommunityRequest", "WindowToolbarKeyboard", false, "Add a keyboard  summon button to the Capture Overlay Toolbar.");
             WristStateRestore = cfg.Bind("CommunityRequest", "WristStateRestore", true, "Restore the last Wrist Overlay state at launch.");
 
             // About
