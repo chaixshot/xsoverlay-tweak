@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -52,17 +51,8 @@ namespace xsoverlay_tweak.Utils
 
             if (matches.Count > 0)
             {
-                string filename = Path.GetFileNameWithoutExtension(fullPath);
-                bool isUiComponentsFile = filename.Equals("uiComponents", StringComparison.OrdinalIgnoreCase);
-
-                StringBuilder footer = new StringBuilder();
+                StringBuilder footer = new();
                 footer.AppendLine("\n\n// MOD_GLOBALIZATION_FOOTER");
-
-                if (isUiComponentsFile)
-                {
-                    footer.AppendLine("window.Ui = window.Ui || {};");
-                    footer.AppendLine("window._Ui = window._Ui || {};");
-                }
 
                 for (int i = 0; i < matches.Count; i++)
                 {
@@ -79,13 +69,6 @@ try {{
         enumerable: true
     }});
 }} catch(e) {{ window.{elementName} = {elementName}; }}");
-
-                    // Maintain the UI namespace wrapper mapping if dealing with uiComponents
-                    if (isUiComponentsFile)
-                    {
-                        footer.AppendLine($"try {{ window.Ui.{elementName} = {elementName}; }} catch(e) {{}}");
-                        footer.AppendLine($"try {{ window._Ui.{elementName} = {elementName}; }} catch(e) {{}}");
-                    }
                 }
 
                 File.WriteAllText(fullPath, content + footer.ToString());
