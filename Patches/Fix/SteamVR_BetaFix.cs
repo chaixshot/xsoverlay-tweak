@@ -18,11 +18,11 @@ namespace xsoverlay_tweak.Patches.Fix
         /// <param name="__instance"></param>
         /// <param name="___VisualCursorElement"></param>
         /// <param name="___VisualCursorElementClickAnimation"></param>
-        [HarmonyPatch(typeof(Raycaster), "SearchForOverlays")]
+        [HarmonyPatch(typeof(Raycaster), "SetVisualCursorTransform")]
         [HarmonyPostfix]
         public static void FixPointerClipping(
             Raycaster __instance,
-            VROverlayIntersectionResults_t ovrIntersectionResults,
+            VROverlayIntersectionResults_t rayHitResults,
             ref GameObject ___VisualCursorElement,
             ref GameObject ___VisualCursorElementClickAnimation,
             ref Unity_Overlay ___VisualCursorElementClickAnimationOverlay)
@@ -59,7 +59,7 @@ namespace xsoverlay_tweak.Patches.Fix
                     }
                     else // Curved overlay
                     {
-                        Vector3 localNormal = new(ovrIntersectionResults.vNormal.v0, ovrIntersectionResults.vNormal.v1, ovrIntersectionResults.vNormal.v2);
+                        Vector3 localNormal = new(rayHitResults.vNormal.v0, rayHitResults.vNormal.v1, rayHitResults.vNormal.v2);
                         Vector3 worldNormal = transform.TransformDirection(localNormal);
 
                         // Mirror X in world space exactly like your curve patch does
