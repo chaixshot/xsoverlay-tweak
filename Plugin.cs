@@ -85,6 +85,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
         harmony.PatchAll(typeof(Patches.Fix.KeyboardControlButtonStateFix));
         harmony.PatchAll(typeof(Patches.Fix.OverlayRollCurveFix));
+        harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewFix));
 
         // Community Request
