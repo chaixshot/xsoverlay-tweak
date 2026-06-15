@@ -76,6 +76,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerClickThreshold));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerPointerLock));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WebViewWiderScroll));
+        harmony.PatchAll(typeof(Patches.QualityOfLife.WindowsAccentColor));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WristOverPosition));
 
         // Fix

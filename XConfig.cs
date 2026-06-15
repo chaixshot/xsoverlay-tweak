@@ -62,6 +62,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<float> PullTriggerClickThreshold;
         public static ConfigEntry<int> PullTriggerPointerLock;
         public static ConfigEntry<bool> WebViewWiderScroll;
+        public static ConfigEntry<bool> WindowsAccentColor;
         public static ConfigEntry<bool> WristOverPosition;
 
         // Fix
@@ -146,6 +147,7 @@ namespace xsoverlay_tweak
             PullTriggerClickThreshold = cfg.Bind("QualityOfLife", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
             PullTriggerPointerLock = cfg.Bind("QualityOfLife", "PullTriggerPointerLock", 1, "Locks the Pointer in place while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
+            WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
             WristOverPosition = cfg.Bind("QualityOfLife", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
 
             // Fix

@@ -87,6 +87,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
                 ["XSOverlayTweak.PullTriggerPointerLock"] = XConfig.PullTriggerPointerLock.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
+                ["XSOverlayTweak.WindowsAccentColor"] = XConfig.WindowsAccentColor.Value,
                 ["XSOverlayTweak.WristOverPosition"] = XConfig.WristOverPosition.Value,
 
                 // Fix
@@ -266,6 +267,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.WebViewWiderScroll":
                     XConfig.WebViewWiderScroll.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.WindowsAccentColor":
+                    XConfig.WindowsAccentColor.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.WristOverPosition":
                     XConfig.WristOverPosition.Value = bool.Parse(value);

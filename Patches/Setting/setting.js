@@ -83,6 +83,7 @@ const SECTIONS = [
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.PullTriggerClickThreshold', name: 'Pull Trigger Click Threshold', description: 'The Trigger pull threshold required to trigger a Left Click.<br>- Uses the Trigger Value from SteamVR Input.', default: 0.5, options: [0.1, 1.0, 0.1], unit: 'Unit' },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.PullTriggerPointerLock', name: 'Pull Trigger Pointer Lock', description: 'Locks the Pointer in place while the Trigger is held for easier double clicking.<br>- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.', default: "Only Capture Overlay", options: ['Disable', 'Only Capture Overlay', 'Capture + WebView Overlay'] },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewWiderScroll', name: 'WebView Wider Scroll', description: 'Makes the WebView scrollbar wider for easier interaction.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowsAccentColor', name: 'Windows Accent Color', description: 'Using Windows accent color as XSOverlay accent color.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristOverPosition', name: 'Wrist Over Position', description: 'Increases the allowed positioning radius of the Wrist Overlay.', default: true },                     
         ]
     },
