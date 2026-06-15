@@ -20,6 +20,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             public float Distance = 1f;
             public float Distance_Last = 1f;
             public Vector3 RayHitPoint_last = new();
+            public float LastUpdateLengthTime = 0f;
         }
 
         private static readonly ConditionalWeakTable<Raycaster, LaserData> LaserDictionary = new();
@@ -34,7 +35,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             if (IsEnable())
                 CreateLaser(__instance);
 
-            // Listen for hovering DoubleClickDelayState changes to update Laser_A length immediately when hovering something new
+            // Listen for hovering ClickState changes to update Laser_A length immediately when hovering something new
             XSOEventSystem.OnSwitchHoveringOverlay += (hovering, overlay) =>
             {
                 if (IsEnable())
@@ -95,7 +96,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             {
                 // Handle movement
                 {
-                    PullTriggerPointerLock.InstanceState.TryGetValue(__instance, out PullTriggerPointerLock.RaycasterState DoubleClickDelayState);
+                    PullTriggerPointerLock.InstanceState.TryGetValue(__instance, out PullTriggerPointerLock.RaycasterState ClickState);
 
                     Vector3 CurrentRayPosition = ___CurrentRayPosition;
                     Vector3 CurrentRayDirection = ___CurrentRayDirection;
@@ -112,7 +113,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
                         RayHitPoint = (CurrentRayPosition + CurrentRayDirection * __instance.FinalSteamVRRaycastResults.fDistance) - (CurrentRayDirection * 0.05f);
 
-                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || DoubleClickDelayState?.IsBlock == true)) // PointerDoubleClickDelay lock RayHitPoint in place
+                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || ClickState?.IsBlock == true)) // PointerDoubleClickDelay lock RayHitPoint in place
                     {
                         RayHitPoint = Data.RayHitPoint_last;
                         CurrentRayDirection = -(CurrentRayPosition - RayHitPoint).normalized;
@@ -131,7 +132,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     Data.LaserB.transform.rotation = Data.LaserA.transform.rotation;
                     Data.LaserB.transform.Rotate(0, 180, 0, Space.Self);
 
-                    if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.015f)
+                    if (Mathf.Abs(Data.Distance_Last - Data.Distance) > 0.005f)
                         UpdateLaserLength(__instance);
                 }
 
@@ -217,10 +218,13 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
         {
             if (LaserDictionary.TryGetValue(hovering, out LaserData Data))
             {
+                if (Time.time - Data.LastUpdateLengthTime < 1f / 15f) return; // 15 fps
+
                 int newHeight = Mathf.Max(1, (int)(Data.Distance * 500));
 
                 if (Data.Texture.height == newHeight) return;
 
+                Data.LastUpdateLengthTime = Time.time;
                 Data.Texture.Reinitialize(1, newHeight);
                 Data.Texture.Apply(); // Apply changes to the GPU.
 
