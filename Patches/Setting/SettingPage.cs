@@ -52,6 +52,7 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // Wirst
                 ["XSOverlayTweak.fpsVRSocket"] = XConfig.fpsVRSocket.Value,
+                ["XSOverlayTweak.WristClipDistance"] = XConfig.WristClipDistance.Value,
                 ["XSOverlayTweak.WristOverPosition"] = XConfig.WristOverPosition.Value,
                 ["XSOverlayTweak.WristStateRestore"] = XConfig.WristStateRestore.Value,
 
@@ -180,6 +181,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Wrist
                 case "XSOverlayTweak.fpsVRSocket":
                     XConfig.fpsVRSocket.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.WristClipDistance":
+                    XConfig.WristClipDistance.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.WristOverPosition":
                     XConfig.WristOverPosition.Value = bool.Parse(value);

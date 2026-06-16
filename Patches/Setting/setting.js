@@ -40,6 +40,7 @@ const SECTIONS = [
     {
         name: 'Wrist', priority: 4, settings: [
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.fpsVRSocket', name: 'fpsVR Socket', description: 'Attaches the fpsVR overlay to a specific socket position of XSOverlay.', default: "Disabled", options: ["Disabled", "Top", "Bottom", "Left", "Right"] },
+            { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.WristClipDistance', name: 'Wrist Clip Distance', description: 'Wrist Overlay auto hide based on head distance.', default: 60, options: [10, 100, 5], unit: 'Centimetre' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristOverPosition', name: 'Wrist Over Position', description: 'Increases the allowed positioning radius of the Wrist Overlay.', default: true },                     
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristStateRestore', name: 'Wrist State Restore', description: 'Restore the last Wrist Overlay state at launch.', default: true },
         ]

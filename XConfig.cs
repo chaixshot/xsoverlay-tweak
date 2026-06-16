@@ -27,6 +27,7 @@ namespace xsoverlay_tweak
 
         // Wist
         public static ConfigEntry<int> fpsVRSocket;
+        public static ConfigEntry<int> WristClipDistance;
         public static ConfigEntry<bool> WristOverPosition;
         public static ConfigEntry<bool> WristStateRestore;
 
@@ -114,6 +115,7 @@ namespace xsoverlay_tweak
 
             // Wrist
             fpsVRSocket = cfg.Bind("Wrist", "fpsVRSocket", 0, "Attaches the fpsVR Overlay to a specific socket position of XSOverlay.");
+            WristClipDistance = cfg.Bind("Wrist", "WristClipDistance", 60, "Wrist Overlay auto hide based on head distance.");
             WristOverPosition = cfg.Bind("Wrist", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
             WristStateRestore = cfg.Bind("Wrist", "WristStateRestore", true, "Restore the last Wrist Overlay state at launch.");
 

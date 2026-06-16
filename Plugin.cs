@@ -48,6 +48,7 @@ public class Plugin : BaseUnityPlugin
 
         // Wrist
         harmony.PatchAll(typeof(Patches.Wrist.fpsVRSocket));
+        harmony.PatchAll(typeof(Patches.Wrist.WristClipDistance));
         harmony.PatchAll(typeof(Patches.Wrist.WristOverPosition));
         harmony.PatchAll(typeof(Patches.Wrist.WristStateRestore));
 
