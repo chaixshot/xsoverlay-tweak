@@ -203,6 +203,8 @@ SECTIONS.forEach(s => {
         addSetting(section, set.type, set.id, set.name, set.description, set.default, set.options, set.unit);
     });
 
+    bg.style.marginTop = '45px';
+
     // Make section collapsible by clicking its header
     if (header && s.name && !s.name.includes('hidden') && s.name !== '_' && s.name !== 'About') {
         header.style.cursor = 'pointer';
