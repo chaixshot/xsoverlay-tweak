@@ -7,7 +7,7 @@ using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.CommunityRequest
 {
-    internal class WristStateSave
+    internal class WristStateRestore
     {
 
         [HarmonyPatch(typeof(UpdateDateTime), "Awake")]

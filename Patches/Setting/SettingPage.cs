@@ -50,6 +50,11 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.PointerActiveClick"] = XConfig.PointerActiveClick.Value,
                 ["XSOverlayTweak.EmulateMouseClickAnimation"] = XConfig.EmulateMouseClickAnimation.Value,
 
+                // Wirst
+                ["XSOverlayTweak.fpsVRSocket"] = XConfig.fpsVRSocket.Value,
+                ["XSOverlayTweak.WristOverPosition"] = XConfig.WristOverPosition.Value,
+                ["XSOverlayTweak.WristStateRestore"] = XConfig.WristStateRestore.Value,
+
                 // Mouse Navigation
                 ["XSOverlayTweak.MouseNavigation"] = XConfig.MouseNavigation.Value,
                 ["XSOverlayTweak.MouseNavigationUseModifiedKey"] = XConfig.MouseNavigationUseModifiedKey.Value,
@@ -80,7 +85,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Quality of Life
                 ["XSOverlayTweak.DefaultCaptureOverlayTexture"] = XConfig.DefaultCaptureOverlayTexture.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
-                ["XSOverlayTweak.fpsVRSocket"] = XConfig.fpsVRSocket.Value,
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
                 ["XSOverlayTweak.OverlayCurveAutoRefresh"] = XConfig.OverlayCurveAutoRefresh.Value,
                 ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
@@ -88,7 +92,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.PullTriggerPointerLock"] = XConfig.PullTriggerPointerLock.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
                 ["XSOverlayTweak.WindowsAccentColor"] = XConfig.WindowsAccentColor.Value,
-                ["XSOverlayTweak.WristOverPosition"] = XConfig.WristOverPosition.Value,
 
                 // Fix
                 ["XSOverlayTweak.CtrlKeyStickyFix"] = XConfig.CtrlKeyStickyFix.Value,
@@ -108,7 +111,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.OverlayConfirmClose"] = XConfig.OverlayConfirmClose.Value,
                 ["XSOverlayTweak.WindowToolbarGesture"] = XConfig.WindowToolbarGesture.Value,
                 ["XSOverlayTweak.WindowToolbarKeyboard"] = XConfig.WindowToolbarKeyboard.Value,
-                ["XSOverlayTweak.WristStateRestore"] = XConfig.WristStateRestore.Value,
 
                 // About
                 ["XSOverlayTweak.UpdateNotification"] = XConfig.UpdateNotification.Value,
@@ -174,6 +176,18 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.PointerScaleMultiply":
                     XConfig.PointerScaleMultiply.Value = int.Parse(value);
                     break;
+
+                // Wrist
+                case "XSOverlayTweak.fpsVRSocket":
+                    XConfig.fpsVRSocket.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.WristOverPosition":
+                    XConfig.WristOverPosition.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.WristStateRestore":
+                    XConfig.WristStateRestore.Value = bool.Parse(value);
+                    break;
+
 
                 // Mouse Navigation
                 case "XSOverlayTweak.MouseNavigation":
@@ -247,9 +261,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.DoubleClickConfirm":
                     XConfig.DoubleClickConfirm.Value = bool.Parse(value);
                     break;
-                case "XSOverlayTweak.fpsVRSocket":
-                    XConfig.fpsVRSocket.Value = int.Parse(value);
-                    break;
                 case "XSOverlayTweak.LaserPointer":
                     XConfig.LaserPointer.Value = int.Parse(value);
                     break;
@@ -270,9 +281,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.WindowsAccentColor":
                     XConfig.WindowsAccentColor.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.WristOverPosition":
-                    XConfig.WristOverPosition.Value = bool.Parse(value);
                     break;
 
                 // Fix
@@ -322,9 +330,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.WindowToolbarKeyboard":
                     XConfig.WindowToolbarKeyboard.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.WristStateRestore":
-                    XConfig.WristStateRestore.Value = bool.Parse(value);
                     break;
 
                 // About

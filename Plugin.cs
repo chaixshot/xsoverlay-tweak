@@ -36,7 +36,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed));
         harmony.PatchAll(typeof(Patches.Cursor.WindowsCursorPointer));
 
-
         // Pointer
         harmony.PatchAll(typeof(Patches.Pointer.ActivePointerWebView));
         harmony.PatchAll(typeof(Patches.Pointer.EmulateMouseClickAnimation));
@@ -46,6 +45,11 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Pointer.PointerDoubleClickDelay));
         harmony.PatchAll(typeof(Patches.Pointer.PointerParallelOverlay));
         harmony.PatchAll(typeof(Patches.Pointer.PointerScaleMultiply));
+
+        // Wrist
+        harmony.PatchAll(typeof(Patches.QualityOfLife.fpsVRSocket));
+        harmony.PatchAll(typeof(Patches.QualityOfLife.WristOverPosition));
+        harmony.PatchAll(typeof(Patches.CommunityRequest.WristStateRestore));
 
         // Mouse Navigation
         harmony.PatchAll(typeof(Patches.MouseNavigation));
@@ -69,7 +73,6 @@ public class Plugin : BaseUnityPlugin
         // Quality of Life
         harmony.PatchAll(typeof(Patches.QualityOfLife.DefaultCaptureOverlayTexture));
         harmony.PatchAll(typeof(Patches.QualityOfLife.DoubleClickConfirm));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.fpsVRSocket));
         harmony.PatchAll(typeof(Patches.QualityOfLife.LaserPointer));
         harmony.PatchAll(typeof(Patches.QualityOfLife.OverlayCurveAutoRefresh));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PinBlockInputNonEditMode));
@@ -77,7 +80,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerPointerLock));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WebViewWiderScroll));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WindowsAccentColor));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.WristOverPosition));
 
         // Fix
         harmony.PatchAll(typeof(Patches.Fix.CtrlKeyStickyFix));
@@ -97,7 +99,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.CommunityRequest.MouseButtonSwap));
         harmony.PatchAll(typeof(Patches.CommunityRequest.WindowToolbarGesture));
         harmony.PatchAll(typeof(Patches.CommunityRequest.WindowToolbarKeyboard));
-        harmony.PatchAll(typeof(Patches.CommunityRequest.WristStateSave));
 
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));
 

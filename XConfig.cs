@@ -25,6 +25,11 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> PointerDoubleClickDelay;
         public static ConfigEntry<int> PointerScaleMultiply;
 
+        // Wist
+        public static ConfigEntry<int> fpsVRSocket;
+        public static ConfigEntry<bool> WristOverPosition;
+        public static ConfigEntry<bool> WristStateRestore;
+
         // Mouse Navigation
         public static ConfigEntry<bool> MouseNavigation;
         public static ConfigEntry<bool> MouseNavigationUseModifiedKey;
@@ -55,7 +60,6 @@ namespace xsoverlay_tweak
         // Quality of Life
         public static ConfigEntry<bool> DefaultCaptureOverlayTexture;
         public static ConfigEntry<bool> DoubleClickConfirm;
-        public static ConfigEntry<int> fpsVRSocket;
         public static ConfigEntry<int> LaserPointer;
         public static ConfigEntry<bool> OverlayCurveAutoRefresh;
         public static ConfigEntry<bool> PinBlockInputNonEditMode;
@@ -63,7 +67,6 @@ namespace xsoverlay_tweak
         public static ConfigEntry<int> PullTriggerPointerLock;
         public static ConfigEntry<bool> WebViewWiderScroll;
         public static ConfigEntry<bool> WindowsAccentColor;
-        public static ConfigEntry<bool> WristOverPosition;
 
         // Fix
         public static ConfigEntry<bool> CtrlKeyStickyFix;
@@ -83,7 +86,6 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> OverlayAttachSmooth;
         public static ConfigEntry<bool> WindowToolbarGesture;
         public static ConfigEntry<bool> WindowToolbarKeyboard;
-        public static ConfigEntry<bool> WristStateRestore;
 
         public static ConfigEntry<bool> UpdateNotification;
 
@@ -109,6 +111,11 @@ namespace xsoverlay_tweak
             PointerActiveClick = cfg.Bind("Pointer", "PointerActiveClick", false, "Clicking the inactive hand's Pointer makes it the Active Hand and performs a Mouse Click simultaneously for two-hand interaction.");
             PointerDoubleClickDelay = cfg.Bind("Pointer", "PointerDoubleClickDelay", true, "Applies the Double Click Delay from XSOverlay settings to the physical Pointer itself, not just the cursor.");
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the global XSOverlay setting.");
+
+            // Wrist
+            fpsVRSocket = cfg.Bind("QualityOfLife", "fpsVRSocket", 0, "Attaches the fpsVR overlay to a specific socket position of XSOverlay.");
+            WristOverPosition = cfg.Bind("QualityOfLife", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
+            WristStateRestore = cfg.Bind("CommunityRequest", "WristStateRestore", true, "Restore the last Wrist Overlay state at launch.");
 
             // Mouse Navigation
             MouseNavigation = cfg.Bind("MouseNavigation", "MouseNavigation", false, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.");
@@ -140,7 +147,6 @@ namespace xsoverlay_tweak
             // Quality of Life
             DefaultCaptureOverlayTexture = cfg.Bind("QualityOfLife", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
             DoubleClickConfirm = cfg.Bind("QualityOfLife", "DoubleClickConfirm", true, "Ensures that a Double Click is always sent reliably when using Emulate Mouse mode.");
-            fpsVRSocket = cfg.Bind("QualityOfLife", "fpsVRSocket", 0, "Attaches the fpsVR overlay to a specific socket position of XSOverlay.");
             LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
             OverlayCurveAutoRefresh = cfg.Bind("QualityOfLife", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
             PinBlockInputNonEditMode = cfg.Bind("QualityOfLife", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' + 'Block Input' Overlay unless Layout Mode is active.");
@@ -148,7 +154,6 @@ namespace xsoverlay_tweak
             PullTriggerPointerLock = cfg.Bind("QualityOfLife", "PullTriggerPointerLock", 1, "Locks the Pointer in place while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
-            WristOverPosition = cfg.Bind("QualityOfLife", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
 
             // Fix
             CtrlKeyStickyFix = cfg.Bind("Fix", "CtrlKeyStickyFix", true, "Fix where double-tapping the Ctrl key does not sticky.");
@@ -168,7 +173,6 @@ namespace xsoverlay_tweak
             OverlayConfirmClose = cfg.Bind("CommunityRequest", "OverlayConfirmClose", false, "Requires pressing the close overlay button three times to close.");
             WindowToolbarGesture = cfg.Bind("CommunityRequest", "WindowToolbarGesture", true, "When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.");
             WindowToolbarKeyboard = cfg.Bind("CommunityRequest", "WindowToolbarKeyboard", false, "Add a keyboard  summon button to the Capture Overlay Toolbar.");
-            WristStateRestore = cfg.Bind("CommunityRequest", "WristStateRestore", true, "Restore the last Wrist Overlay state at launch.");
 
             // About
             UpdateNotification = cfg.Bind("About", "UpdateNotifications", true, "Displays a notification when a new version is available.");
