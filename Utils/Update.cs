@@ -31,7 +31,7 @@ namespace xsoverlay_tweak.Utils
             return latestVersion;
         }
 
-        public static async void CheckForUpdate()
+        public static async void CheckForUpdate(bool doReturn)
         {
             string currentVersion = MyPluginInfo.PLUGIN_VERSION;
             string latestVersion;
@@ -41,14 +41,15 @@ namespace xsoverlay_tweak.Utils
             }
             catch (Exception ex)
             {
-                //Notification.Send(MyPluginInfo.PLUGIN_NAME, $"Update Check Failed:\n\"{ex.Message}\"");
+                if (doReturn)
+                    Notification.Send(MyPluginInfo.PLUGIN_NAME, $"Update Check Failed:\n\"{ex.Message}\"");
                 return;
             }
 
             if (!string.IsNullOrEmpty(latestVersion) && latestVersion != currentVersion)
-            {
                 Notification.Send(MyPluginInfo.PLUGIN_NAME, $"A new version of {MyPluginInfo.PLUGIN_NAME} <b>{latestVersion}</b> is available.\nYou are currently using version <b>{MyPluginInfo.PLUGIN_VERSION}</b>.");
-            }
+            else if (doReturn)
+                Notification.Send(MyPluginInfo.PLUGIN_NAME, $"Your <b>{MyPluginInfo.PLUGIN_NAME}</b> is the lasted version.");
         }
 
         public static void OpenGitHubPage()

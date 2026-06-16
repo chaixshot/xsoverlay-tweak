@@ -334,7 +334,10 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // About
                 case "XSOverlayTweak.CheckForUpdate":
-                    Task.Run(Utils.Update.CheckForUpdate);
+                    Task.Run(() =>
+                    {
+                        Utils.Update.CheckForUpdate(true);
+                    });
                     break;
                 case "XSOverlayTweak.OpenGitHub":
                     Task.Run(Utils.Update.OpenGitHubPage);
