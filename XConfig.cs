@@ -142,7 +142,7 @@ namespace xsoverlay_tweak
             WebViewHaptic = cfg.Bind("Haptic", "WebViewHaptic", 30, "Plays a haptic feedback when Pointer is hovering a Keyboard key.");
 
             // Optimization
-            EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", 1, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.");
+            EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", 2, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.");
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.\nVery low value: the Layout Mode Toggle binding listener will miss some frames.");
             uOSCThreadLoop = cfg.Bind("Optimization", "uOSCThreadLoop", true, "Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.");
 

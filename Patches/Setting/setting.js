@@ -75,7 +75,7 @@ const SECTIONS = [
     },
     {
         name: 'Optimization', priority: 8, settings: [
-            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.', default: 'Enable', options: ['Disable', 'Enable', 'Enable + Pinned Visible'] },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.', default: 'Enable + Pinned Visible', options: ['Disable', 'Enable', 'Enable + Pinned Visible'] },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.InactiveRefreshRate', name: 'Inactive Refresh Rate', description: 'The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.<br>Very low value: the Layout Mode Toggle binding listener will miss some frames.', default: 15, options: [5, <<HMDRefreshRate>>, 1], unit: 'FPS' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.uOSCThreadLoop', name: 'OSC Thread Loop', description: 'Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.', default: true },
         ]
