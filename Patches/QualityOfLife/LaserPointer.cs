@@ -121,7 +121,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     else
                         Data.RayHitPoint_last = RayHitPoint;
 
-                    Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(CurrentRayPosition, RayHitPoint) : 2f;
+                    Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(CurrentRayPosition, RayHitPoint) : 0.5f;
 
                     Data.LaserA.transform.position = CurrentRayPosition + (CurrentRayDirection * (Data.Distance / 2));
                     Data.LaserA.transform.up = CurrentRayDirection;
