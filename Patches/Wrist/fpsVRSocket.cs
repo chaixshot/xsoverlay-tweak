@@ -94,7 +94,7 @@ namespace xsoverlay_tweak.Patches.Wrist
             if (__instance.IsWristOverlay)
                 if (!IsClosing)
                     if (__instance.overlay.overlayTexture == null) // First visible
-                        RefreshWristState(true, 0.1f); // Wait for IsHidden == false to fire UpdateTexture()
+                        RefreshWristState(false, 0.1f); // Wait for IsHidden == false to fire UpdateTexture()
                     else
                         ChangefpsVRTranform();
         }
@@ -257,7 +257,7 @@ namespace xsoverlay_tweak.Patches.Wrist
 
             IsClosing = !enable;
 
-            if (IsClosing || delay != 0f)
+            if (IsClosing)
                 ClosingCoroutine = Plugin.Instance.StartCoroutine(ClosingDelay(delay));
             else
                 ChangefpsVRTranform();
