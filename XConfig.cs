@@ -74,6 +74,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> OverlayCurveAutoRefresh;
         public static ConfigEntry<bool> PinBlockInputNonEditMode;
         public static ConfigEntry<float> PullTriggerClickThreshold;
+        public static ConfigEntry<bool> SteamVRCompositorTextureFormat;
         public static ConfigEntry<bool> WebViewWiderScroll;
         public static ConfigEntry<bool> WindowsAccentColor;
 
@@ -171,6 +172,7 @@ namespace xsoverlay_tweak
             OverlayCurveAutoRefresh = cfg.Bind("QualityOfLife", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
             PinBlockInputNonEditMode = cfg.Bind("QualityOfLife", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' + 'Block Input' Overlay unless Layout Mode is active.");
             PullTriggerClickThreshold = cfg.Bind("QualityOfLife", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
+            SteamVRCompositorTextureFormat = cfg.Bind("QualityOfLife", "SteamVRCompositorTextureFormat", true, "Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
 
