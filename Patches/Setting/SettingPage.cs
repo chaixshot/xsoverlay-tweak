@@ -100,6 +100,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.HandleScrollingFix"] = XConfig.HandleScrollingFix.Value,
                 ["XSOverlayTweak.KeyboardControlButtonStateFix"] = XConfig.KeyboardControlButtonStateFix.Value,
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
+                ["XSOverlayTweak.OverlayGripSlipFix"] = XConfig.OverlayGripSlipFix.Value,
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.WebViewFix"] = XConfig.WebViewFix.Value,
 
@@ -302,6 +303,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.LoadLayoutScaleFix":
                     XConfig.LoadLayoutScaleFix.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.OverlayGripSlipFix":
+                    XConfig.OverlayGripSlipFix.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.OverlayRollCurveFix":
                     XConfig.OverlayRollCurveFix.Value = bool.Parse(value);

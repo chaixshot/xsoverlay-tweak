@@ -100,6 +100,7 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HandleScrollingFix', name: 'Handle Scrolling', description: 'Normalize stick scrolling speed by the HMD refresh rate, support horizontal scrolling, support scrolling axis speed.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayGripSlipFix', name: 'Overlay Grip Slip', description: 'Prevents Overlay from dropping or slipping out of Grip when moving it too fast.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFix', name: 'WebView', description: 'Fixes an issue where certain WebView UI elements were not clickable.', default: true },
         ]

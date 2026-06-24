@@ -75,6 +75,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> HandleScrollingFix;
         public static ConfigEntry<bool> KeyboardControlButtonStateFix;
         public static ConfigEntry<bool> LoadLayoutScaleFix;
+        public static ConfigEntry<bool> OverlayGripSlipFix;
         public static ConfigEntry<bool> OverlayRollCurveFix;
         public static ConfigEntry<bool> WebViewFix;
 
@@ -163,6 +164,7 @@ namespace xsoverlay_tweak
             HandleScrollingFix = cfg.Bind("Fix", "HandleScrollingFix", true, "Normalize stick scrolling speed by the HMD refresh rate and support horizontal scrolling.");
             KeyboardControlButtonStateFix = cfg.Bind("Fix", "KeyboardControlButtonStateFix", true, "Fix keyboard control button color not following the state when summoning.");
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
+            OverlayGripSlipFix = cfg.Bind("Fix", "OverlayGripSlipFix", true, "Prevents Overlay from dropping or slipping out of Grip when moving it too fast.");
             OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
             WebViewFix = cfg.Bind("Fix", "WebViewFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
 
