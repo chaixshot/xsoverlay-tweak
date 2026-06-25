@@ -492,12 +492,12 @@ namespace xsoverlay_tweak.Patches.CommunityRequest
 
                     if (HmdSmooth != null)
                     {
-                        Data.IsSmooth = bool.Parse(HmdSmooth["isSmooth"].ToString());
-                        Data.LockRoll = bool.Parse(HmdSmooth["lockRoll"].ToString());
-                        Data.LockHover = bool.Parse(HmdSmooth["lockHover"].ToString());
-                        Data.DistThreshold = int.Parse(HmdSmooth["distThreshold"].ToString());
-                        Data.AngleThreshold = int.Parse(HmdSmooth["angleThreshold"].ToString());
-                        Data.StopThreshold = int.Parse(HmdSmooth["stopThreshold"].ToString());
+                        Data.IsSmooth = (bool?)(HmdSmooth["isSmooth"]) ?? false;
+                        Data.LockRoll = (bool?)(HmdSmooth["lockRoll"]) ?? false;
+                        Data.LockHover = (bool?)(HmdSmooth["lockHover"]) ?? false;
+                        Data.DistThreshold = (int?)(HmdSmooth["distThreshold"]) ?? 0;
+                        Data.AngleThreshold = (int?)(HmdSmooth["angleThreshold"]) ?? 0;
+                        Data.StopThreshold = (int?)(HmdSmooth["stopThreshold"]) ?? 0;
                     }
                 }
             }
