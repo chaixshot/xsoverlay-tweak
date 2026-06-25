@@ -102,7 +102,7 @@ namespace xsoverlay_tweak.Patches.Cursor
                         ___VisualCursorElementOverlay.colorTint = Color.white;
                     }
 
-                    if (Time.unscaledTime - Data.LastFrameUpdateTime > 0.066f) // ~15 FPS
+                    if (Time.unscaledTime - Data.LastFrameUpdateTime > 0.066f || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture) // ~15 FPS
                     {
                         Data.LastFrameUpdateTime = Time.unscaledTime;
                         CURSORINFO ci = new() { cbSize = CURSORINFO_SIZE };
