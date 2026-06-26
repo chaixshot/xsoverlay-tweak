@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using uWindowCapture;
 using XSOverlay;
@@ -18,6 +19,8 @@ namespace xsoverlay_tweak.Utils
         public static bool IsHoverAnyDesktopOrWindowCapture = false;
         public static bool IsHoverAnyDesktopCapture = false;
         public static bool IsHoverAnyWindowCapture = false;
+
+        public static bool IsKeyboardSpawing = false;
 
         private static Coroutine NotificationCoroutine;
         public static bool IsNotificationVisible = false;
@@ -122,6 +125,16 @@ namespace xsoverlay_tweak.Utils
             }
         }
 
+        [HarmonyPatch(typeof(WindowMovementManager), nameof(WindowMovementManager.MoveToEdgeOfWindowAndInheritRotation))]
+        [HarmonyPrefix]
+        public static bool BlockKeyboardSpawnAboveWrist(Unity_Overlay Overlay)
+        {
+            if (IsKeyboardSpawing && Overlay.overlayName == "keyboard")
+                return false;
+
+            return true;
+        }
+
         public static IEnumerator NotificationTimer(float timeout)
         {
             yield return new WaitForSecondsRealtime(timeout);
@@ -168,6 +181,8 @@ namespace xsoverlay_tweak.Utils
             Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
             KeyboardGlobalManager keyboardManager = (KeyboardGlobalManager)AccessTools.Field(typeof(Overlay_Manager), "keyboardManager").GetValue(overlay_Manager);
 
+            IsKeyboardSpawing = true;
+
             if (isShow)
             {
                 if (!overlay_Manager.Keyboard.activeSelf || keyboardManager?.HasKeyboardBeenOpened == false) // Show keyboard if unsummoned
@@ -183,6 +198,12 @@ namespace xsoverlay_tweak.Utils
 
                 ServerClientBridge.Instance.Api.Commands["Keyboard"]("", "", "");
             }
+
+            Task.Run(async () =>
+            {
+                await Task.Delay(200);
+                IsKeyboardSpawing = false;
+            });
         }
 
         public static bool IsRaycasterHand(Raycaster raycaster)
