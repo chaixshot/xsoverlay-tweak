@@ -34,7 +34,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
         {
             if (!IsEnalbe()) return;
 
-            Plugin.Instance.StartCoroutine(ApplyAccentColor(__instance));
+            __instance.StartCoroutine(ApplyAccentColor(__instance));
         }
 
         [HarmonyPatch(typeof(XSettingsManager), nameof(XSettingsManager.ChangeColorChannel))]
