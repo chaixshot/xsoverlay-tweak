@@ -61,8 +61,16 @@ namespace xsoverlay_tweak.Patches.CommunityRequest
 
             if (EventBridge.CurrentHoveringOverlay?.overlayName == "window.toolbar" && ___keyboardManager?.HasKeyboardBeenOpened == true)
             {
-                __instance.Keyboard_Overlay.transform.position = __instance.head.transform.position + __instance.head.transform.forward * 0.5f;
-                __instance.Keyboard_Overlay.transform.rotation = __instance.head.transform.rotation;
+                if (!Overlay_Manager.Instance.WindowSettingsMenuParentOverlay.IsAttachedToDevice || !(Overlay_Manager.Instance.WindowSettingsMenuParentOverlay.WorldSpaceSceneImpostor == null))
+                {
+                    Unity_Overlay windowToolbarOverlay = Overlay_Manager.Instance.WindowToolbar.GetComponentInChildren<Unity_Overlay>(true);
+                    WindowMovementManager.MoveToEdgeOfWindowAndInheritRotation(__instance.Keyboard_Overlay, windowToolbarOverlay, 0.1f, 0.1f, 0);
+                }
+                else
+                {
+                    __instance.Keyboard_Overlay.transform.position = __instance.head.transform.position + __instance.head.transform.forward * 0.5f;
+                    __instance.Keyboard_Overlay.transform.rotation = __instance.head.transform.rotation;
+                }
             }
         }
 
