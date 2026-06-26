@@ -91,7 +91,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.OverlayGripSlipFix));
         harmony.PatchAll(typeof(Patches.Fix.OverlayRollCurveFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
-        harmony.PatchAll(typeof(Patches.Fix.WebViewFix));
+        harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix));
 
         // Community Request
         harmony.PatchAll(typeof(Patches.CommunityRequest.HideInvalidBattery));

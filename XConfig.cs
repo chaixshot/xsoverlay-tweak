@@ -77,7 +77,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> LoadLayoutScaleFix;
         public static ConfigEntry<bool> OverlayGripSlipFix;
         public static ConfigEntry<bool> OverlayRollCurveFix;
-        public static ConfigEntry<bool> WebViewFix;
+        public static ConfigEntry<bool> WebViewFrozenFix;
 
         // Community Request
         public static ConfigEntry<bool> HideBattery;
@@ -166,7 +166,7 @@ namespace xsoverlay_tweak
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
             OverlayGripSlipFix = cfg.Bind("Fix", "OverlayGripSlipFix", true, "Prevents Overlay from dropping or slipping out of Grip when moving it too fast.");
             OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
-            WebViewFix = cfg.Bind("Fix", "WebViewFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
+            WebViewFrozenFix = cfg.Bind("Fix", "WebViewFrozenFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
 
             // Community Request
             HideBattery = cfg.Bind("CommunityRequest", "HideBattery", false, "Hide the Wrist Overlay battery information widget.");

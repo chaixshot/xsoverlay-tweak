@@ -102,7 +102,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
                 ["XSOverlayTweak.OverlayGripSlipFix"] = XConfig.OverlayGripSlipFix.Value,
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
-                ["XSOverlayTweak.WebViewFix"] = XConfig.WebViewFix.Value,
+                ["XSOverlayTweak.WebViewFrozenFix"] = XConfig.WebViewFrozenFix.Value,
 
                 // Community Request
                 ["XSOverlayTweak.HideBattery"] = XConfig.HideBattery.Value,
@@ -310,8 +310,8 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.OverlayRollCurveFix":
                     XConfig.OverlayRollCurveFix.Value = bool.Parse(value);
                     break;
-                case "XSOverlayTweak.WebViewFix":
-                    XConfig.WebViewFix.Value = bool.Parse(value);
+                case "XSOverlayTweak.WebViewFrozenFix":
+                    XConfig.WebViewFrozenFix.Value = bool.Parse(value);
                     break;
 
                 // Community Request

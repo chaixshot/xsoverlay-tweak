@@ -6,7 +6,7 @@ using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Fix
 {
-    internal class WebViewFix
+    internal class WebViewFrozenFix
     {
         private static Coroutine StoppingCoroutine;
 
@@ -89,7 +89,7 @@ namespace xsoverlay_tweak.Patches.Fix
 
         private static bool IsEnable()
         {
-            return XConfig.WebViewFix.Value;
+            return XConfig.WebViewFrozenFix.Value;
         }
     }
 }
