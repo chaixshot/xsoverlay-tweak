@@ -57,15 +57,20 @@ namespace xsoverlay_tweak.Patches.Fix
                 float webScrollX = scrollX * scrollFactor;
                 float webScrollY = 0f - (scrollY * scrollFactor);
 
-                if (scrollY > 0f)
-                    webScrollY = Mathf.Min(-0.00275f, webScrollY);
-                else
-                    webScrollY = Mathf.Max(0.00275f, webScrollY);
+                // 0.00275 is the minimum value allowed for scrolling  WebView
+                webScrollX = scrollX > 0f ? Mathf.Min(-0.00275f, webScrollX) : Mathf.Max(0.00275f, webScrollX);
+                webScrollY = scrollY > 0f ? Mathf.Min(-0.00275f, webScrollY) : Mathf.Max(0.00275f, webScrollY);
 
-                __instance.HoveringOverlay.WebViewHandler.WebView.Scroll(
-                    new(webScrollX, webScrollY),
-                    ___CursorUVNormalized
-                );
+                ____tickAccumulator += Mathf.Max(absX, absY) * (float)___ScrollClicksPerSecond * scrollFactor * 10;
+                int verticalTicks = (int)____tickAccumulator;
+                if (verticalTicks > 0)
+                {
+                    ____tickAccumulator -= verticalTicks;
+                    __instance.HoveringOverlay.WebViewHandler.WebView.Scroll(
+                        new(webScrollX, webScrollY),
+                        ___CursorUVNormalized
+                    );
+                }
             }
 
             EventBridge.HandleScrolling(___InputDevice.Scroll.axis, ___CursorUVNormalized);
