@@ -134,12 +134,18 @@ namespace xsoverlay_tweak.Patches.Cursor
 
                                 float Width = targetOverlay.renderTexWidthOverride;
                                 float Height = targetOverlay.renderTexHeightOverride;
-                                float num3 = targetOverlay.widthInMeters;
+                                float targetOverlayWidthInMeters = targetOverlay.widthInMeters;
+                                float dist;
 
                                 if (Height > Width)
-                                    num3 *= Height / Width;
+                                    targetOverlayWidthInMeters *= Height / Width;
 
-                                float widthInMeters = 0.024f * num3 * PointerScaleMultiply.GetScale();
+                                if (targetOverlay.IsAttachedToDevice && targetOverlay.WorldSpaceSceneImpostor != null)
+                                    dist = Vector3.Distance(Data.RelativeTransform._RelativeTarget.transform.position, targetOverlay.WorldSpaceSceneImpostor.transform.position);
+                                else
+                                    dist = Vector3.Distance(Data.RelativeTransform._RelativeTarget.transform.position, targetOverlay.transform.position);
+
+                                float widthInMeters = 0.024f * Mathf.Clamp(dist * 0.5f, 1f, 10f) * targetOverlayWidthInMeters * PointerScaleMultiply.GetScale();
                                 ___VisualCursorElementOverlay.overlayTexture = Data.CursorTexture;
                                 ___VisualCursorElementOverlay.overlay.overlayTexture = Data.CursorTexture;
                                 ___VisualCursorElementOverlay.widthInMeters = widthInMeters;
