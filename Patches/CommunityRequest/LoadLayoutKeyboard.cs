@@ -11,6 +11,8 @@ namespace xsoverlay_tweak.Patches.CommunityRequest
 {
     internal class LoadLayoutKeyboard
     {
+        private static bool isFristKeyboardSpawn = true;
+
         [HarmonyPatch(typeof(LayoutHandler), "SaveLayout", [])]
         [HarmonyPostfix]
         public static void SaveKeyboardToLayout(LayoutHandler __instance, string ___LayoutAssetPath)
@@ -41,6 +43,18 @@ namespace xsoverlay_tweak.Patches.CommunityRequest
             }
         }
 
+        [HarmonyPatch(typeof(Overlay_Manager), nameof(Overlay_Manager.EnableKeyboard))]
+        [HarmonyPostfix]
+        public static void ListenForFirstKeyboardSpawn()
+        {
+            if (isFristKeyboardSpawn)
+                Task.Run(async () =>
+                {
+                    await Task.Delay(400);
+                    isFristKeyboardSpawn = false;
+                });
+        }
+
         [HarmonyPatch(typeof(LayoutHandler), "LoadLayout", [])]
         [HarmonyPostfix]
         public static void LoadKeyboardFromLayout(LayoutHandler __instance, string ___LayoutAssetPath)
@@ -67,7 +81,8 @@ namespace xsoverlay_tweak.Patches.CommunityRequest
 
                 Task.Run(async () =>
                 {
-                    await Task.Delay(150); // Wait for re-center and keyboard summoning
+                    if (isFristKeyboardSpawn)
+                        await Task.Delay(300); // Wait for re-center and keyboard summoning
 
                     if (keyboardData["position"] is JArray pos && pos.Count == 3)
                         keyboard.transform.localPosition = new Vector3((float)pos[0], (float)pos[1], (float)pos[2]);
