@@ -14,7 +14,7 @@ namespace xsoverlay_tweak.Patches.Fix
             if (!IsEnable()) return;
 
             // Check if the overlay is currently flag-marked as curved by the original method
-            if (overlay.OverlayIsWithinCurveRange && overlay.overlayCurveRadius > 0f)
+            if (overlay.OverlayIsWithinCurveRange && (overlay.overlayCurveRadius > 0f || overlay.overlayCachedCurveRadius > 0f || !overlay.IsDoneAdjustingCurve))
             {
                 // Get current rotation angles
                 Vector3 currentEuler = overlay.transform.rotation.eulerAngles;
@@ -24,11 +24,11 @@ namespace xsoverlay_tweak.Patches.Fix
                 if (pitch > 180f) pitch -= 360f;
 
                 // Critical zone threshold where SteamVR mesh starts glitching
-                float criticalPitchThreshold = -25f;
+                float criticalPitchThreshold = -15f;
 
                 // If it is tilted dangerously back OR the user is dragging it around while curved,
                 // force the pitch axis perfectly flat (0) while maintaining its Yaw (y) and Roll (z).
-                if (pitch < criticalPitchThreshold || overlay.IsHeld)
+                if (pitch < criticalPitchThreshold)
                     overlay.transform.rotation = Quaternion.Euler(0f, currentEuler.y, currentEuler.z);
             }
         }
