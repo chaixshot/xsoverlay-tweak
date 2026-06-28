@@ -7,6 +7,7 @@ using uWindowCapture;
 using XSOverlay;
 using XSOverlay.WebApp;
 using xsoverlay_tweak.Patches.Cursor;
+using xsoverlay_tweak.Patches.Pointer;
 
 namespace xsoverlay_tweak.Utils
 {
@@ -142,9 +143,11 @@ namespace xsoverlay_tweak.Utils
             NotificationCoroutine = null;
         }
 
-        public static bool IsActiveHand(Raycaster __instance)
+        public static bool IsActiveHand(Raycaster __instance, bool skipTwoHanded = false)
         {
-            if (PhysicalMouseDetector.IsPhysicalMovement)
+            if (TwoHandedMode.IsEnable() && !skipTwoHanded)
+                return true;
+            else if (PhysicalMouseDetector.IsPhysicalMovement)
                 return false;
             else if (DesktopCursorManager.Instance.GetCurrentInputDevice() != __instance)
                 return false;

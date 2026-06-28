@@ -21,9 +21,9 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> EmulateMouseClickAnimation;
         public static ConfigEntry<bool> InactivePointerColor;
         public static ConfigEntry<int> InactivePointerOpacity;
-        public static ConfigEntry<bool> PointerActiveClick;
         public static ConfigEntry<bool> PointerDoubleClickDelay;
         public static ConfigEntry<int> PointerScaleMultiply;
+        public static ConfigEntry<bool> TwoHandedMode;
 
         // Wist
         public static ConfigEntry<int> fpsVRSocket;
@@ -110,9 +110,9 @@ namespace xsoverlay_tweak
             EmulateMouseClickAnimation = cfg.Bind("Pointer", "EmulateMouseClickAnimation", true, "Enables the Pointer click visual animation for Input Method > Emulate Mouse.");
             InactivePointerColor = cfg.Bind("Pointer", "InactivePointerColor", true, "Highlights the inactive hand's Pointer in red for easier identification.");
             InactivePointerOpacity = cfg.Bind("Pointer", "InactivePointerOpacity", 50, "Sets the opacity level for the inactive hand's Pointer.");
-            PointerActiveClick = cfg.Bind("Pointer", "PointerActiveClick", false, "Clicking the inactive hand's Pointer makes it the Active Hand and performs a Mouse Click simultaneously for two-hand interaction.");
             PointerDoubleClickDelay = cfg.Bind("Pointer", "PointerDoubleClickDelay", true, "Applies the Double Click Delay from XSOverlay settings to the physical Pointer itself, not just the cursor.");
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the global XSOverlay setting.");
+            TwoHandedMode = cfg.Bind("Pointer", "TwoHandedMode", false, "Allow both hands to become active hands at the same time to perform a Click simultaneously for two-hand interaction.");
 
             // Wrist
             fpsVRSocket = cfg.Bind("Wrist", "fpsVRSocket", 0, "Attaches the fpsVR Overlay to a specific socket position of XSOverlay.");

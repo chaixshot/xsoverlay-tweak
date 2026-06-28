@@ -43,12 +43,12 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // Pointer
                 ["XSOverlayTweak.ActivePointerWebView"] = XConfig.ActivePointerWebView.Value,
-                ["XSOverlayTweak.PointerScaleMultiply"] = XConfig.PointerScaleMultiply.Value,
-                ["XSOverlayTweak.PointerDoubleClickDelay"] = XConfig.PointerDoubleClickDelay.Value,
+                ["XSOverlayTweak.EmulateMouseClickAnimation"] = XConfig.EmulateMouseClickAnimation.Value,
                 ["XSOverlayTweak.InactivePointerColor"] = XConfig.InactivePointerColor.Value,
                 ["XSOverlayTweak.InactivePointerOpacity"] = XConfig.InactivePointerOpacity.Value,
-                ["XSOverlayTweak.PointerActiveClick"] = XConfig.PointerActiveClick.Value,
-                ["XSOverlayTweak.EmulateMouseClickAnimation"] = XConfig.EmulateMouseClickAnimation.Value,
+                ["XSOverlayTweak.PointerDoubleClickDelay"] = XConfig.PointerDoubleClickDelay.Value,
+                ["XSOverlayTweak.PointerScaleMultiply"] = XConfig.PointerScaleMultiply.Value,
+                ["XSOverlayTweak.TwoHandedMode"] = XConfig.TwoHandedMode.Value,
 
                 // Wirst
                 ["XSOverlayTweak.fpsVRSocket"] = XConfig.fpsVRSocket.Value,
@@ -169,14 +169,14 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.InactivePointerOpacity":
                     XConfig.InactivePointerOpacity.Value = int.Parse(value);
                     break;
-                case "XSOverlayTweak.PointerActiveClick":
-                    XConfig.PointerActiveClick.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.PointerDoubleClickDelay":
                     XConfig.PointerDoubleClickDelay.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.PointerScaleMultiply":
                     XConfig.PointerScaleMultiply.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.TwoHandedMode":
+                    XConfig.TwoHandedMode.Value = bool.Parse(value);
                     break;
 
                 // Wrist

@@ -30,7 +30,7 @@ namespace xsoverlay_tweak.Patches.Pointer
             {
                 EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
 
-                if (!XConfig.PointerActiveClick.Value)
+                if (!XConfig.TwoHandedMode.Value)
                     return false;
             }
 

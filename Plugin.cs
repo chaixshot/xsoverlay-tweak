@@ -41,10 +41,10 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Pointer.EmulateMouseClickAnimation));
         harmony.PatchAll(typeof(Patches.Pointer.InactivePointerColor));
         harmony.PatchAll(typeof(Patches.Pointer.InactivePointerOpacity));
-        harmony.PatchAll(typeof(Patches.Pointer.PointerActiveClick));
         harmony.PatchAll(typeof(Patches.Pointer.PointerDoubleClickDelay));
         harmony.PatchAll(typeof(Patches.Pointer.PointerParallelOverlay));
         harmony.PatchAll(typeof(Patches.Pointer.PointerScaleMultiply));
+        harmony.PatchAll(typeof(Patches.Pointer.TwoHandedMode));
 
         // Wrist
         harmony.PatchAll(typeof(Patches.Wrist.fpsVRSocket));

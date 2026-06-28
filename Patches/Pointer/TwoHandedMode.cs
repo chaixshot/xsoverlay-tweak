@@ -6,16 +6,16 @@ using xsoverlay_tweak.Utils;
 namespace xsoverlay_tweak.Patches.Pointer
 {
     [HarmonyPatch(typeof(Raycaster))]
-    internal class PointerActiveClick
+    internal class TwoHandedMode
     {
 
         [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows")]
         [HarmonyPrefix]
-        public static void HandleClickOnCaptureOverlayToBecomeActiveHandAndClick(Raycaster __instance)
+        public static void ForDesktopWindows(Raycaster __instance)
         {
             if (!IsEnable()) return;
 
-            if (!EventBridge.IsActiveHand(__instance))
+            if (!EventBridge.IsActiveHand(__instance, true))
             {
                 EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
 
@@ -28,7 +28,7 @@ namespace xsoverlay_tweak.Patches.Pointer
 
         public static bool IsEnable()
         {
-            return XConfig.PointerActiveClick.Value;
+            return XConfig.TwoHandedMode.Value;
         }
     }
 }
