@@ -16,9 +16,9 @@ namespace xsoverlay_tweak.Patches.Pointer
         }
         private static readonly ConditionalWeakTable<Raycaster, RaycasterData> RaycasterDictionary = new();
 
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows")]
+        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
         [HarmonyPrefix]
-        public static void ForDesktopWindows(Raycaster __instance)
+        public static void ClickToBecomeActiveHandAndDoClick(Raycaster __instance)
         {
             if (!IsEnable()) return;
 
