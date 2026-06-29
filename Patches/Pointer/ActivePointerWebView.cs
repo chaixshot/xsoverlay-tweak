@@ -1,4 +1,7 @@
 ﻿using HarmonyLib;
+using System;
+using UnityEngine;
+using Vuplex.WebView;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
@@ -6,15 +9,27 @@ namespace xsoverlay_tweak.Patches.Pointer
     [HarmonyPatch(typeof(Raycaster))]
     internal class ActivePointerWebView
     {
+        public static readonly Action<Raycaster> HandleScrolling = AccessTools.MethodDelegate<Action<Raycaster>>(AccessTools.Method(typeof(Raycaster), "HandleScrolling"));
+
+
         // Add additional check for Pointer hover WebView event of inactive hand
         [HarmonyPatch("OnCursorPluginApplication")]
         [HarmonyPrefix]
-        public static void ApplyInactiveFeatureHandToWebView(Raycaster __instance, ref bool canCursorInteract, ref bool ___IsWebViewTouchEventDown)
+        public static bool ApplyInactiveFeatureHandToWebView(Raycaster __instance, bool canCursorInteract, Vector2 ___CursorUVNormalized)
         {
-            if (!IsEnable()) return;
-            if (!EventBridge.IsRaycasterHand(__instance)) return;
+            if (!IsEnable()) return true;
+            if (!EventBridge.IsRaycasterHand(__instance)) return true;
 
             canCursorInteract = canCursorInteract && EventBridge.IsActiveHand(__instance);
+
+            if (__instance.HoveringOverlay.IsPluginApplication && __instance.HoveringOverlay.WebViewHandler != null && canCursorInteract)
+            {
+                if (DesktopCursorManager.Instance.GetCurrentInputDevice() == __instance)
+                    (__instance.HoveringOverlay.WebViewHandler.WebView as IWithMovablePointer).MovePointer(___CursorUVNormalized);
+                HandleScrolling(__instance);
+            }
+
+            return false;
         }
 
         // Listen for Pointer click WebView to become active hand
