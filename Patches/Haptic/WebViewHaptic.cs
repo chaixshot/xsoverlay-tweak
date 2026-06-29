@@ -1,16 +1,15 @@
 ﻿using HarmonyLib;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Vuplex.WebView;
 using XSOverlay;
+using XSOverlay.WebApp;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Haptic
 {
-    [HarmonyPatch(typeof(Raycaster))]
+    [HarmonyPatch(typeof(Overlay_Manager))]
     internal class WebViewHaptic
     {
-        private static readonly ConditionalWeakTable<IWebView, object> InitializedWebViews = new();
         private const string HapticJS = @"
             (function() {
                 if (window.XSOverlayTweak_Haptic) return;
@@ -50,43 +49,37 @@ namespace xsoverlay_tweak.Patches.Haptic
                 }, true);
             })();";
 
-        [HarmonyPatch("OnCursorPluginApplication")]
+        [HarmonyPatch("OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void OnCursorPluginApplication(Raycaster __instance, bool canCursorInteract, MouseInputDevice ___InputDevice)
+        public static void WebviewOverlay(OverlayWebView wv)
         {
-            if (!IsEnable() || !canCursorInteract || __instance.HoveringOverlay?.WebViewHandler?.WebView == null) return;
+            if (wv?._webView?.WebView == null) return;
 
-            IWebView webView = __instance.HoveringOverlay.WebViewHandler.WebView;
+            IWebView webView = wv._webView.WebView;
 
-            if (!InitializedWebViews.TryGetValue(webView, out _))
+            webView.MessageEmitted += (sender, args) =>
             {
-                InitializedWebViews.Add(webView, null);
+                if (!IsEnable() || args.Value != "XSOverlayTweak-Haptic-Hover") return;
 
-                // Inject script to detect hovers on specific elements (buttons, sliders, options)
-                webView.ExecuteJavaScript(HapticJS);
+                Raycaster raycaster = DesktopCursorManager.Instance.GetCurrentInputDevice();
 
-                // Re-inject on reload
-                webView.LoadProgressChanged += (s, e) =>
+                if (raycaster != null && raycaster.HeldOverlay == null)
+                    if (raycaster.HoveringOverlay?.WebViewHandler?.WebView == (IWebView)sender)
+                        AdvancedHaptics.Rumble(raycaster.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.WebViewHaptic.Value / 100f);
+            };
+
+            // Inject the script when loading completes
+            webView.LoadProgressChanged += (s, e) =>
+            {
+                if (e.Type == ProgressChangeType.Finished)
                 {
-                    if (e.Type == ProgressChangeType.Finished)
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(1000);
-
-                            webView.ExecuteJavaScript(HapticJS);
-                        });
-                };
-
-                // Listen for messages from the web side
-                webView.MessageEmitted += (sender, args) =>
-                {
-                    if (IsEnable() && args.Value == "XSOverlayTweak-Haptic-Hover" && __instance.HeldOverlay == null)
+                    Task.Run(async () =>
                     {
-                        if (__instance != null && __instance.HoveringOverlay?.WebViewHandler?.WebView == (IWebView)sender)
-                            AdvancedHaptics.Rumble(__instance.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.WebViewHaptic.Value / 100f);
-                    }
-                };
-            }
+                        await Task.Delay(1000);
+                        webView.ExecuteJavaScript(HapticJS, null);
+                    });
+                }
+            };
         }
 
         private static bool IsEnable()
