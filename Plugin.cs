@@ -83,6 +83,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.QualityOfLife.WindowsAccentColor));
 
         // Fix
+        harmony.PatchAll(typeof(Patches.Fix.AdditionalFix));
         harmony.PatchAll(typeof(Patches.Fix.CtrlKeyStickyFix));
         harmony.PatchAll(typeof(Patches.Fix.CursorMovingInteractionFix));
         harmony.PatchAll(typeof(Patches.Fix.HandleScrollingFix));
