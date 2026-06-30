@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Fix
@@ -25,6 +26,10 @@ namespace xsoverlay_tweak.Patches.Fix
             // If both axes are inside the deadzone, or click engine is broken, stop processing
             float deadzone = 0.01f;
             if ((absX <= deadzone && absY <= deadzone) || (float)___ScrollClicksPerSecond <= 0f)
+                return false;
+
+            // Two handed mode enable fix scrolling non current hand
+            if (TwoHandedMode.IsEnable() && DesktopCursorManager.Instance.GetCurrentInputDevice() != __instance)
                 return false;
 
             float baseScrollSpeed = XSettingsManager.Instance.Settings.ScrollSpeed;
@@ -78,7 +83,7 @@ namespace xsoverlay_tweak.Patches.Fix
             return false;
         }
 
-        private static bool IsEnable()
+        public static bool IsEnable()
         {
             return XConfig.HandleScrollingFix.Value;
         }

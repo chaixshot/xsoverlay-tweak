@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using uWindowCapture;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Fix;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
@@ -49,6 +50,19 @@ namespace xsoverlay_tweak.Patches.Pointer
                     XSOEventSystem.Current.EventTakeControlOfDesktopCursor(__instance);
                 }
             }
+        }
+
+        [HarmonyPatch(typeof(Raycaster), "HandleScrolling")]
+        [HarmonyPrefix]
+        public static bool ScrollingNonCurrentHandFix(Raycaster __instance)
+        {
+            if (!IsEnable()) return true;
+            if (HandleScrollingFix.IsEnable()) return true;
+
+            if (DesktopCursorManager.Instance.GetCurrentInputDevice() != __instance)
+                return false;
+
+            return true;
         }
 
         public static bool IsEnable()
