@@ -23,6 +23,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<int> InactivePointerOpacity;
         public static ConfigEntry<bool> PointerDoubleClickDelay;
         public static ConfigEntry<int> PointerScaleMultiply;
+        public static ConfigEntry<int> PullTriggerPointerLock;
         public static ConfigEntry<bool> TwoHandedMode;
 
         // Wist
@@ -65,7 +66,6 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> OverlayCurveAutoRefresh;
         public static ConfigEntry<bool> PinBlockInputNonEditMode;
         public static ConfigEntry<float> PullTriggerClickThreshold;
-        public static ConfigEntry<int> PullTriggerPointerLock;
         public static ConfigEntry<bool> WebViewWiderScroll;
         public static ConfigEntry<bool> WindowsAccentColor;
 
@@ -112,6 +112,7 @@ namespace xsoverlay_tweak
             InactivePointerOpacity = cfg.Bind("Pointer", "InactivePointerOpacity", 50, "Sets the opacity level for the inactive hand's Pointer.");
             PointerDoubleClickDelay = cfg.Bind("Pointer", "PointerDoubleClickDelay", true, "Applies the Double Click Delay from XSOverlay settings to the physical Pointer itself, not just the cursor.");
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the global XSOverlay setting.");
+            PullTriggerPointerLock = cfg.Bind("QualityOfLife", "PullTriggerPointerLock", 1, "Locks the Pointer in place while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.");
             TwoHandedMode = cfg.Bind("Pointer", "TwoHandedMode", false, "Allow both hands to become active hands at the same time to perform a Click simultaneously for two-hand interaction.");
 
             // Wrist
@@ -154,7 +155,6 @@ namespace xsoverlay_tweak
             OverlayCurveAutoRefresh = cfg.Bind("QualityOfLife", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
             PinBlockInputNonEditMode = cfg.Bind("QualityOfLife", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' + 'Block Input' Overlay unless Layout Mode is active.");
             PullTriggerClickThreshold = cfg.Bind("QualityOfLife", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
-            PullTriggerPointerLock = cfg.Bind("QualityOfLife", "PullTriggerPointerLock", 1, "Locks the Pointer in place while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
 

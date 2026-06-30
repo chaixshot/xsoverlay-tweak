@@ -4,7 +4,6 @@ using Valve.VR;
 using XSOverlay;
 using xsoverlay_tweak.Patches.CommunityRequest;
 using xsoverlay_tweak.Patches.Cursor;
-using xsoverlay_tweak.Patches.QualityOfLife;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer

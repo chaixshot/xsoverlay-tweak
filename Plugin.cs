@@ -44,6 +44,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Pointer.PointerDoubleClickDelay));
         harmony.PatchAll(typeof(Patches.Pointer.PointerParallelOverlay));
         harmony.PatchAll(typeof(Patches.Pointer.PointerScaleMultiply));
+        harmony.PatchAll(typeof(Patches.Pointer.PullTriggerPointerLock));
         harmony.PatchAll(typeof(Patches.Pointer.TwoHandedMode));
 
         // Wrist
@@ -78,7 +79,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.QualityOfLife.OverlayCurveAutoRefresh));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PinBlockInputNonEditMode));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerClickThreshold));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerPointerLock));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WebViewWiderScroll));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WindowsAccentColor));
 

@@ -48,6 +48,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.InactivePointerOpacity"] = XConfig.InactivePointerOpacity.Value,
                 ["XSOverlayTweak.PointerDoubleClickDelay"] = XConfig.PointerDoubleClickDelay.Value,
                 ["XSOverlayTweak.PointerScaleMultiply"] = XConfig.PointerScaleMultiply.Value,
+                ["XSOverlayTweak.PullTriggerPointerLock"] = XConfig.PullTriggerPointerLock.Value,
                 ["XSOverlayTweak.TwoHandedMode"] = XConfig.TwoHandedMode.Value,
 
                 // Wirst
@@ -90,7 +91,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.OverlayCurveAutoRefresh"] = XConfig.OverlayCurveAutoRefresh.Value,
                 ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
                 ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
-                ["XSOverlayTweak.PullTriggerPointerLock"] = XConfig.PullTriggerPointerLock.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
                 ["XSOverlayTweak.WindowsAccentColor"] = XConfig.WindowsAccentColor.Value,
 
@@ -174,6 +174,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.PointerScaleMultiply":
                     XConfig.PointerScaleMultiply.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.PullTriggerPointerLock":
+                    XConfig.PullTriggerPointerLock.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.TwoHandedMode":
                     XConfig.TwoHandedMode.Value = bool.Parse(value);
@@ -277,9 +280,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.PullTriggerClickThreshold":
                     XConfig.PullTriggerClickThreshold.Value = float.Parse(value);
-                    break;
-                case "XSOverlayTweak.PullTriggerPointerLock":
-                    XConfig.PullTriggerPointerLock.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.WebViewWiderScroll":
                     XConfig.WebViewWiderScroll.Value = bool.Parse(value);
