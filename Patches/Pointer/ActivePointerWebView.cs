@@ -24,7 +24,7 @@ namespace xsoverlay_tweak.Patches.Pointer
 
             if (__instance.HoveringOverlay.IsPluginApplication && __instance.HoveringOverlay.WebViewHandler != null && canCursorInteract)
             {
-                if (DesktopCursorManager.Instance.GetCurrentInputDevice() == __instance)
+                if (EventBridge.IsActiveHand(__instance))
                     (__instance.HoveringOverlay.WebViewHandler.WebView as IWithMovablePointer).MovePointer(___CursorUVNormalized);
                 HandleScrolling(__instance);
             }

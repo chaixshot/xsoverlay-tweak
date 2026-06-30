@@ -40,7 +40,7 @@ namespace xsoverlay_tweak.Patches.Pointer
         {
             if (!IsEnable()) return;
 
-            if (DesktopCursorManager.Instance.GetCurrentInputDevice() != __instance)
+            if (!EventBridge.IsActiveHand(__instance, true))
             {
                 RaycasterData data = RaycasterDictionary.GetOrCreateValue(__instance);
 
@@ -59,7 +59,7 @@ namespace xsoverlay_tweak.Patches.Pointer
             if (!IsEnable()) return true;
             if (HandleScrollingFix.IsEnable()) return true;
 
-            if (DesktopCursorManager.Instance.GetCurrentInputDevice() != __instance)
+            if (!EventBridge.IsActiveHand(__instance, true))
                 return false;
 
             return true;

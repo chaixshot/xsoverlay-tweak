@@ -29,7 +29,7 @@ namespace xsoverlay_tweak.Patches.Fix
                 return false;
 
             // Two handed mode enable fix scrolling non current hand
-            if (TwoHandedMode.IsEnable() && DesktopCursorManager.Instance.GetCurrentInputDevice() != __instance)
+            if (TwoHandedMode.IsEnable() && !EventBridge.IsActiveHand(__instance, true))
                 return false;
 
             float baseScrollSpeed = XSettingsManager.Instance.Settings.ScrollSpeed;
