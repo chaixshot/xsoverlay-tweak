@@ -145,10 +145,10 @@ namespace xsoverlay_tweak.Utils
 
         public static bool IsActiveHand(Raycaster __instance, bool skipTwoHanded = false)
         {
-            if (TwoHandedMode.IsEnable() && !skipTwoHanded)
-                return true;
-            else if (PhysicalMouseDetector.IsPhysicalMovement)
+            if (PhysicalMouseDetector.IsPhysicalMovement)
                 return false;
+            else if (TwoHandedMode.IsEnable() && !skipTwoHanded)
+                return true;
             else if (DesktopCursorManager.Instance.GetCurrentInputDevice() != __instance)
                 return false;
 
