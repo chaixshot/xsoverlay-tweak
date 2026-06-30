@@ -112,7 +112,7 @@ namespace xsoverlay_tweak
             InactivePointerOpacity = cfg.Bind("Pointer", "InactivePointerOpacity", 50, "Sets the opacity level for the inactive hand's Pointer.");
             PointerDoubleClickDelay = cfg.Bind("Pointer", "PointerDoubleClickDelay", true, "Applies the Double Click Delay from XSOverlay settings to the physical Pointer itself, not just the cursor.");
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the global XSOverlay setting.");
-            PullTriggerPointerLock = cfg.Bind("QualityOfLife", "PullTriggerPointerLock", 1, "Locks the Pointer in place while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.");
+            PullTriggerPointerLock = cfg.Bind("QualityOfLife", "PullTriggerPointerLock", 1, "Locks/Smooths the Pointer while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay settings.");
             TwoHandedMode = cfg.Bind("Pointer", "TwoHandedMode", false, "Allow both hands to become active hands at the same time to perform a Click simultaneously for two-hand interaction.");
 
             // Wrist

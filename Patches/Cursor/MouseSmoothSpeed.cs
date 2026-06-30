@@ -15,7 +15,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             XConfig.MouseSmoothSpeed.SettingChanged += (sender, args) =>
             {
                 foreach (var __instance in Instances)
-                    EventBridge.Ref_Raycaster.InterpolationSpeed(__instance) = GetSpeed(XConfig.MouseSmoothSpeed.Value);
+                    AppylySmoothSpeed(__instance);
             };
         }
 
@@ -24,7 +24,13 @@ namespace xsoverlay_tweak.Patches.Cursor
         public static void ApplyMouseSmoothSpeed(Raycaster __instance)
         {
             Instances.Add(__instance);
-            EventBridge.Ref_Raycaster.InterpolationSpeed(__instance) = GetSpeed(XConfig.MouseSmoothSpeed.Value);
+            AppylySmoothSpeed(__instance);
+        }
+
+        public static void AppylySmoothSpeed(Raycaster raycaster)
+        {
+            EventBridge.Ref_Raycaster.InterpolationSpeed(raycaster) = GetSpeed(XConfig.MouseSmoothSpeed.Value);
+
         }
 
         public static float GetSpeed(int speed)
