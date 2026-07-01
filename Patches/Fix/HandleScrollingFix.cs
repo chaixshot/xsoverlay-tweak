@@ -59,6 +59,7 @@ namespace xsoverlay_tweak.Patches.Fix
             {
                 // Vector mapping for embedded browser engine frames: 
                 // Inverts Y for browser standard window scrolling coordinates, retains direct X
+                float mulFactor = 6f; // Increase speed to match the desktop
                 float webScrollX = scrollX * scrollFactor;
                 float webScrollY = 0f - (scrollY * scrollFactor);
 
@@ -66,13 +67,13 @@ namespace xsoverlay_tweak.Patches.Fix
                 webScrollX = scrollX > 0f ? Mathf.Min(-0.00275f, webScrollX) : Mathf.Max(0.00275f, webScrollX);
                 webScrollY = scrollY > 0f ? Mathf.Min(-0.00275f, webScrollY) : Mathf.Max(0.00275f, webScrollY);
 
-                ____tickAccumulator += Mathf.Max(absX, absY) * (float)___ScrollClicksPerSecond * scrollFactor * 10;
+                ____tickAccumulator += Mathf.Max(absX, absY) * (float)___ScrollClicksPerSecond * scrollFactor * mulFactor;
                 int verticalTicks = (int)____tickAccumulator;
                 if (verticalTicks > 0)
                 {
                     ____tickAccumulator -= verticalTicks;
                     __instance.HoveringOverlay.WebViewHandler.WebView.Scroll(
-                        new(webScrollX, webScrollY),
+                        new(webScrollX * mulFactor, webScrollY * mulFactor),
                         ___CursorUVNormalized
                     );
                 }
