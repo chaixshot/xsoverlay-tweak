@@ -78,6 +78,25 @@ namespace xsoverlay_tweak.Utils
 
         public void Dispose()
         {
+            // Tell Windows to cleanly remove this hook from the OS routing table
+            try
+            {
+                uint RIDEV_REMOVE = 0x00000001;
+
+                RAWINPUTDEVICE[] rid = new RAWINPUTDEVICE[1];
+                rid[0].usUsagePage = 0x01; // Mouse
+                rid[0].usUsage = 0x02;     // Mouse
+                rid[0].dwFlags = RIDEV_REMOVE;
+                rid[0].hwndTarget = IntPtr.Zero; // Must be null when removing
+
+                RegisterRawInputDevices(rid, (uint)rid.Length, (uint)Marshal.SizeOf(rid[0]));
+            }
+            catch
+            {
+                // Safe fallback to ensure handle destruction still runs
+            }
+
+            // Tear down the NativeWindow loop allocation
             DestroyHandle();
             _inputBuffer = null;
         }
