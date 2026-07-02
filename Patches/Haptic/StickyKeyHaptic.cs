@@ -9,12 +9,12 @@ namespace xsoverlay_tweak.Patches.Haptic
     {
         [HarmonyPatch(typeof(KeyboardKey), "VirtualKeyboardEvent")]
         [HarmonyPostfix]
-        public static void VirtualKeyboardEvent(KeyboardKey __instance, bool ___WaitingForDoubleTap, bool ___IsKeyHoldLocked)
+        public static void VirtualKeyboardEvent(KeyboardKey __instance, bool ___WaitingForDoubleTap)
         {
             if (!IsEnable()) return;
 
             if (__instance.IsDoubleTappable)
-                if (!___WaitingForDoubleTap && ___IsKeyHoldLocked)
+                if (!___WaitingForDoubleTap && __instance.KeyIsCurrentlyHoldLocked)
                     Plugin.Instance.StartCoroutine(StickyHaptic());
         }
 
@@ -22,8 +22,7 @@ namespace xsoverlay_tweak.Patches.Haptic
         {
             yield return new WaitForSecondsRealtime(0.1f);
 
-            AdvancedHaptics.Rumble(true, 0.1f, 320f, 0.5f);
-            AdvancedHaptics.Rumble(false, 0.1f, 320f, 0.5f);
+            AdvancedHaptics.Rumble((DesktopCursorManager.Instance.GetCurrentInputDevice().HapticDeviceName == Raycaster.HapticDevice.Left), 0.1f, 320f, 0.5f);
         }
 
         private static bool IsEnable()
