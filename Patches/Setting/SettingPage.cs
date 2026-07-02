@@ -87,6 +87,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Quality of Life
                 ["XSOverlayTweak.DefaultCaptureOverlayTexture"] = XConfig.DefaultCaptureOverlayTexture.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
+                ["XSOverlayTweak.KeyboardHoldingIndicator"] = XConfig.KeyboardHoldingIndicator.Value,
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
                 ["XSOverlayTweak.OverlayCurveAutoRefresh"] = XConfig.OverlayCurveAutoRefresh.Value,
                 ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
@@ -268,6 +269,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.DoubleClickConfirm":
                     XConfig.DoubleClickConfirm.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.KeyboardHoldingIndicator":
+                    XConfig.KeyboardHoldingIndicator.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.LaserPointer":
                     XConfig.LaserPointer.Value = int.Parse(value);

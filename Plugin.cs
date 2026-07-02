@@ -75,6 +75,9 @@ public class Plugin : BaseUnityPlugin
         // Quality of Life
         harmony.PatchAll(typeof(Patches.QualityOfLife.DefaultCaptureOverlayTexture));
         harmony.PatchAll(typeof(Patches.QualityOfLife.DoubleClickConfirm));
+        harmony.PatchAll(typeof(Patches.QualityOfLife.FocusedWindowElevatedTaskView));
+        harmony.PatchAll(typeof(Patches.QualityOfLife.FocusedWindowHangTaskView));
+        harmony.PatchAll(typeof(Patches.QualityOfLife.KeyboardHoldingIndicator));
         harmony.PatchAll(typeof(Patches.QualityOfLife.LaserPointer));
         harmony.PatchAll(typeof(Patches.QualityOfLife.OverlayCurveAutoRefresh));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PinBlockInputNonEditMode));
