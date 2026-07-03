@@ -39,6 +39,7 @@ namespace xsoverlay_tweak
         // FocusedWindow
         public static ConfigEntry<bool> ElevatedTaskView;
         public static ConfigEntry<bool> HangTaskView;
+        public static ConfigEntry<bool> FullscreenMinimize;
 
 
         // Dashboard
@@ -134,6 +135,7 @@ namespace xsoverlay_tweak
             // FocusedWindow
             ElevatedTaskView = cfg.Bind("QualityOfLife", "ElevatedTaskView", true, "Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.");
             HangTaskView = cfg.Bind("QualityOfLife", "HangTaskView", true, "Show Windows Task View when the focused window is hung or not responding to prevent interaction deadlock.");
+            FullscreenMinimize = cfg.Bind("QualityOfLife", "FullscreenMinimize", true, "Minimize the current focused fullscreen window when toggling on Layout Mode.");
 
             // Dashboard
             DashboardNotification = cfg.Bind("Dashboard", "DashboardNotification", true, "Keeps Notifications visible while the SteamVR Dashboard is open.");

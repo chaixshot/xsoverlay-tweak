@@ -64,6 +64,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 // FocusedWindow
                 ["XSOverlayTweak.ElevatedTaskView"] = XConfig.ElevatedTaskView.Value,
                 ["XSOverlayTweak.HangTaskView"] = XConfig.HangTaskView.Value,
+                ["XSOverlayTweak.FullscreenMinimize"] = XConfig.FullscreenMinimize.Value,
 
                 // Dashboard Overlay
                 ["XSOverlayTweak.DashboardNotification"] = XConfig.DashboardNotification.Value,
@@ -216,6 +217,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.HangTaskView":
                     XConfig.HangTaskView.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.FullscreenMinimize":
+                    XConfig.FullscreenMinimize.Value = bool.Parse(value);
                     break;
 
                 // Dashboard Overlay
