@@ -31,8 +31,9 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        [DllImport("user32.dll")]
-        internal static extern IntPtr SetForegroundWindow(IntPtr hWnd);
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
         internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr voidProcessId);
@@ -103,14 +104,14 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         /// </summary>
         internal static async UniTask ShowWindowsTaskView()
         {
-            static void taskViewCMD()
+            static void TriggerTaskViewViaShell()
             {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = "cmd.exe",
-                    Arguments = "/c start shell:::{3080F90E-D7AD-11D9-BD98-0000947B0257}",
-                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
-                    CreateNoWindow = true
+                    FileName = "explorer.exe",
+                    Arguments = "shell:::{3080F90E-D7AD-11D9-BD98-0000947B0257}",
+                    UseShellExecute = true,
+                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
                 });
             }
 
@@ -122,22 +123,28 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 if (taskbarHandle != IntPtr.Zero)
                 {
                     await UniTask.Delay(200); // Wait for active window from taskbar tray icon
-                    SetForegroundWindow(taskbarHandle);
-                    await UniTask.Delay(200); // Wait for Windows to update focus and drop any elevated window security locks (UIPI)
 
-                    try // Press Win + Tab
+                    bool success = SetForegroundWindow(taskbarHandle); // If this fails (returns false), we are non-elevated and an Admin window is focused.
+                    if (success)
                     {
-                        XInputManager.sim.Keyboard.KeyDown(VirtualKeyCode.LWIN);
-                        XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+                        await UniTask.Delay(200); // Wait for Windows to update focus state
+
+                        try
+                        {
+                            XInputManager.sim.Keyboard.KeyDown(VirtualKeyCode.LWIN);
+                            XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+                        }
+                        catch (Exception)
+                        {
+                            TriggerTaskViewViaShell();
+                        }
+                        finally
+                        {
+                            XInputManager.sim.Keyboard.KeyUp(VirtualKeyCode.LWIN);
+                        }
                     }
-                    catch (Exception)
-                    {
-                        taskViewCMD();
-                    }
-                    finally // Releases Win + Tab safely under any execution failure
-                    {
-                        XInputManager.sim.Keyboard.KeyUp(VirtualKeyCode.LWIN);
-                    }
+                    else
+                        TriggerTaskViewViaShell();
                 }
                 else // Fallback - Open Start Menu directly via SysCommand
                 {
@@ -149,7 +156,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             }
             catch (Exception) // Fallback - If the entire explorer UI is completely dead/restarting
             {
-                taskViewCMD();
+                TriggerTaskViewViaShell();
             }
         }
     }
