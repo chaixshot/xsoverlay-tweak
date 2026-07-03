@@ -2,6 +2,7 @@
 using DG.Tweening;
 using HarmonyLib;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using XSOverlay;
 
@@ -9,6 +10,12 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 {
     internal class KeyboardHoldingIndicator
     {
+        private class ButtonData
+        {
+            public int State = 0;
+        }
+        private static readonly ConditionalWeakTable<KeyboardKey, ButtonData> ButtonDictionary = new();
+
         private const float animationDuration = 0.05f;
         private static readonly FieldInfo seqField = AccessTools.Field(typeof(ButtonAnimator), "Seq");
 
@@ -24,7 +31,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
         [HarmonyPostfix]
         public static void ReleaseStickyKeyEvent(KeyboardKey __instance)
         {
-            if (IsEnable())
+            if (IsEnable() && __instance.IsDoubleTappable)
                 DoKeyDownAnimation(__instance);
         }
 
@@ -32,7 +39,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
         [HarmonyPostfix]
         public static void LockKeyDown(KeyboardKey __instance)
         {
-            if (IsEnable())
+            if (IsEnable() && __instance.IsDoubleTappable)
                 DoKeyDownAnimation(__instance);
         }
 
@@ -46,6 +53,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
         private static void DoKeyDownAnimation(KeyboardKey key)
         {
+            ButtonData Data = ButtonDictionary.GetOrCreateValue(key);
             Transform transform = key.transform;
 
             bool isDown = key.IsKeyHeld;
@@ -56,9 +64,9 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             {
                 if (isSticky)
                 {
-                    if (key.FontSize != 2) // Sticky
+                    if (Data.State != 2) // Sticky
                     {
-                        key.FontSize = 2;
+                        Data.State = 2;
                         XSTools.ExecuteOnMainThread(async () =>
                         {
                             await UniTask.DelayFrame(2); // Wait for ButtonAnimator.OnClickAnimateButton() to play
@@ -69,9 +77,9 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                         });
                     }
                 }
-                else if (key.FontSize != 1) // Hold
+                else if (Data.State != 1) // Hold
                 {
-                    key.FontSize = 1;
+                    Data.State = 1;
                     XSTools.ExecuteOnMainThread(async () =>
                     {
                         await UniTask.DelayFrame(2);
@@ -82,9 +90,9 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     });
                 }
             }
-            else if (key.FontSize == 1 || key.FontSize == 2) // Normal
+            else if (Data.State == 1 || Data.State == 2) // Normal
             {
-                key.FontSize = 0;
+                Data.State = 0;
                 XSTools.ExecuteOnMainThread(async delegate
                 {
                     await UniTask.DelayFrame(2);
