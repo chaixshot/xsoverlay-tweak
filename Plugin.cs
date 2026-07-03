@@ -56,6 +56,9 @@ public class Plugin : BaseUnityPlugin
         // Mouse Navigation
         harmony.PatchAll(typeof(Patches.MouseNavigation));
 
+        // FocusedWindow
+        harmony.PatchAll(typeof(Patches.FocusedWindow.ElevatedTaskView));
+
         // Dashboard
         harmony.PatchAll(typeof(Patches.SteamDashboard));
 
@@ -75,8 +78,6 @@ public class Plugin : BaseUnityPlugin
         // Quality of Life
         harmony.PatchAll(typeof(Patches.QualityOfLife.DefaultCaptureOverlayTexture));
         harmony.PatchAll(typeof(Patches.QualityOfLife.DoubleClickConfirm));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.FocusedWindowElevatedTaskView));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.FocusedWindowHangTaskView));
         harmony.PatchAll(typeof(Patches.QualityOfLife.KeyboardHoldingIndicator));
         harmony.PatchAll(typeof(Patches.QualityOfLife.LaserPointer));
         harmony.PatchAll(typeof(Patches.QualityOfLife.OverlayCurveAutoRefresh));

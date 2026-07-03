@@ -53,7 +53,12 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Dashboard Overlay', priority: 6, settings: [
+        name: 'Focused Window', priority: 6, settings: [
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.ElevatedTaskView', name: 'Elevated Task View', description: 'Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.', default: true },
+        ]
+    },
+    {
+        name: 'Dashboard Overlay', priority: 7, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardNotification', name: 'Dashboard Notification', description: 'Allows Notifications to be displayed over the SteamVR Dashboard.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardPointer', name: 'Dashboard Pointer', description: 'Allows the Pointer to be displayed and interactive over the SteamVR Dashboard.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardSettings', name: 'Dashboard Settings', description: 'Allows the Settings WebView Overlay to be displayed over the SteamVR Dashboard.', default: true },
@@ -63,7 +68,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Haptic Feedback', priority: 7, settings: [
+        name: 'Haptic Feedback', priority: 8, settings: [
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.GrabHaptic', name: 'Grab', description: 'Plays a haptic feedback when grabbing any Overlay.', default: 50, options: [0, 100, 5], unit: '%' },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardKeyHaptic', name: 'Keyboard Key', description: 'Plays a haptic feedback when Pointer is hovering a Keyboard key.', default: 30, options: [0, 100, 5], unit: '%' },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardPressHaptic', name: 'Keyboard Press', description: 'Plays a haptic feedback when Pointer is pressing a Keyboard key.', default: 30, options: [0, 100, 5], unit: '%' },
@@ -75,14 +80,14 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Optimization', priority: 8, settings: [
+        name: 'Optimization', priority: 9, settings: [
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.', default: 'Enable + Pinned Visible', options: ['Disable', 'Enable', 'Enable + Pinned Visible'] },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.InactiveRefreshRate', name: 'Inactive Refresh Rate', description: 'The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.<br>Very low value: the Layout Mode Toggle binding listener will miss some frames.', default: 15, options: [5, <<HMDRefreshRate>>, 1], unit: 'FPS' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.uOSCThreadLoop', name: 'OSC Thread Loop', description: 'Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.', default: true },
         ]
     },
     {
-        name: 'Quality of Life', priority: 9, settings: [
+        name: 'Quality of Life', priority: 10, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DefaultCaptureOverlayTexture', name: 'Default Capture Overlay Texture', description: 'Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DoubleClickConfirm', name: 'Double Click Confirm', description: 'Ensures that a Double Click is always sent reliably when using Emulate Mouse mode.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardHoldingIndicator', name: 'Keyboard Holding Indicator', description: 'Do Keyboard key-pressed animation while the key is being held or sticky.', default: true },
@@ -95,7 +100,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Fix', priority: 10, settings: [
+        name: 'Fix', priority: 11, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CtrlKeyStickyFix', name: 'Ctrl Key Sticky', description: 'Fixes the issue where the Ctrl key is not sticky.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CursorMovingInteractionFix', name: 'Cursor Moving Interaction', description: 'Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HandleScrollingFix', name: 'Handle Scrolling', description: 'Support horizontal scrolling and control scroll speed with the thumbstick axis value.', default: true },
@@ -107,7 +112,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Community Request', priority: 11, settings: [
+        name: 'Community Request', priority: 12, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HideBattery', name: 'Hide Battery', description: 'Hide the Wrist  Overlay battery information widget.', default: false },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HideInvalidBattery', name: 'Hide Invalid Battery', description: 'Hide the invalid  battery device from Wrist Overlay.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
@@ -119,7 +124,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'About', priority: 12, settings: [
+        name: 'About', priority: 13, settings: [
             { type: Ui.ComponentType.Text, description: '<br>Version: <<Version>>'},
             { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.CheckForUpdate', name: 'Check for Updates', description: 'Check for the latest version of XSOverlay Tweak.', default: true },
             { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.OpenGitHub', name: 'Open GitHub', description: 'Visit the XSOverlay Tweak GitHub page.', default: true },

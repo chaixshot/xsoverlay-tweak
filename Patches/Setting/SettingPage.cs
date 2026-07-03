@@ -61,6 +61,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.MouseNavigation"] = XConfig.MouseNavigation.Value,
                 ["XSOverlayTweak.MouseNavigationUseModifiedKey"] = XConfig.MouseNavigationUseModifiedKey.Value,
 
+                // FocusedWindow
+                ["XSOverlayTweak.ElevatedTaskView"] = XConfig.ElevatedTaskView.Value,
+
                 // Dashboard Overlay
                 ["XSOverlayTweak.DashboardNotification"] = XConfig.DashboardNotification.Value,
                 ["XSOverlayTweak.DashboardPointer"] = XConfig.DashboardPointer.Value,
@@ -204,6 +207,11 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.MouseNavigationUseModifiedKey":
                     XConfig.MouseNavigationUseModifiedKey.Value = bool.Parse(value);
+                    break;
+
+                // FocusedWindow
+                case "XSOverlayTweak.ElevatedTaskView":
+                    XConfig.ElevatedTaskView.Value = bool.Parse(value);
                     break;
 
                 // Dashboard Overlay
