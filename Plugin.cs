@@ -58,6 +58,7 @@ public class Plugin : BaseUnityPlugin
 
         // FocusedWindow
         harmony.PatchAll(typeof(Patches.FocusedWindow.ElevatedTaskView));
+        harmony.PatchAll(typeof(Patches.FocusedWindow.HangTaskView));
 
         // Dashboard
         harmony.PatchAll(typeof(Patches.SteamDashboard));

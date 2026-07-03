@@ -63,6 +63,7 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // FocusedWindow
                 ["XSOverlayTweak.ElevatedTaskView"] = XConfig.ElevatedTaskView.Value,
+                ["XSOverlayTweak.HangTaskView"] = XConfig.HangTaskView.Value,
 
                 // Dashboard Overlay
                 ["XSOverlayTweak.DashboardNotification"] = XConfig.DashboardNotification.Value,
@@ -212,6 +213,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 // FocusedWindow
                 case "XSOverlayTweak.ElevatedTaskView":
                     XConfig.ElevatedTaskView.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.HangTaskView":
+                    XConfig.HangTaskView.Value = bool.Parse(value);
                     break;
 
                 // Dashboard Overlay

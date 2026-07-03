@@ -55,6 +55,7 @@ const SECTIONS = [
     {
         name: 'Focused Window', priority: 6, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.ElevatedTaskView', name: 'Elevated Task View', description: 'Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HangTaskView', name: 'Hang Task View', description: 'Show Windows Task View when the focused window is hung or not responding to prevent interaction deadlock.', default: true },
         ]
     },
     {
