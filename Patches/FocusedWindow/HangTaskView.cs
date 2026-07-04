@@ -36,7 +36,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
             OnFocusedWindowChanged += (isHanging) =>
             {
-                if (isHanging && EventBridge.IsHoverAnyDesktopOrWindowCapture)
+                if (isHanging && (EventBridge.IsHoverAnyDesktopOrWindowCapture || Overlay_Manager.Instance.editMode))
                     HandleHangingWindow();
             };
 
@@ -84,7 +84,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             {
                 await UniTask.Delay(1000, cancellationToken: token);
 
-                if (EventBridge.IsHoverAnyDesktopOrWindowCapture)
+                if (EventBridge.IsHoverAnyDesktopOrWindowCapture || Overlay_Manager.Instance.editMode)
                     if (IsCurrentWindowHanging())
                     {
                         HandleHangingWindow();
