@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using WindowsInput.Native;
 using XSOverlay;
@@ -104,60 +105,54 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         /// </summary>
         internal static async UniTask ShowWindowsTaskView()
         {
-            static void TriggerTaskViewViaShell()
+            IntPtr taskbarHandle = FindWindow("Shell_TrayWnd", null);
+
+            await UniTask.Delay(100); // Wait for window process focus changed
+
+            if (taskbarHandle != IntPtr.Zero) // Focus Taskbar & Press Win + Tab
             {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                bool success = SetForegroundWindow(taskbarHandle); // If this fails (returns false), we are non-elevated and an Admin window is focused.
+                if (success)
                 {
-                    FileName = "explorer.exe",
-                    Arguments = "shell:::{3080F90E-D7AD-11D9-BD98-0000947B0257}",
-                    UseShellExecute = true,
-                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
-                });
-            }
+                    await UniTask.Delay(100); // Wait for Windows to update focus state
 
-            try
-            {
-                IntPtr taskbarHandle = FindWindow("Shell_TrayWnd", null);
-
-                // Focus Taskbar & Press Win + Tab
-                if (taskbarHandle != IntPtr.Zero)
-                {
-                    await UniTask.Delay(200); // Wait for active window from taskbar tray icon
-
-                    bool success = SetForegroundWindow(taskbarHandle); // If this fails (returns false), we are non-elevated and an Admin window is focused.
-                    if (success)
+                    try
                     {
-                        await UniTask.Delay(200); // Wait for Windows to update focus state
-
-                        try
-                        {
-                            XInputManager.sim.Keyboard.KeyDown(VirtualKeyCode.LWIN);
-                            XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
-                        }
-                        catch (Exception)
-                        {
-                            TriggerTaskViewViaShell();
-                        }
-                        finally
-                        {
-                            XInputManager.sim.Keyboard.KeyUp(VirtualKeyCode.LWIN);
-                        }
+                        XInputManager.sim.Keyboard.KeyDown(VirtualKeyCode.LWIN);
+                        XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
                     }
-                    else
-                        TriggerTaskViewViaShell();
+                    catch (Exception)
+                    {
+                        ShellTaskView();
+                    }
+                    finally
+                    {
+                        XInputManager.sim.Keyboard.KeyUp(VirtualKeyCode.LWIN);
+                    }
                 }
-                else // Fallback - Open Start Menu directly via SysCommand
-                {
-                    IntPtr progmanHandle = FindWindow("Progman", null);
-                    IntPtr targetShell = progmanHandle != IntPtr.Zero ? progmanHandle : taskbarHandle;
+                else
+                    ShellTaskView();
+            }
+            else
+                ShellTaskView();
 
-                    SendMessage(targetShell, WM_SYSCOMMAND, (IntPtr)SC_TASKLIST, IntPtr.Zero); // SendMessage ignores UIPI blocks completely
-                }
-            }
-            catch (Exception) // Fallback - If the entire explorer UI is completely dead/restarting
+            await UniTask.Delay(50); // Wait for focus changed
+        }
+
+        public static async void ShellTaskView()
+        {
+            Process.Start(new ProcessStartInfo
             {
-                TriggerTaskViewViaShell();
-            }
+                FileName = "shell:::{3080F90E-D7AD-11D9-BD98-0000947B0257}",
+                UseShellExecute = true // Required for shell system shortcuts
+            });
+        }
+
+        public static void ShellStartMenu()
+        {
+            IntPtr progmanHandle = FindWindow("Progman", null);
+            if (progmanHandle != IntPtr.Zero)
+                SendMessage(progmanHandle, WM_SYSCOMMAND, (IntPtr)SC_TASKLIST, IntPtr.Zero); // SendMessage ignores UIPI blocks completely
         }
     }
 }

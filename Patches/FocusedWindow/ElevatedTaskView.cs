@@ -32,9 +32,13 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             {
                 if (IsEnable() && IsShow)
                 {
-                    IntPtr hwnd = Utils.GetForegroundWindow();
-                    if (hwnd != IntPtr.Zero && IsWindowElevated(hwnd))
+                    if (IsCurrentWindowElevated())
+                    {
                         await Utils.ShowWindowsTaskView();
+
+                        if (IsCurrentWindowElevated())
+                            Utils.ShellStartMenu();
+                    }
                 }
             };
 
@@ -42,7 +46,12 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             OnFocusedWindowChanged += async (isElevated) =>
             {
                 if (isElevated && (EventBridge.IsHoverAnyDesktopOrWindowCapture || Overlay_Manager.Instance.editMode))
+                {
                     await Utils.ShowWindowsTaskView();
+
+                    if (IsCurrentWindowElevated())
+                        Utils.ShellStartMenu();
+                }
             };
 
             if (IsEnable())
@@ -64,6 +73,11 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             return false;
         }
 
+        public static bool IsCurrentWindowElevated()
+        {
+            IntPtr hwnd = Utils.GetForegroundWindow();
+            return hwnd != IntPtr.Zero && IsWindowElevated(hwnd);
+        }
 
         private static void WinEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {

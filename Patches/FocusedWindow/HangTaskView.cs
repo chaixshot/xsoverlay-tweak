@@ -31,7 +31,12 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             {
                 if (IsEnable() && IsShow)
                     if (IsCurrentWindowHanging())
+                    {
                         await Utils.ShowWindowsTaskView();
+
+                        if (IsCurrentWindowHanging())
+                            Utils.ShellStartMenu();
+                    }
             };
 
             OnFocusedWindowChanged += (isHanging) =>
@@ -71,7 +76,12 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 if (!confirmed) return;
 
                 if (hwnd == Utils.GetForegroundWindow()) // Make sure the window is still the same
+                {
                     await Utils.ShowWindowsTaskView();
+
+                    if (IsCurrentWindowHanging())
+                        Utils.ShellStartMenu();
+                }
             });
         }
 
