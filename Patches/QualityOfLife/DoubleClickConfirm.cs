@@ -9,18 +9,39 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
     [HarmonyPatch(typeof(Raycaster))]
     internal class DoubleClickConfirm
     {
-        public class DoubleClickConfirmState
-        {
-            public float lastClickTime = 0f;
-        }
-        public static readonly ConditionalWeakTable<Raycaster, DoubleClickConfirmState> InstanceState = new();
-
         [DllImport("user32.dll")]
         private static extern uint GetDoubleClickTime();
 
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows")]
+        private class DoubleClickConfirmState
+        {
+            public float lastClickTime = 0f;
+        }
+        private static readonly ConditionalWeakTable<Raycaster, DoubleClickConfirmState> InstanceState = new();
+
+        static float wDoubleClickTime;
+
+        static Vector2 lastDesktopCoordinates;
+
+        [HarmonyPatch("Start")]
+        [HarmonyPostfix]
+        public static void ListenForConfigChange()
+        {
+            wDoubleClickTime = GetDoubleClickTime() / 1000f;
+        }
+
+        [HarmonyPatch("HandleClicksForDesktopWindows")]
         [HarmonyPrefix]
-        public static bool WaitToConfrimDoubleClick(Raycaster __instance, ref ClickActions clickActions, ref MouseInputDevice ___InputDevice, ref bool ___HadMouseInputDown)
+        public static bool WaitToConfrimDoubleClick(
+            Raycaster __instance,
+
+            ref ClickActions clickActions,
+            ref MouseInputDevice ___InputDevice,
+            ref bool ___HadMouseInputDown,
+
+            bool ___HoldingTouch,
+            Vector2 ___DesktopCoordinates,
+            Vector2 ___CachedTouchPosition
+            )
         {
             if (!IsEnable()) return true;
 
@@ -31,19 +52,33 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     if (__instance.CanClickDesktopCursor)
                         if (!clickActions.IsHoldingMouseClick)
                         {
-                            bool IsDouble = false;
-                            float Delay = Time.time - DoubleClickState.lastClickTime;
+                            bool isDoubleXSO = false;
+                            bool isDoubleWin = false;
+                            float delay = Time.time - DoubleClickState.lastClickTime;
 
-                            if (Delay <= XSettingsManager.Instance.Settings.DoubleClickDelay * 2)
+                            if (delay <= XSettingsManager.Instance.Settings.DoubleClickDelay && delay > wDoubleClickTime)
                             {
-                                if (Delay > GetDoubleClickTime() / 1000f)
-                                    IsDouble = true;
+                                isDoubleXSO = true;
+                                DoubleClickState.lastClickTime = 0f;
+                            }
+                            else if (delay <= wDoubleClickTime)
+                            {
+                                isDoubleWin = true;
                                 DoubleClickState.lastClickTime = 0f;
                             }
                             else
                                 DoubleClickState.lastClickTime = Time.time;
 
-                            if (IsDouble)
+                            // Cache the cursor position and set it back when double-click to avoid the cursor moving from hand movement between clicks
+                            if (isDoubleXSO || isDoubleWin)
+                                MouseOperations.SetCursorPosition((int)lastDesktopCoordinates.x, (int)lastDesktopCoordinates.y);
+                            else
+                                if (!___HoldingTouch)
+                                    lastDesktopCoordinates = ___DesktopCoordinates;
+                                else
+                                    lastDesktopCoordinates = ___CachedTouchPosition;
+
+                            if (isDoubleXSO)
                             {
                                 switch (clickActions.ActionIndex)
                                 {
