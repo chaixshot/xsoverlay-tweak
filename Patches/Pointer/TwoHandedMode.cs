@@ -17,7 +17,22 @@ namespace xsoverlay_tweak.Patches.Pointer
         }
         private static readonly ConditionalWeakTable<Raycaster, RaycasterData> RaycasterDictionary = new();
 
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
+        [HarmonyPatch("Start")]
+        [HarmonyPostfix]
+        public static void FixHoveringReleaseControlEvent(Raycaster __instance)
+        {
+            XSOEventSystem.OnReleaseControlOfDesktopCursor += (raycaster) =>
+            {
+                if (!IsEnable()) return;
+                if (raycaster == __instance) return;
+                if (!EventBridge.IsRaycasterHand(__instance)) return;
+
+                if (__instance.HoveringOverlay != null)
+                    XSOEventSystem.Current.EventSwitchHoveringOverlay(__instance, __instance.HoveringOverlay);
+            };
+        }
+
+        [HarmonyPatch("HandleClicksForDesktopWindows"), HarmonyPatch("HandleTouchInputForDesktopWindows"), HarmonyPatch("HandleTouchInputForWebApplications")]
         [HarmonyPrefix]
         public static void ClickToBecomeActiveHandAndDoClick(Raycaster __instance)
         {
@@ -34,7 +49,7 @@ namespace xsoverlay_tweak.Patches.Pointer
             }
         }
 
-        [HarmonyPatch(typeof(Raycaster), "OnDesktopCursor")]
+        [HarmonyPatch("OnDesktopCursor")]
         [HarmonyPrefix]
         public static void MoveToTakeControl(Raycaster __instance, Vector3 ___RayHitPoint)
         {
@@ -52,7 +67,7 @@ namespace xsoverlay_tweak.Patches.Pointer
             }
         }
 
-        [HarmonyPatch(typeof(Raycaster), "HandleScrolling")]
+        [HarmonyPatch("HandleScrolling")]
         [HarmonyPrefix]
         public static bool ScrollingNonCurrentHandFix(Raycaster __instance)
         {
