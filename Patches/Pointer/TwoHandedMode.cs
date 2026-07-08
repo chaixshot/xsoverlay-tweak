@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using uWindowCapture;
 using XSOverlay;
-using xsoverlay_tweak.Patches.Fix;
+using xsoverlay_tweak.Patches.QualityOfLife;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
@@ -72,7 +72,7 @@ namespace xsoverlay_tweak.Patches.Pointer
         public static bool ScrollingNonCurrentHandFix(Raycaster __instance)
         {
             if (!IsEnable()) return true;
-            if (HandleScrollingFix.IsEnable()) return true;
+            if (HandleScrolling.IsEnable()) return true;
 
             if (!EventBridge.IsActiveHand(__instance, true))
                 return false;

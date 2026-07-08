@@ -80,7 +80,7 @@ namespace xsoverlay_tweak
         // Fix
         public static ConfigEntry<bool> CtrlKeyStickyFix;
         public static ConfigEntry<bool> CursorMovingInteractionFix;
-        public static ConfigEntry<bool> HandleScrollingFix;
+        public static ConfigEntry<bool> HandleScrolling;
         public static ConfigEntry<bool> KeyboardControlButtonStateFix;
         public static ConfigEntry<bool> LoadLayoutScaleFix;
         public static ConfigEntry<bool> OverlayGripSlipFix;
@@ -165,6 +165,7 @@ namespace xsoverlay_tweak
             // Quality of Life
             DefaultCaptureOverlayTexture = cfg.Bind("QualityOfLife", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
             DoubleClickConfirm = cfg.Bind("QualityOfLife", "DoubleClickConfirm", true, "Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.");
+            HandleScrolling = cfg.Bind("QualityOfLife", "HandleScrolling", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
             KeyboardHoldingIndicator = cfg.Bind("QualityOfLife", "KeyboardHoldingIndicator", true, "Do Keyboard key-pressed animation while the key is being held or sticky.");
             LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
             OverlayCurveAutoRefresh = cfg.Bind("QualityOfLife", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
@@ -176,7 +177,6 @@ namespace xsoverlay_tweak
             // Fix
             CtrlKeyStickyFix = cfg.Bind("Fix", "CtrlKeyStickyFix", true, "Fix where double-tapping the Ctrl key does not sticky.");
             CursorMovingInteractionFix = cfg.Bind("Fix", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.");
-            HandleScrollingFix = cfg.Bind("Fix", "HandleScrollingFix", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
             KeyboardControlButtonStateFix = cfg.Bind("Fix", "KeyboardControlButtonStateFix", true, "Fix keyboard control button color not following the state when summoning.");
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
             OverlayGripSlipFix = cfg.Bind("Fix", "OverlayGripSlipFix", true, "Prevents Overlay from dropping or slipping out of Grip when moving it too fast.");

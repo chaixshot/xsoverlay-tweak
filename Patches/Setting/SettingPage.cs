@@ -93,6 +93,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Quality of Life
                 ["XSOverlayTweak.DefaultCaptureOverlayTexture"] = XConfig.DefaultCaptureOverlayTexture.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
+                ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
                 ["XSOverlayTweak.KeyboardHoldingIndicator"] = XConfig.KeyboardHoldingIndicator.Value,
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
                 ["XSOverlayTweak.OverlayCurveAutoRefresh"] = XConfig.OverlayCurveAutoRefresh.Value,
@@ -104,7 +105,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Fix
                 ["XSOverlayTweak.CtrlKeyStickyFix"] = XConfig.CtrlKeyStickyFix.Value,
                 ["XSOverlayTweak.CursorMovingInteractionFix"] = XConfig.CursorMovingInteractionFix.Value,
-                ["XSOverlayTweak.HandleScrollingFix"] = XConfig.HandleScrollingFix.Value,
                 ["XSOverlayTweak.KeyboardControlButtonStateFix"] = XConfig.KeyboardControlButtonStateFix.Value,
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
                 ["XSOverlayTweak.OverlayGripSlipFix"] = XConfig.OverlayGripSlipFix.Value,
@@ -290,6 +290,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.DoubleClickConfirm":
                     XConfig.DoubleClickConfirm.Value = bool.Parse(value);
                     break;
+                case "XSOverlayTweak.HandleScrolling":
+                    XConfig.HandleScrolling.Value = bool.Parse(value);
+                    break;
                 case "XSOverlayTweak.KeyboardHoldingIndicator":
                     XConfig.KeyboardHoldingIndicator.Value = bool.Parse(value);
                     break;
@@ -318,9 +321,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.CursorMovingInteractionFix":
                     XConfig.CursorMovingInteractionFix.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.HandleScrollingFix":
-                    XConfig.HandleScrollingFix.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.KeyboardControlButtonStateFix":
                     XConfig.KeyboardControlButtonStateFix.Value = bool.Parse(value);

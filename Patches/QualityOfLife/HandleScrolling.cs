@@ -4,9 +4,9 @@ using XSOverlay;
 using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Utils;
 
-namespace xsoverlay_tweak.Patches.Fix
+namespace xsoverlay_tweak.Patches.QualityOfLife
 {
-    internal class HandleScrollingFix
+    internal class HandleScrolling
     {
         private static float ____horizontalTicks;
 
@@ -86,7 +86,7 @@ namespace xsoverlay_tweak.Patches.Fix
 
         public static bool IsEnable()
         {
-            return XConfig.HandleScrollingFix.Value;
+            return XConfig.HandleScrolling.Value;
         }
     }
 }

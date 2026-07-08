@@ -81,6 +81,7 @@ public class Plugin : BaseUnityPlugin
         // Quality of Life
         harmony.PatchAll(typeof(Patches.QualityOfLife.DefaultCaptureOverlayTexture));
         harmony.PatchAll(typeof(Patches.QualityOfLife.DoubleClickConfirm));
+        harmony.PatchAll(typeof(Patches.QualityOfLife.HandleScrolling));
         harmony.PatchAll(typeof(Patches.QualityOfLife.KeyboardHoldingIndicator));
         harmony.PatchAll(typeof(Patches.QualityOfLife.LaserPointer));
         harmony.PatchAll(typeof(Patches.QualityOfLife.OverlayCurveAutoRefresh));
@@ -92,7 +93,6 @@ public class Plugin : BaseUnityPlugin
         // Fix
         harmony.PatchAll(typeof(Patches.Fix.CtrlKeyStickyFix));
         harmony.PatchAll(typeof(Patches.Fix.CursorMovingInteractionFix));
-        harmony.PatchAll(typeof(Patches.Fix.HandleScrollingFix));
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
         harmony.PatchAll(typeof(Patches.Fix.KeyboardControlButtonStateFix));
         harmony.PatchAll(typeof(Patches.Fix.OverlayGripSlipFix));
