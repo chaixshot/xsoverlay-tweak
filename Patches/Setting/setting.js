@@ -71,6 +71,7 @@ const SECTIONS = [
     },
     {
         name: 'Haptic Feedback', priority: 8, settings: [
+            { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.DoubleClickHaptic', name: 'Double Click', description: 'Plays a haptic feedback when Double Click.', default: 70, options: [0, 100, 5], unit: '%' },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.GrabHaptic', name: 'Grab', description: 'Plays a haptic feedback when grabbing any Overlay.', default: 50, options: [0, 100, 5], unit: '%' },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardKeyHaptic', name: 'Keyboard Key', description: 'Plays a haptic feedback when Pointer is hovering a Keyboard key.', default: 30, options: [0, 100, 5], unit: '%' },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardPressHaptic', name: 'Keyboard Press', description: 'Plays a haptic feedback when Pointer is pressing a Keyboard key.', default: 30, options: [0, 100, 5], unit: '%' },

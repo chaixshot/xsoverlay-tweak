@@ -51,6 +51,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> Dashboardkeyboard;
 
         // Haptic
+        public static ConfigEntry<int> DoubleClickHaptic;
         public static ConfigEntry<int> GrabHaptic;
         public static ConfigEntry<int> KeyboardKeyHaptic;
         public static ConfigEntry<int> KeyboardPressHaptic;
@@ -146,6 +147,7 @@ namespace xsoverlay_tweak
             Dashboardkeyboard = cfg.Bind("Dashboard", "Dashboardkeyboard", false, "Keeps Keyboard visible while the SteamVR Dashboard is open.");
 
             // Haptic
+            DoubleClickHaptic = cfg.Bind("Haptic", "DoubleClickHaptic", 70, "Plays a haptic feedback when Double Click.");
             GrabHaptic = cfg.Bind("Haptic", "GrabHaptic", 50, "Plays a haptic feedback when grabbing any Overlay.");
             KeyboardKeyHaptic = cfg.Bind("Haptic", "KeyboardKeyHaptic", 30, "Plays a haptic feedback when Pointer is hovering a Keyboard key.");
             KeyboardPressHaptic = cfg.Bind("Haptic", "KeyboardPressHaptic", 30, "Plays a haptic feedback when Pointer is pressing a Keyboard key.");

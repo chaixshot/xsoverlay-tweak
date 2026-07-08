@@ -75,6 +75,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.Dashboardkeyboard"] = XConfig.Dashboardkeyboard.Value,
 
                 // Haptic
+                ["XSOverlayTweak.DoubleClickHaptic"] = XConfig.DoubleClickHaptic.Value,
                 ["XSOverlayTweak.GrabHaptic"] = XConfig.GrabHaptic.Value,
                 ["XSOverlayTweak.KeyboardKeyHaptic"] = XConfig.KeyboardKeyHaptic.Value,
                 ["XSOverlayTweak.KeyboardPressHaptic"] = XConfig.KeyboardPressHaptic.Value,
@@ -243,6 +244,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
 
                 // Haptic
+                case "XSOverlayTweak.DoubleClickHaptic":
+                    XConfig.DoubleClickHaptic.Value = int.Parse(value);
+                    break;
                 case "XSOverlayTweak.GrabHaptic":
                     XConfig.GrabHaptic.Value = int.Parse(value);
                     break;

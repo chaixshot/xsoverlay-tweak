@@ -65,6 +65,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.SteamDashboard));
 
         // Haptic
+        harmony.PatchAll(typeof(Patches.Haptic.DoubleClickHaptic));
         harmony.PatchAll(typeof(Patches.Haptic.GrabHaptic));
         harmony.PatchAll(typeof(Patches.Haptic.KeyboardKeyHaptic));
         harmony.PatchAll(typeof(Patches.Haptic.KeyboardPressHaptic));
