@@ -7,12 +7,9 @@ namespace xsoverlay_tweak.Patches.Fix
     {
         [HarmonyPatch(typeof(WindowMovementManager), nameof(WindowMovementManager.MoveToEdgeOfWindowAndInheritRotation))]
         [HarmonyPrefix]
-        public static bool MoveToEdgeOfWindowAndInheritRotation(Unity_Overlay Overlay, Unity_Overlay TargetOverlay)
+        public static bool MoveToEdgeOfWindowAndInheritRotation(Unity_Overlay TargetOverlay)
         {
-            if (TargetOverlay == null)
-                return true;
-
-            if (Overlay.overlayTexture == null || TargetOverlay.overlayTexture == null)
+            if (TargetOverlay == null || TargetOverlay.overlayTexture == null)
                 return false;
 
             return true;
