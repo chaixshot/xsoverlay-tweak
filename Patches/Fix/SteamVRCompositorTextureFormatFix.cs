@@ -4,9 +4,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 
-namespace xsoverlay_tweak.Patches.QualityOfLife
+namespace xsoverlay_tweak.Patches.Fix
 {
-    internal class SteamVRCompositorTextureFormat
+    internal class SteamVRCompositorTextureFormatFix
     {
         private const uint DXGI_FORMAT_R8G8B8A8_UNORM = 28;
         private const uint DXGI_FORMAT_B8G8R8A8_UNORM = 87;
@@ -23,7 +23,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             MethodInfo createExternalTexture = AccessTools.Method(
                 typeof(Texture2D),
                 nameof(Texture2D.CreateExternalTexture),
-                new[] { typeof(int), typeof(int), typeof(TextureFormat), typeof(bool), typeof(bool), typeof(System.IntPtr) });
+                [typeof(int), typeof(int), typeof(TextureFormat), typeof(bool), typeof(bool), typeof(System.IntPtr)]);
 
             object nativeFormatLocal = null;
 
@@ -64,7 +64,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                 codes.InsertRange(formatIndex + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldc_I4_S, (sbyte)TextureFormat.BGRA32),
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SteamVRCompositorTextureFormat), nameof(GetSteamVRTextureFormat)))
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SteamVRCompositorTextureFormatFix), nameof(GetSteamVRTextureFormat)))
                 });
                 patchedCalls++;
                 i += 2;
@@ -114,7 +114,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
         private static bool IsEnable()
         {
-            return XConfig.SteamVRCompositorTextureFormat.Value;
+            return XConfig.SteamVRCompositorTextureFormatFix.Value;
         }
     }
 }

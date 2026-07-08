@@ -110,6 +110,7 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayGripSlipFix', name: 'Overlay Grip Slip', description: 'Prevents Overlay from dropping or slipping out of Grip when moving it too fast.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.SteamVRCompositorTextureFormatFix', name: 'SteamVR Compositor Texture Format', description: 'Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFrozenFix', name: 'WebView', description: 'Fixes an issue where certain WebView UI elements were not clickable.', default: true },
         ]

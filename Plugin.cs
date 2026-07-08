@@ -87,7 +87,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.QualityOfLife.OverlayCurveAutoRefresh));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PinBlockInputNonEditMode));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerClickThreshold));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.SteamVRCompositorTextureFormat));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WebViewWiderScroll));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WindowsAccentColor));
 
@@ -100,6 +99,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.OverlayGripSlipFix));
         harmony.PatchAll(typeof(Patches.Fix.OverlayRollCurveFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
+        harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewTexturePixelFormatFix));
 

@@ -108,6 +108,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.KeyboardControlButtonStateFix"] = XConfig.KeyboardControlButtonStateFix.Value,
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
                 ["XSOverlayTweak.OverlayGripSlipFix"] = XConfig.OverlayGripSlipFix.Value,
+                ["XSOverlayTweak.SteamVRCompositorTextureFormatFix"] = XConfig.SteamVRCompositorTextureFormatFix.Value,
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.WebViewFrozenFix"] = XConfig.WebViewFrozenFix.Value,
 
@@ -330,6 +331,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.OverlayGripSlipFix":
                     XConfig.OverlayGripSlipFix.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.SteamVRCompositorTextureFormatFix":
+                    XConfig.SteamVRCompositorTextureFormatFix.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.OverlayRollCurveFix":
                     XConfig.OverlayRollCurveFix.Value = bool.Parse(value);
