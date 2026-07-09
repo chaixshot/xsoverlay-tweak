@@ -2,7 +2,7 @@
 using Valve.VR;
 using XSOverlay;
 
-namespace xsoverlay_tweak.Patches.QualityOfLife
+namespace xsoverlay_tweak.Patches.Cursor
 {
     [HarmonyPatch(typeof(MouseInputDevice))]
 

@@ -36,6 +36,8 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Cursor.HandleScrolling));
         harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed));
         harmony.PatchAll(typeof(Patches.Cursor.WindowsCursorPointer));
+        harmony.PatchAll(typeof(Patches.Cursor.PullTriggerClickThreshold));
+
 
         // Pointer
         harmony.PatchAll(typeof(Patches.Pointer.ActivePointerWebView));
@@ -100,7 +102,6 @@ public class Plugin : BaseUnityPlugin
 
         // Quality of Life
         harmony.PatchAll(typeof(Patches.QualityOfLife.LaserPointer));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerClickThreshold));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WebViewWiderScroll));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WindowsAccentColor));
 

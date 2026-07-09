@@ -25,6 +25,7 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HandleScrolling', name: 'Handle Scrolling', description: 'Support horizontal scrolling and control scroll speed with the thumbstick axis value.', default: true },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.', default: 'Medium', options: ['Ultra Low', 'Very Low', 'Low', 'Medium', 'High', 'Very High'] },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.WindowsCursorPointer', name: 'Windows Cursor Pointer', description: 'Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.<br>- Animated mode always updates the cursor texture, which might impact performance.', default: 'Enable', options: ['Disable', 'Enable', 'Enable + Animated'] },
+            { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.PullTriggerClickThreshold', name: 'Pull Trigger Click Threshold', description: 'The Trigger pull threshold required to trigger a Left Click.<br>- Uses the Trigger Value from SteamVR Input.', default: 0.5, options: [0.1, 1.0, 0.1], unit: 'Unit' },
         ]
     },
     {
@@ -116,7 +117,6 @@ const SECTIONS = [
     {
         name: 'Quality of Life', priority: 12, settings: [
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.LaserPointer', name: 'Laser', description: 'Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.<br>- Mouse Smooth: apply mouse smooth behavior to the Laser when active.', default: 'Enable', options: ['Disable', 'Enable', 'Enable + Mouse Smooth'] },
-            { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.PullTriggerClickThreshold', name: 'Pull Trigger Click Threshold', description: 'The Trigger pull threshold required to trigger a Left Click.<br>- Uses the Trigger Value from SteamVR Input.', default: 0.5, options: [0.1, 1.0, 0.1], unit: 'Unit' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewWiderScroll', name: 'WebView Wider Scroll', description: 'Makes the WebView scrollbar wider for easier interaction.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowsAccentColor', name: 'Windows Accent Color', description: 'Using Windows accent color as XSOverlay accent color.', default: true },
         ]

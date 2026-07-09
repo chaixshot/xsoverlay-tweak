@@ -17,6 +17,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> HandleScrolling;
         public static ConfigEntry<int> MouseSmoothSpeed;
         public static ConfigEntry<int> WindowsCursorPointer;
+        public static ConfigEntry<float> PullTriggerClickThreshold;
 
         // Pointer
         public static ConfigEntry<bool> ActivePointerWebView;
@@ -87,7 +88,6 @@ namespace xsoverlay_tweak
 
         // Quality of Life
         public static ConfigEntry<int> LaserPointer;
-        public static ConfigEntry<float> PullTriggerClickThreshold;
         public static ConfigEntry<bool> SteamVRCompositorTextureFormatFix;
         public static ConfigEntry<bool> WebViewWiderScroll;
         public static ConfigEntry<bool> WindowsAccentColor;
@@ -115,6 +115,7 @@ namespace xsoverlay_tweak
             HandleScrolling = cfg.Bind("Cursor", "HandleScrolling", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
             MouseSmoothSpeed = cfg.Bind("Cursor", "MouseSmoothSpeed", 3, "Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.");
             WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", 1, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.\n- Animated mode always updates the cursor texture, which might impact performance.");
+            PullTriggerClickThreshold = cfg.Bind("Cursor", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
 
             // Pointer
             ActivePointerWebView = cfg.Bind("Pointer", "ActivePointerWebView", true, "Applies the inactive Pointer features to WebView Overlay such as Settings, Wrist, and others.");
@@ -186,7 +187,6 @@ namespace xsoverlay_tweak
 
             // Quality of Life
             LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.\n- Mouse Smooth: apply mouse smooth behavior to the Laser when active");
-            PullTriggerClickThreshold = cfg.Bind("QualityOfLife", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
 

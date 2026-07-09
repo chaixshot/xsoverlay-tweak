@@ -41,6 +41,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
                 ["XSOverlayTweak.MouseSmoothSpeed"] = XConfig.MouseSmoothSpeed.Value,
                 ["XSOverlayTweak.WindowsCursorPointer"] = XConfig.WindowsCursorPointer.Value,
+                ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
 
                 // Pointer
                 ["XSOverlayTweak.ActivePointerWebView"] = XConfig.ActivePointerWebView.Value,
@@ -112,7 +113,6 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // Quality of Life
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
-                ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
                 ["XSOverlayTweak.WindowsAccentColor"] = XConfig.WindowsAccentColor.Value,
 
@@ -166,6 +166,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.WindowsCursorPointer":
                     XConfig.WindowsCursorPointer.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.PullTriggerClickThreshold":
+                    XConfig.PullTriggerClickThreshold.Value = float.Parse(value);
                     break;
 
                 // Pointer
@@ -339,9 +342,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Quality of Life
                 case "XSOverlayTweak.LaserPointer":
                     XConfig.LaserPointer.Value = int.Parse(value);
-                    break;
-                case "XSOverlayTweak.PullTriggerClickThreshold":
-                    XConfig.PullTriggerClickThreshold.Value = float.Parse(value);
                     break;
                 case "XSOverlayTweak.WebViewWiderScroll":
                     XConfig.WebViewWiderScroll.Value = bool.Parse(value);
