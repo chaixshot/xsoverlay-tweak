@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using XSOverlay;
 
-namespace xsoverlay_tweak.Patches.QualityOfLife
+namespace xsoverlay_tweak.Patches.Cursor
 {
     [HarmonyPatch(typeof(Raycaster))]
     internal class DoubleClickConfirm

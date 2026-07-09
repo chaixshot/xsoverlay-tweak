@@ -32,6 +32,7 @@ public class Plugin : BaseUnityPlugin
         // Cursor
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysHideCursor));
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor));
+        harmony.PatchAll(typeof(Patches.Cursor.DoubleClickConfirm));
         harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed));
         harmony.PatchAll(typeof(Patches.Cursor.WindowsCursorPointer));
 
@@ -97,7 +98,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarKeyboard));
 
         // Quality of Life
-        harmony.PatchAll(typeof(Patches.QualityOfLife.DoubleClickConfirm));
         harmony.PatchAll(typeof(Patches.QualityOfLife.HandleScrolling));
         harmony.PatchAll(typeof(Patches.QualityOfLife.LaserPointer));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerClickThreshold));
