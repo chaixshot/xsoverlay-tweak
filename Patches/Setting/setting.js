@@ -110,6 +110,7 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayConfirmClose', name: 'Overlay Confirm Close', description: 'Requires pressing the close overlay button three times to close.', default: false },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayCurveAutoRefresh', name: 'Overlay Curve Auto Refresh', description: 'Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayGripAntiSlip', name: 'Overlay Grip Anti Slip', description: 'Prevents Overlay from dropping or slipping out of Grip when moving it too fast.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PinBlockInputNonEditMode', name: 'Pin + Block Input Non Layout Mode', description: 'Blocks interaction with \'Pinned\' + \'Block Input\' Overlay unless Layout Mode is active.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarGesture', name: 'Window Toolbar Gesture', description: 'When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarKeyboard', name: 'Window Toolbar Keyboard', description: 'Add a keyboard  summon button to the Capture Overlay Toolbar.', default: false },
@@ -126,7 +127,6 @@ const SECTIONS = [
         name: 'Fix', priority: 13, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.SteamVRCompositorTextureFormatFix', name: 'SteamVR Compositor Texture Format', description: 'Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFrozenFix', name: 'WebView', description: 'Fixes an issue where certain WebView UI elements were not clickable.', default: true },
         ]
     },

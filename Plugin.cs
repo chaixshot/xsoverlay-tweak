@@ -97,6 +97,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Overlay.OverlayConfirmClose));
         harmony.PatchAll(typeof(Patches.Overlay.OverlayCurveAutoRefresh));
         harmony.PatchAll(typeof(Patches.Overlay.OverlayGripAntiSlip));
+        harmony.PatchAll(typeof(Patches.Overlay.OverlayRollCurveFix));
         harmony.PatchAll(typeof(Patches.Overlay.PinBlockInputNonEditMode));
         harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarGesture));
         harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarKeyboard));
@@ -109,7 +110,6 @@ public class Plugin : BaseUnityPlugin
         // Fix
         harmony.PatchAll(typeof(Patches.Fix.AdditionalFix));
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
-        harmony.PatchAll(typeof(Patches.Fix.OverlayRollCurveFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix));

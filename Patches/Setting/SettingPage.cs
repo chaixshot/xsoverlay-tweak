@@ -108,6 +108,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.OverlayConfirmClose"] = XConfig.OverlayConfirmClose.Value,
                 ["XSOverlayTweak.OverlayCurveAutoRefresh"] = XConfig.OverlayCurveAutoRefresh.Value,
                 ["XSOverlayTweak.OverlayGripAntiSlip"] = XConfig.OverlayGripAntiSlip.Value,
+                ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
                 ["XSOverlayTweak.WindowToolbarGesture"] = XConfig.WindowToolbarGesture.Value,
                 ["XSOverlayTweak.WindowToolbarKeyboard"] = XConfig.WindowToolbarKeyboard.Value,
@@ -120,7 +121,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Fix
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
                 ["XSOverlayTweak.SteamVRCompositorTextureFormatFix"] = XConfig.SteamVRCompositorTextureFormatFix.Value,
-                ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.WebViewFrozenFix"] = XConfig.WebViewFrozenFix.Value,
 
                 // About
@@ -332,6 +332,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.OverlayGripAntiSlip":
                     XConfig.OverlayGripAntiSlip.Value = bool.Parse(value);
                     break;
+                case "XSOverlayTweak.OverlayRollCurveFix":
+                    XConfig.OverlayRollCurveFix.Value = bool.Parse(value);
+                    break;
                 case "XSOverlayTweak.PinBlockInputNonEditMode":
                     XConfig.PinBlockInputNonEditMode.Value = bool.Parse(value);
                     break;
@@ -359,9 +362,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.SteamVRCompositorTextureFormatFix":
                     XConfig.SteamVRCompositorTextureFormatFix.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.OverlayRollCurveFix":
-                    XConfig.OverlayRollCurveFix.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.WebViewFrozenFix":
                     XConfig.WebViewFrozenFix.Value = bool.Parse(value);

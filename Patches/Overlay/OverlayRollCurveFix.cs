@@ -2,7 +2,7 @@
 using UnityEngine;
 using XSOverlay;
 
-namespace xsoverlay_tweak.Patches.Fix
+namespace xsoverlay_tweak.Patches.Overlay
 {
     internal class OverlayRollCurveFix
     {
