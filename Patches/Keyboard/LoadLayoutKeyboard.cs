@@ -7,7 +7,7 @@ using UnityEngine;
 using XSOverlay;
 using xsoverlay_tweak.Utils;
 
-namespace xsoverlay_tweak.Patches.CommunityRequest
+namespace xsoverlay_tweak.Patches.Keyboard
 {
     internal class LoadLayoutKeyboard
     {

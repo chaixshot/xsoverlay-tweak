@@ -59,6 +59,12 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.WristOverPosition"] = XConfig.WristOverPosition.Value,
                 ["XSOverlayTweak.WristStateRestore"] = XConfig.WristStateRestore.Value,
 
+                // Keyboard
+                ["XSOverlayTweak.CtrlKeySticky"] = XConfig.CtrlKeySticky.Value,
+                ["XSOverlayTweak.KeyboardControlButtonStateFix"] = XConfig.KeyboardControlButtonStateFix.Value,
+                ["XSOverlayTweak.KeyboardHoldingIndicator"] = XConfig.KeyboardHoldingIndicator.Value,
+                ["XSOverlayTweak.LoadLayoutKeyboard"] = XConfig.LoadLayoutKeyboard.Value,
+
                 // Mouse Navigation
                 ["XSOverlayTweak.MouseNavigation"] = XConfig.MouseNavigation.Value,
                 ["XSOverlayTweak.MouseNavigationUseModifiedKey"] = XConfig.MouseNavigationUseModifiedKey.Value,
@@ -105,23 +111,19 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Quality of Life
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
                 ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
-                ["XSOverlayTweak.KeyboardHoldingIndicator"] = XConfig.KeyboardHoldingIndicator.Value,
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
                 ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
                 ["XSOverlayTweak.WindowsAccentColor"] = XConfig.WindowsAccentColor.Value,
 
                 // Fix
-                ["XSOverlayTweak.CtrlKeyStickyFix"] = XConfig.CtrlKeyStickyFix.Value,
                 ["XSOverlayTweak.CursorMovingInteractionFix"] = XConfig.CursorMovingInteractionFix.Value,
-                ["XSOverlayTweak.KeyboardControlButtonStateFix"] = XConfig.KeyboardControlButtonStateFix.Value,
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
                 ["XSOverlayTweak.SteamVRCompositorTextureFormatFix"] = XConfig.SteamVRCompositorTextureFormatFix.Value,
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.WebViewFrozenFix"] = XConfig.WebViewFrozenFix.Value,
 
                 // Community Request
-                ["XSOverlayTweak.LoadLayoutKeyboard"] = XConfig.LoadLayoutKeyboard.Value,
                 ["XSOverlayTweak.MouseButtonSwap"] = XConfig.MouseButtonSwap.Value,
 
                 // About
@@ -210,6 +212,20 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.WristStateRestore":
                     XConfig.WristStateRestore.Value = bool.Parse(value);
+                    break;
+
+                // Keyboard
+                case "XSOverlayTweak.CtrlKeySticky":
+                    XConfig.CtrlKeySticky.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.KeyboardControlButtonStateFix":
+                    XConfig.KeyboardControlButtonStateFix.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.KeyboardHoldingIndicator":
+                    XConfig.KeyboardHoldingIndicator.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.LoadLayoutKeyboard":
+                    XConfig.LoadLayoutKeyboard.Value = bool.Parse(value);
                     break;
 
                 // Mouse Navigation
@@ -324,9 +340,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.HandleScrolling":
                     XConfig.HandleScrolling.Value = bool.Parse(value);
                     break;
-                case "XSOverlayTweak.KeyboardHoldingIndicator":
-                    XConfig.KeyboardHoldingIndicator.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.LaserPointer":
                     XConfig.LaserPointer.Value = int.Parse(value);
                     break;
@@ -341,14 +354,8 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
 
                 // Fix
-                case "XSOverlayTweak.CtrlKeyStickyFix":
-                    XConfig.CtrlKeyStickyFix.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.CursorMovingInteractionFix":
                     XConfig.CursorMovingInteractionFix.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.KeyboardControlButtonStateFix":
-                    XConfig.KeyboardControlButtonStateFix.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.LoadLayoutScaleFix":
                     XConfig.LoadLayoutScaleFix.Value = bool.Parse(value);
@@ -364,9 +371,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
 
                 // Community Request
-                case "XSOverlayTweak.LoadLayoutKeyboard":
-                    XConfig.LoadLayoutKeyboard.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.MouseButtonSwap":
                     XConfig.MouseButtonSwap.Value = bool.Parse(value);
                     break;

@@ -49,20 +49,28 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Mouse Navigation', priority: 5, settings: [
+        name: 'Keyboard', priority: 5, settings: [
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CtrlKeySticky', name: 'Ctrl Key Sticky', description: 'Added double-tap to the Ctrl key for sticky toggle.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardHoldingIndicator', name: 'Keyboard Holding Indicator', description: 'Do Keyboard key-pressed animation while the key is being held or sticky.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
+        ]
+    },
+    {
+        name: 'Mouse Navigation', priority: 6, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseNavigation', name: 'Enable', description: 'Custom keybindings for Mouse Forward/Back navigation.<br>Configuration: Press \'Bindings\' tab in XSOverlay settings to open SteamVR bindings menu.<br>Edit the Current Binding and add a button for \'MouseBack/Forward\'.', default: false },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseNavigationUseModifiedKey', name: 'Use Alt+Left/Right', description: 'Use Alt+Left/Right keyboard shortcuts for navigation instead of Mouse Clicks.<br>Targets the focused window instead of the hovered window.', default: false },
         ]
     },
     {
-        name: 'Focused Window', priority: 6, settings: [
+        name: 'Focused Window', priority: 7, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.ElevatedTaskView', name: 'Elevated Task View', description: 'Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HangTaskView', name: 'Hang Task View', description: 'Show Windows Task View when the focused window is hung or not responding to prevent interaction deadlock.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.FullscreenMinimize', name: 'Fullscreen Minimize', description: 'Minimize the current focused fullscreen window when toggling on Layout Mode.', default: true },
         ]
     },
     {
-        name: 'Dashboard Overlay', priority: 7, settings: [
+        name: 'Dashboard Overlay', priority: 8, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardNotification', name: 'Dashboard Notification', description: 'Allows Notifications to be displayed over the SteamVR Dashboard.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardPointer', name: 'Dashboard Pointer', description: 'Allows the Pointer to be displayed and interactive over the SteamVR Dashboard.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DashboardSettings', name: 'Dashboard Settings', description: 'Allows the Settings WebView Overlay to be displayed over the SteamVR Dashboard.', default: true },
@@ -72,7 +80,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Haptic Feedback', priority: 8, settings: [
+        name: 'Haptic Feedback', priority: 9, settings: [
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.DoubleClickHaptic', name: 'Double Click', description: 'Plays a haptic feedback when Double Click.', default: 70, options: [0, 100, 5], unit: '%' },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.GrabHaptic', name: 'Grab', description: 'Plays a haptic feedback when grabbing any Overlay.', default: 50, options: [0, 100, 5], unit: '%' },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.KeyboardKeyHaptic', name: 'Keyboard Key', description: 'Plays a haptic feedback when Pointer is hovering a Keyboard key.', default: 30, options: [0, 100, 5], unit: '%' },
@@ -85,14 +93,14 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Optimization', priority: 9, settings: [
+        name: 'Optimization', priority: 10, settings: [
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.', default: 'Enable + Pinned Visible', options: ['Disable', 'Enable', 'Enable + Pinned Visible'] },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.InactiveRefreshRate', name: 'Inactive Refresh Rate', description: 'The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.<br>Very low value: the Layout Mode Toggle binding listener will miss some frames.', default: 15, options: [5, <<HMDRefreshRate>>, 1], unit: 'FPS' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.uOSCThreadLoop', name: 'OSC Thread Loop', description: 'Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.', default: true },
         ]
     },
     {
-        name: 'Overlay', priority: 10, settings: [
+        name: 'Overlay', priority: 11, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DefaultCaptureOverlayTexture', name: 'Default Capture Overlay Texture', description: 'Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayAttachSmooth', name: 'Overlay Attach Smooth', description: 'When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayConfirmClose', name: 'Overlay Confirm Close', description: 'Requires pressing the close overlay button three times to close.', default: false },
@@ -104,10 +112,9 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Quality of Life', priority: 11, settings: [
+        name: 'Quality of Life', priority: 12, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DoubleClickConfirm', name: 'Double Click Confirm', description: 'Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HandleScrolling', name: 'Handle Scrolling', description: 'Support horizontal scrolling and control scroll speed with the thumbstick axis value.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardHoldingIndicator', name: 'Keyboard Holding Indicator', description: 'Do Keyboard key-pressed animation while the key is being held or sticky.', default: true },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.LaserPointer', name: 'Laser', description: 'Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.', default: 'Enable Without Mouse Smooth', options: ['Disable', 'Enable Without Mouse Smooth', 'Enable With Mouse Smooth'] },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.PullTriggerClickThreshold', name: 'Pull Trigger Click Threshold', description: 'The Trigger pull threshold required to trigger a Left Click.<br>- Uses the Trigger Value from SteamVR Input.', default: 0.5, options: [0.1, 1.0, 0.1], unit: 'Unit' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewWiderScroll', name: 'WebView Wider Scroll', description: 'Makes the WebView scrollbar wider for easier interaction.', default: true },
@@ -115,10 +122,8 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Fix', priority: 12, settings: [
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CtrlKeyStickyFix', name: 'Ctrl Key Sticky', description: 'Fixes the issue where the Ctrl key is not sticky.', default: true },
+        name: 'Fix', priority: 13, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CursorMovingInteractionFix', name: 'Cursor Moving Interaction', description: 'Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.SteamVRCompositorTextureFormatFix', name: 'SteamVR Compositor Texture Format', description: 'Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
@@ -126,13 +131,12 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Community Request', priority: 13, settings: [
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
+        name: 'Community Request', priority: 14, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseButtonSwap', name: 'Mouse Button Swap', description: 'Detect the Windows setting \'Switch primary and secondary buttons\' to auto-swap controller binding.', default: true },
         ]
     },
     {
-        name: 'About', priority: 14, settings: [
+        name: 'About', priority: 15, settings: [
             { type: Ui.ComponentType.Text, description: '<br>Version: <<Version>>'},
             { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.CheckForUpdate', name: 'Check for Updates', description: 'Check for the latest version of XSOverlay Tweak.', default: true },
             { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.OpenGitHub', name: 'Open GitHub', description: 'Visit the XSOverlay Tweak GitHub page.', default: true },

@@ -1,18 +1,18 @@
 ﻿using HarmonyLib;
 
-namespace xsoverlay_tweak.Patches.Fix
+namespace xsoverlay_tweak.Patches.Keyboard
 {
-    internal class CtrlKeyStickyFix
+    internal class CtrlKeySticky
     {
         [HarmonyPatch(typeof(KeyboardKey), "Start")]
         [HarmonyPostfix]
-        public static void CtrlKeySticky(KeyboardKey __instance)
+        public static void AddCtrlKeySticky(KeyboardKey __instance)
         {
             if (__instance.Label == "ctrl")
             {
                 __instance.IsDoubleTappable = IsEnable();
 
-                XConfig.CtrlKeyStickyFix.SettingChanged += (sender, args) =>
+                XConfig.CtrlKeySticky.SettingChanged += (sender, args) =>
                 {
                     __instance.IsDoubleTappable = IsEnable();
                 };
@@ -21,7 +21,7 @@ namespace xsoverlay_tweak.Patches.Fix
 
         private static bool IsEnable()
         {
-            return XConfig.CtrlKeyStickyFix.Value;
+            return XConfig.CtrlKeySticky.Value;
         }
     }
 }

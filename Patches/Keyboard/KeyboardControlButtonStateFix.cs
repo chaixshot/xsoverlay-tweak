@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using XSOverlay;
 
-namespace xsoverlay_tweak.Patches.Fix
+namespace xsoverlay_tweak.Patches.Keyboard
 {
     internal class KeyboardControlButtonStateFix
     {

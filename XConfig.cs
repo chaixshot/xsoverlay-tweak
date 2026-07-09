@@ -34,6 +34,11 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> WristOverPosition;
         public static ConfigEntry<bool> WristStateRestore;
 
+        // Keyboard
+        public static ConfigEntry<bool> CtrlKeySticky;
+        public static ConfigEntry<bool> KeyboardControlButtonStateFix;
+        public static ConfigEntry<bool> KeyboardHoldingIndicator;
+        public static ConfigEntry<bool> LoadLayoutKeyboard;
 
         // Mouse Navigation
         public static ConfigEntry<bool> MouseNavigation;
@@ -80,7 +85,6 @@ namespace xsoverlay_tweak
 
         // Quality of Life
         public static ConfigEntry<bool> DoubleClickConfirm;
-        public static ConfigEntry<bool> KeyboardHoldingIndicator;
         public static ConfigEntry<int> LaserPointer;
         public static ConfigEntry<float> PullTriggerClickThreshold;
         public static ConfigEntry<bool> SteamVRCompositorTextureFormatFix;
@@ -88,16 +92,13 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> WindowsAccentColor;
 
         // Fix
-        public static ConfigEntry<bool> CtrlKeyStickyFix;
         public static ConfigEntry<bool> CursorMovingInteractionFix;
         public static ConfigEntry<bool> HandleScrolling;
-        public static ConfigEntry<bool> KeyboardControlButtonStateFix;
         public static ConfigEntry<bool> LoadLayoutScaleFix;
         public static ConfigEntry<bool> OverlayRollCurveFix;
         public static ConfigEntry<bool> WebViewFrozenFix;
 
         // Community Request
-        public static ConfigEntry<bool> LoadLayoutKeyboard;
         public static ConfigEntry<bool> MouseButtonSwap;
 
         public static ConfigEntry<bool> UpdateNotification;
@@ -133,6 +134,12 @@ namespace xsoverlay_tweak
             WristClipDistance = cfg.Bind("Wrist", "WristClipDistance", 60, "Wrist Overlay auto hide based on head distance.");
             WristOverPosition = cfg.Bind("Wrist", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
             WristStateRestore = cfg.Bind("Wrist", "WristStateRestore", true, "Restore the last Wrist Overlay state at launch.");
+
+            // Keyboard
+            CtrlKeySticky = cfg.Bind("Keyboard", "CtrlKeySticky", true, "Added double-tap to the Ctrl key for sticky toggle.");
+            KeyboardControlButtonStateFix = cfg.Bind("Keyboard", "KeyboardControlButtonStateFix", true, "Fix keyboard control button color not following the state when summoning.");
+            KeyboardHoldingIndicator = cfg.Bind("Keyboard", "KeyboardHoldingIndicator", true, "Do Keyboard key-pressed animation while the key is being held or sticky.");
+            LoadLayoutKeyboard = cfg.Bind("Keyboard", "LoadLayoutKeyboard", true, "Layout will save the current keyboard state to the selected profile.");
 
             // Mouse Navigation
             MouseNavigation = cfg.Bind("MouseNavigation", "MouseNavigation", false, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.");
@@ -180,23 +187,19 @@ namespace xsoverlay_tweak
             // Quality of Life
             DoubleClickConfirm = cfg.Bind("QualityOfLife", "DoubleClickConfirm", true, "Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.");
             HandleScrolling = cfg.Bind("QualityOfLife", "HandleScrolling", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
-            KeyboardHoldingIndicator = cfg.Bind("QualityOfLife", "KeyboardHoldingIndicator", true, "Do Keyboard key-pressed animation while the key is being held or sticky.");
             LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
             PullTriggerClickThreshold = cfg.Bind("QualityOfLife", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
 
             // Fix
-            CtrlKeyStickyFix = cfg.Bind("Fix", "CtrlKeyStickyFix", true, "Fix where double-tapping the Ctrl key does not sticky.");
             CursorMovingInteractionFix = cfg.Bind("Fix", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.");
-            KeyboardControlButtonStateFix = cfg.Bind("Fix", "KeyboardControlButtonStateFix", true, "Fix keyboard control button color not following the state when summoning.");
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
             OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
             SteamVRCompositorTextureFormatFix = cfg.Bind("Fix", "SteamVRCompositorTextureFormatFix", true, "Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.");
             WebViewFrozenFix = cfg.Bind("Fix", "WebViewFrozenFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
 
             // Community Request
-            LoadLayoutKeyboard = cfg.Bind("CommunityRequest", "LoadLayoutKeyboard", true, "Layout will save the current keyboard state to the selected profile.");
             MouseButtonSwap = cfg.Bind("CommunityRequest", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
 
             // About
