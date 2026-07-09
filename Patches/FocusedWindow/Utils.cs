@@ -118,16 +118,11 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
                     try
                     {
-                        XInputManager.sim.Keyboard.KeyDown(VirtualKeyCode.LWIN);
-                        XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+                        XInputManager.sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LWIN, VirtualKeyCode.TAB);
                     }
                     catch (Exception)
                     {
                         ShellTaskView();
-                    }
-                    finally
-                    {
-                        XInputManager.sim.Keyboard.KeyUp(VirtualKeyCode.LWIN);
                     }
                 }
                 else
