@@ -23,7 +23,7 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysUpdateCursor', name: 'Always Update', description: 'Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.<br>Without this, the Windows Cursor often appears to lag one frame behind the Pointer position.', default: false },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.', default: 'Medium', options: ['Ultra Low', 'Very Low', 'Low', 'Medium', 'High', 'Very High'] },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PhysicalMouseDetector', name: 'Physical Mouse Detector', description: 'Relinquishes Pointer control when physical mouse movement is detected.<br>Pointer Click to regain control.', default: true },
-            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.WindowsCursorPointer', name: 'Windows Cursor Pointer', description: 'Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.', default: 'Enable', options: ['Disable', 'Enable', 'Enable + Animated (CPU Usage)'] },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.WindowsCursorPointer', name: 'Windows Cursor Pointer', description: 'Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.<br>- Animated mode always updates the cursor texture, which might impact performance.', default: 'Enable', options: ['Disable', 'Enable', 'Enable + Animated'] },
         ]
     },
     {
@@ -57,9 +57,9 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Mouse', priority: 6, settings: [
+        name: 'Mouse ', priority: 6, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseButtonSwap', name: 'Mouse Button Swap', description: 'Detect the Windows setting \'Switch primary and secondary buttons\' to auto-swap controller binding.', default: true },
-            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseNavigation', name: 'Enable', description: 'Custom keybindings for Mouse Forward/Back navigation.<br>Configuration: Press \'Bindings\' tab in XSOverlay settings to open SteamVR bindings menu.<br>Edit the Current Binding and add a button for \'MouseBack/Forward\'.<br>- Using Alt + Left/Right keyboard shortcuts to target the focused window instead of the hovered window.', default: "Disabled", options: ["Disabled", "Enable (Mouse 4/Mouse 5)", "Enable (Alt + Left/Right)"] },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseNavigation', name: 'Mouse Navigation', description: 'Custom keybindings for Mouse Forward/Back navigation.<br>Configuration: Press \'Bindings\' tab in XSOverlay settings to open SteamVR bindings menu.<br>Edit the Current Binding and add a button for \'MouseBack/Forward\'.<br>- Using Alt + Left/Right keyboard shortcuts to target the focused window instead of the hovered window.';, default: "Disabled", options: ["Disabled", "Enable (Mouse 4/Mouse 5)", "Enable (Alt + Left/Right)"] },
         ]
     },
     {
@@ -94,7 +94,7 @@ const SECTIONS = [
     },
     {
         name: 'Optimization', priority: 10, settings: [
-            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.', default: 'Enable + Pinned Visible', options: ['Disable', 'Enable', 'Enable + Pinned Visible'] },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.EfficiencyMode', name: 'Efficiency Mode', description: 'Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.<br>- Pinned Visible: will not trigger when Pinned Overlay is still visible in the play space.', default: 'Enable + Pinned Visible', options: ['Disable', 'Enable', 'Enable + Pinned Visible'] },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.InactiveRefreshRate', name: 'Inactive Refresh Rate', description: 'The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.<br>Very low value: the Layout Mode Toggle binding listener will miss some frames.', default: 15, options: [5, <<HMDRefreshRate>>, 1], unit: 'FPS' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.uOSCThreadLoop', name: 'OSC Thread Loop', description: 'Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.', default: true },
         ]
@@ -115,7 +115,7 @@ const SECTIONS = [
         name: 'Quality of Life', priority: 12, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DoubleClickConfirm', name: 'Double Click Confirm', description: 'Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HandleScrolling', name: 'Handle Scrolling', description: 'Support horizontal scrolling and control scroll speed with the thumbstick axis value.', default: true },
-            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.LaserPointer', name: 'Laser', description: 'Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.', default: 'Enable Without Mouse Smooth', options: ['Disable', 'Enable Without Mouse Smooth', 'Enable With Mouse Smooth'] },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.LaserPointer', name: 'Laser', description: 'Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.<br>- Mouse Smooth: apply mouse smooth behavior to the Laser when active.', default: 'Enable', options: ['Disable', 'Enable', 'Enable + Mouse Smooth'] },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.PullTriggerClickThreshold', name: 'Pull Trigger Click Threshold', description: 'The Trigger pull threshold required to trigger a Left Click.<br>- Uses the Trigger Value from SteamVR Input.', default: 0.5, options: [0.1, 1.0, 0.1], unit: 'Unit' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewWiderScroll', name: 'WebView Wider Scroll', description: 'Makes the WebView scrollbar wider for easier interaction.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowsAccentColor', name: 'Windows Accent Color', description: 'Using Windows accent color as XSOverlay accent color.', default: true },

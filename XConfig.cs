@@ -112,7 +112,7 @@ namespace xsoverlay_tweak
             AlwaysUpdateCursor = cfg.Bind("Cursor", "AlwaysUpdateCursor", false, "Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.\nWithout this, the Windows Cursor often appears to lag one frame behind the Pointer position.");
             MouseSmoothSpeed = cfg.Bind("Cursor", "MouseSmoothSpeed", 3, "Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.");
             PhysicalMouseDetector = cfg.Bind("Cursor", "PhysicalMouseDetector", true, "Relinquishes Pointer control when physical mouse movement is detected.\nPointer Click to regain control.");
-            WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", 1, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.");
+            WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", 1, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.\n- Animated mode always updates the cursor texture, which might impact performance.");
 
             // Pointer
             ActivePointerWebView = cfg.Bind("Pointer", "ActivePointerWebView", true, "Applies the inactive Pointer features to WebView Overlay such as Settings, Wrist, and others.");
@@ -167,7 +167,7 @@ namespace xsoverlay_tweak
             WebViewHaptic = cfg.Bind("Haptic", "WebViewHaptic", 30, "Plays a haptic feedback when Pointer is hovering a Keyboard key.");
 
             // Optimization
-            EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", 2, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.");
+            EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", 2, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.\n- Pinned Visible: will not trigger when Pinned Overlay is still visible in the play space.");
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.\nVery low value: the Layout Mode Toggle binding listener will miss some frames.");
             uOSCThreadLoop = cfg.Bind("Optimization", "uOSCThreadLoop", true, "Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.");
 
@@ -184,7 +184,7 @@ namespace xsoverlay_tweak
             // Quality of Life
             DoubleClickConfirm = cfg.Bind("QualityOfLife", "DoubleClickConfirm", true, "Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.");
             HandleScrolling = cfg.Bind("QualityOfLife", "HandleScrolling", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
-            LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
+            LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.\n- Mouse Smooth: apply mouse smooth behavior to the Laser when active");
             PullTriggerClickThreshold = cfg.Bind("QualityOfLife", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
