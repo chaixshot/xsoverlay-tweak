@@ -5,7 +5,7 @@ using System.Linq;
 using XSOverlay.WebApp;
 using XSOverlay.Websockets.API;
 
-namespace xsoverlay_tweak.Patches.CommunityRequest
+namespace xsoverlay_tweak.Patches.Wrist
 {
     internal class HideInvalidBattery
     {

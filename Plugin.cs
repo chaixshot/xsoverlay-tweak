@@ -49,6 +49,7 @@ public class Plugin : BaseUnityPlugin
 
         // Wrist
         harmony.PatchAll(typeof(Patches.Wrist.fpsVRSocket));
+        harmony.PatchAll(typeof(Patches.Wrist.HideInvalidBattery));
         harmony.PatchAll(typeof(Patches.Wrist.WristClipDistance));
         harmony.PatchAll(typeof(Patches.Wrist.WristOverPosition));
         harmony.PatchAll(typeof(Patches.Wrist.WristStateRestore));
@@ -104,7 +105,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.WebViewTexturePixelFormatFix));
 
         // Community Request
-        harmony.PatchAll(typeof(Patches.CommunityRequest.HideInvalidBattery));
         harmony.PatchAll(typeof(Patches.CommunityRequest.LoadLayoutKeyboard));
         harmony.PatchAll(typeof(Patches.CommunityRequest.OverlayAttachSmooth));
         harmony.PatchAll(typeof(Patches.CommunityRequest.OverlayConfirmClose));

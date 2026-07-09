@@ -53,6 +53,8 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // Wirst
                 ["XSOverlayTweak.fpsVRSocket"] = XConfig.fpsVRSocket.Value,
+                ["XSOverlayTweak.HideBattery"] = XConfig.HideBattery.Value,
+                ["XSOverlayTweak.HideInvalidBattery"] = XConfig.HideInvalidBattery.Value,
                 ["XSOverlayTweak.WristClipDistance"] = XConfig.WristClipDistance.Value,
                 ["XSOverlayTweak.WristOverPosition"] = XConfig.WristOverPosition.Value,
                 ["XSOverlayTweak.WristStateRestore"] = XConfig.WristStateRestore.Value,
@@ -113,8 +115,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.WebViewFrozenFix"] = XConfig.WebViewFrozenFix.Value,
 
                 // Community Request
-                ["XSOverlayTweak.HideBattery"] = XConfig.HideBattery.Value,
-                ["XSOverlayTweak.HideInvalidBattery"] = XConfig.HideInvalidBattery.Value,
                 ["XSOverlayTweak.LoadLayoutKeyboard"] = XConfig.LoadLayoutKeyboard.Value,
                 ["XSOverlayTweak.MouseButtonSwap"] = XConfig.MouseButtonSwap.Value,
                 ["XSOverlayTweak.OverlayAttachSmooth"] = XConfig.OverlayAttachSmooth.Value,
@@ -194,6 +194,12 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.fpsVRSocket":
                     XConfig.fpsVRSocket.Value = int.Parse(value);
                     break;
+                case "XSOverlayTweak.HideBattery":
+                    XConfig.HideBattery.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.HideInvalidBattery":
+                    XConfig.HideInvalidBattery.Value = bool.Parse(value);
+                    break;
                 case "XSOverlayTweak.WristClipDistance":
                     XConfig.WristClipDistance.Value = int.Parse(value);
                     break;
@@ -203,7 +209,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.WristStateRestore":
                     XConfig.WristStateRestore.Value = bool.Parse(value);
                     break;
-
 
                 // Mouse Navigation
                 case "XSOverlayTweak.MouseNavigation":
@@ -343,12 +348,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
 
                 // Community Request
-                case "XSOverlayTweak.HideBattery":
-                    XConfig.HideBattery.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.HideInvalidBattery":
-                    XConfig.HideInvalidBattery.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.LoadLayoutKeyboard":
                     XConfig.LoadLayoutKeyboard.Value = bool.Parse(value);
                     break;

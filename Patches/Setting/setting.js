@@ -41,6 +41,8 @@ const SECTIONS = [
     {
         name: 'Wrist', priority: 4, settings: [
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.fpsVRSocket', name: 'fpsVR Socket', description: 'Attaches the fpsVR overlay to a specific socket position of XSOverlay.', default: "Disabled", options: ["Disabled", "Top", "Bottom", "Left", "Right"] },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HideBattery', name: 'Hide Battery', description: 'Hide the Wrist  Overlay battery information widget.', default: false },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HideInvalidBattery', name: 'Hide Invalid Battery', description: 'Hide the invalid  battery device from Wrist Overlay.', default: true },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.WristClipDistance', name: 'Wrist Clip Distance', description: 'Wrist Overlay auto hide based on head distance.', default: 60, options: [10, 100, 5], unit: 'Centimetre' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristOverPosition', name: 'Wrist Over Position', description: 'Increases the allowed positioning radius of the Wrist Overlay.', default: true },                     
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WristStateRestore', name: 'Wrist State Restore', description: 'Restore the last Wrist Overlay state at launch.', default: true },
@@ -117,8 +119,6 @@ const SECTIONS = [
     },
     {
         name: 'Community Request', priority: 12, settings: [
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HideBattery', name: 'Hide Battery', description: 'Hide the Wrist  Overlay battery information widget.', default: false },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HideInvalidBattery', name: 'Hide Invalid Battery', description: 'Hide the invalid  battery device from Wrist Overlay.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseButtonSwap', name: 'Mouse Button Swap', description: 'Detect the Windows setting \'Switch primary and secondary buttons\' to auto-swap controller binding.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayAttachSmooth', name: 'Overlay Attach Smooth', description: 'When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.', default: true },

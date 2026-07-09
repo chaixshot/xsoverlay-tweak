@@ -28,9 +28,12 @@ namespace xsoverlay_tweak
 
         // Wist
         public static ConfigEntry<int> fpsVRSocket;
+        public static ConfigEntry<bool> HideBattery;
+        public static ConfigEntry<bool> HideInvalidBattery;
         public static ConfigEntry<int> WristClipDistance;
         public static ConfigEntry<bool> WristOverPosition;
         public static ConfigEntry<bool> WristStateRestore;
+
 
         // Mouse Navigation
         public static ConfigEntry<bool> MouseNavigation;
@@ -40,7 +43,6 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> ElevatedTaskView;
         public static ConfigEntry<bool> HangTaskView;
         public static ConfigEntry<bool> FullscreenMinimize;
-
 
         // Dashboard
         public static ConfigEntry<bool> DashboardNotification;
@@ -89,8 +91,6 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> WebViewFrozenFix;
 
         // Community Request
-        public static ConfigEntry<bool> HideBattery;
-        public static ConfigEntry<bool> HideInvalidBattery;
         public static ConfigEntry<bool> LoadLayoutKeyboard;
         public static ConfigEntry<bool> MouseButtonSwap;
         public static ConfigEntry<bool> OverlayConfirmClose;
@@ -126,6 +126,8 @@ namespace xsoverlay_tweak
 
             // Wrist
             fpsVRSocket = cfg.Bind("Wrist", "fpsVRSocket", 0, "Attaches the fpsVR Overlay to a specific socket position of XSOverlay.");
+            HideBattery = cfg.Bind("CommunityRequest", "HideBattery", false, "Hide the Wrist Overlay battery information widget.");
+            HideInvalidBattery = cfg.Bind("CommunityRequest", "HideInvalidBattery", true, "Hide the invalid battery device from Wrist Overlay.");
             WristClipDistance = cfg.Bind("Wrist", "WristClipDistance", 60, "Wrist Overlay auto hide based on head distance.");
             WristOverPosition = cfg.Bind("Wrist", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
             WristStateRestore = cfg.Bind("Wrist", "WristStateRestore", true, "Restore the last Wrist Overlay state at launch.");
@@ -186,8 +188,6 @@ namespace xsoverlay_tweak
             WebViewFrozenFix = cfg.Bind("Fix", "WebViewFrozenFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
 
             // Community Request
-            HideBattery = cfg.Bind("CommunityRequest", "HideBattery", false, "Hide the Wrist Overlay battery information widget.");
-            HideInvalidBattery = cfg.Bind("CommunityRequest", "HideInvalidBattery", true, "Hide the invalid battery device from Wrist Overlay.");
             LoadLayoutKeyboard = cfg.Bind("CommunityRequest", "LoadLayoutKeyboard", true, "Layout will save the current keyboard state to the selected profile.");
             MouseButtonSwap = cfg.Bind("CommunityRequest", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
             OverlayAttachSmooth = cfg.Bind("CommunityRequest", "OverlayAttachSmooth", true, "When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.");
