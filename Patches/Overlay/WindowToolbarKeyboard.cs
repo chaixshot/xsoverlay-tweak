@@ -6,7 +6,7 @@ using XSOverlay.WebApp;
 using XSOverlay.Websockets.API;
 using xsoverlay_tweak.Utils;
 
-namespace xsoverlay_tweak.Patches.CommunityRequest
+namespace xsoverlay_tweak.Patches.Overlay
 {
     internal class WindowToolbarKeyboard
     {

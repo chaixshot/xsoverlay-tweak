@@ -92,14 +92,21 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.InactiveRefreshRate"] = XConfig.InactiveRefreshRate.Value,
                 ["XSOverlayTweak.uOSCThreadLoop"] = XConfig.uOSCThreadLoop.Value,
 
-                // Quality of Life
+                // Overaly
                 ["XSOverlayTweak.DefaultCaptureOverlayTexture"] = XConfig.DefaultCaptureOverlayTexture.Value,
+                ["XSOverlayTweak.OverlayAttachSmooth"] = XConfig.OverlayAttachSmooth.Value,
+                ["XSOverlayTweak.OverlayConfirmClose"] = XConfig.OverlayConfirmClose.Value,
+                ["XSOverlayTweak.OverlayCurveAutoRefresh"] = XConfig.OverlayCurveAutoRefresh.Value,
+                ["XSOverlayTweak.OverlayGripAntiSlip"] = XConfig.OverlayGripAntiSlip.Value,
+                ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
+                ["XSOverlayTweak.WindowToolbarGesture"] = XConfig.WindowToolbarGesture.Value,
+                ["XSOverlayTweak.WindowToolbarKeyboard"] = XConfig.WindowToolbarKeyboard.Value,
+
+                // Quality of Life
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
                 ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
                 ["XSOverlayTweak.KeyboardHoldingIndicator"] = XConfig.KeyboardHoldingIndicator.Value,
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
-                ["XSOverlayTweak.OverlayCurveAutoRefresh"] = XConfig.OverlayCurveAutoRefresh.Value,
-                ["XSOverlayTweak.PinBlockInputNonEditMode"] = XConfig.PinBlockInputNonEditMode.Value,
                 ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
                 ["XSOverlayTweak.WindowsAccentColor"] = XConfig.WindowsAccentColor.Value,
@@ -109,7 +116,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.CursorMovingInteractionFix"] = XConfig.CursorMovingInteractionFix.Value,
                 ["XSOverlayTweak.KeyboardControlButtonStateFix"] = XConfig.KeyboardControlButtonStateFix.Value,
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
-                ["XSOverlayTweak.OverlayGripSlipFix"] = XConfig.OverlayGripSlipFix.Value,
                 ["XSOverlayTweak.SteamVRCompositorTextureFormatFix"] = XConfig.SteamVRCompositorTextureFormatFix.Value,
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.WebViewFrozenFix"] = XConfig.WebViewFrozenFix.Value,
@@ -117,10 +123,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Community Request
                 ["XSOverlayTweak.LoadLayoutKeyboard"] = XConfig.LoadLayoutKeyboard.Value,
                 ["XSOverlayTweak.MouseButtonSwap"] = XConfig.MouseButtonSwap.Value,
-                ["XSOverlayTweak.OverlayAttachSmooth"] = XConfig.OverlayAttachSmooth.Value,
-                ["XSOverlayTweak.OverlayConfirmClose"] = XConfig.OverlayConfirmClose.Value,
-                ["XSOverlayTweak.WindowToolbarGesture"] = XConfig.WindowToolbarGesture.Value,
-                ["XSOverlayTweak.WindowToolbarKeyboard"] = XConfig.WindowToolbarKeyboard.Value,
 
                 // About
                 ["XSOverlayTweak.UpdateNotification"] = XConfig.UpdateNotification.Value,
@@ -289,10 +291,33 @@ namespace xsoverlay_tweak.Patches.Setting
                     XConfig.uOSCThreadLoop.Value = bool.Parse(value);
                     break;
 
-                // Quality of Life
+                // Overlay
                 case "XSOverlayTweak.DefaultCaptureOverlayTexture":
                     XConfig.DefaultCaptureOverlayTexture.Value = bool.Parse(value);
                     break;
+                case "XSOverlayTweak.OverlayAttachSmooth":
+                    XConfig.OverlayAttachSmooth.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.OverlayConfirmClose":
+                    XConfig.OverlayConfirmClose.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.OverlayCurveAutoRefresh":
+                    XConfig.OverlayCurveAutoRefresh.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.OverlayGripAntiSlip":
+                    XConfig.OverlayGripAntiSlip.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.PinBlockInputNonEditMode":
+                    XConfig.PinBlockInputNonEditMode.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.WindowToolbarGesture":
+                    XConfig.WindowToolbarGesture.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.WindowToolbarKeyboard":
+                    XConfig.WindowToolbarKeyboard.Value = bool.Parse(value);
+                    break;
+
+                // Quality of Life
                 case "XSOverlayTweak.DoubleClickConfirm":
                     XConfig.DoubleClickConfirm.Value = bool.Parse(value);
                     break;
@@ -304,12 +329,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.LaserPointer":
                     XConfig.LaserPointer.Value = int.Parse(value);
-                    break;
-                case "XSOverlayTweak.OverlayCurveAutoRefresh":
-                    XConfig.OverlayCurveAutoRefresh.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.PinBlockInputNonEditMode":
-                    XConfig.PinBlockInputNonEditMode.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.PullTriggerClickThreshold":
                     XConfig.PullTriggerClickThreshold.Value = float.Parse(value);
@@ -334,9 +353,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.LoadLayoutScaleFix":
                     XConfig.LoadLayoutScaleFix.Value = bool.Parse(value);
                     break;
-                case "XSOverlayTweak.OverlayGripSlipFix":
-                    XConfig.OverlayGripSlipFix.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.SteamVRCompositorTextureFormatFix":
                     XConfig.SteamVRCompositorTextureFormatFix.Value = bool.Parse(value);
                     break;
@@ -353,18 +369,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.MouseButtonSwap":
                     XConfig.MouseButtonSwap.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.OverlayAttachSmooth":
-                    XConfig.OverlayAttachSmooth.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.OverlayConfirmClose":
-                    XConfig.OverlayConfirmClose.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.WindowToolbarGesture":
-                    XConfig.WindowToolbarGesture.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.WindowToolbarKeyboard":
-                    XConfig.WindowToolbarKeyboard.Value = bool.Parse(value);
                     break;
 
                 // About

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using XSOverlay;
 
-namespace xsoverlay_tweak.Patches.QualityOfLife
+namespace xsoverlay_tweak.Patches.Overlay
 {
     [HarmonyPatch(typeof(Raycaster))]
     internal class PinBlockInputNonEditMode

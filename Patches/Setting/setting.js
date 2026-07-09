@@ -92,43 +92,47 @@ const SECTIONS = [
         ]
     },
     {
-        name: 'Quality of Life', priority: 10, settings: [
+        name: 'Overlay', priority: 10, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DefaultCaptureOverlayTexture', name: 'Default Capture Overlay Texture', description: 'Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayAttachSmooth', name: 'Overlay Attach Smooth', description: 'When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayConfirmClose', name: 'Overlay Confirm Close', description: 'Requires pressing the close overlay button three times to close.', default: false },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayCurveAutoRefresh', name: 'Overlay Curve Auto Refresh', description: 'Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayGripAntiSlip', name: 'Overlay Grip Anti Slip', description: 'Prevents Overlay from dropping or slipping out of Grip when moving it too fast.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PinBlockInputNonEditMode', name: 'Pin + Block Input Non Layout Mode', description: 'Blocks interaction with \'Pinned\' + \'Block Input\' Overlay unless Layout Mode is active.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarGesture', name: 'Window Toolbar Gesture', description: 'When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarKeyboard', name: 'Window Toolbar Keyboard', description: 'Add a keyboard  summon button to the Capture Overlay Toolbar.', default: false },
+        ]
+    },
+    {
+        name: 'Quality of Life', priority: 11, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DoubleClickConfirm', name: 'Double Click Confirm', description: 'Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HandleScrolling', name: 'Handle Scrolling', description: 'Support horizontal scrolling and control scroll speed with the thumbstick axis value.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardHoldingIndicator', name: 'Keyboard Holding Indicator', description: 'Do Keyboard key-pressed animation while the key is being held or sticky.', default: true },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.LaserPointer', name: 'Laser', description: 'Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.', default: 'Enable Without Mouse Smooth', options: ['Disable', 'Enable Without Mouse Smooth', 'Enable With Mouse Smooth'] },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayCurveAutoRefresh', name: 'Overlay Curve Auto Refresh', description: 'Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PinBlockInputNonEditMode', name: 'Pin + Block Input Non Layout Mode', description: 'Blocks interaction with \'Pinned\' + \'Block Input\' Overlay unless Layout Mode is active.', default: true },
             { type: Ui.ComponentType.Slider, id: 'XSOverlayTweak.PullTriggerClickThreshold', name: 'Pull Trigger Click Threshold', description: 'The Trigger pull threshold required to trigger a Left Click.<br>- Uses the Trigger Value from SteamVR Input.', default: 0.5, options: [0.1, 1.0, 0.1], unit: 'Unit' },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewWiderScroll', name: 'WebView Wider Scroll', description: 'Makes the WebView scrollbar wider for easier interaction.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowsAccentColor', name: 'Windows Accent Color', description: 'Using Windows accent color as XSOverlay accent color.', default: true },
         ]
     },
     {
-        name: 'Fix', priority: 11, settings: [
+        name: 'Fix', priority: 12, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CtrlKeyStickyFix', name: 'Ctrl Key Sticky', description: 'Fixes the issue where the Ctrl key is not sticky.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CursorMovingInteractionFix', name: 'Cursor Moving Interaction', description: 'Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayGripSlipFix', name: 'Overlay Grip Slip', description: 'Prevents Overlay from dropping or slipping out of Grip when moving it too fast.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.SteamVRCompositorTextureFormatFix', name: 'SteamVR Compositor Texture Format', description: 'Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFrozenFix', name: 'WebView', description: 'Fixes an issue where certain WebView UI elements were not clickable.', default: true },
         ]
     },
     {
-        name: 'Community Request', priority: 12, settings: [
+        name: 'Community Request', priority: 13, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseButtonSwap', name: 'Mouse Button Swap', description: 'Detect the Windows setting \'Switch primary and secondary buttons\' to auto-swap controller binding.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayAttachSmooth', name: 'Overlay Attach Smooth', description: 'When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayConfirmClose', name: 'Overlay Confirm Close', description: 'Requires pressing the close overlay button three times to close.', default: false },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarGesture', name: 'Window Toolbar Gesture', description: 'When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarKeyboard', name: 'Window Toolbar Keyboard', description: 'Add a keyboard  summon button to the Capture Overlay Toolbar.', default: false },
         ]
     },
     {
-        name: 'About', priority: 13, settings: [
+        name: 'About', priority: 14, settings: [
             { type: Ui.ComponentType.Text, description: '<br>Version: <<Version>>'},
             { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.CheckForUpdate', name: 'Check for Updates', description: 'Check for the latest version of XSOverlay Tweak.', default: true },
             { type: Ui.ComponentType.Button, id: 'XSOverlayTweak.OpenGitHub', name: 'Open GitHub', description: 'Visit the XSOverlay Tweak GitHub page.', default: true },

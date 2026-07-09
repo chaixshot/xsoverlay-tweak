@@ -79,14 +79,21 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Optimization.EfficiencyMode));
         harmony.PatchAll(typeof(Patches.Optimization.uOSCThreadLoop));
 
+        // Overaly
+        harmony.PatchAll(typeof(Patches.Overlay.DefaultCaptureOverlayTexture));
+        harmony.PatchAll(typeof(Patches.Overlay.OverlayAttachSmooth));
+        harmony.PatchAll(typeof(Patches.Overlay.OverlayConfirmClose));
+        harmony.PatchAll(typeof(Patches.Overlay.OverlayCurveAutoRefresh));
+        harmony.PatchAll(typeof(Patches.Overlay.OverlayGripAntiSlip));
+        harmony.PatchAll(typeof(Patches.Overlay.PinBlockInputNonEditMode));
+        harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarGesture));
+        harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarKeyboard));
+
         // Quality of Life
-        harmony.PatchAll(typeof(Patches.QualityOfLife.DefaultCaptureOverlayTexture));
         harmony.PatchAll(typeof(Patches.QualityOfLife.DoubleClickConfirm));
         harmony.PatchAll(typeof(Patches.QualityOfLife.HandleScrolling));
         harmony.PatchAll(typeof(Patches.QualityOfLife.KeyboardHoldingIndicator));
         harmony.PatchAll(typeof(Patches.QualityOfLife.LaserPointer));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.OverlayCurveAutoRefresh));
-        harmony.PatchAll(typeof(Patches.QualityOfLife.PinBlockInputNonEditMode));
         harmony.PatchAll(typeof(Patches.QualityOfLife.PullTriggerClickThreshold));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WebViewWiderScroll));
         harmony.PatchAll(typeof(Patches.QualityOfLife.WindowsAccentColor));
@@ -97,7 +104,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.CursorMovingInteractionFix));
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
         harmony.PatchAll(typeof(Patches.Fix.KeyboardControlButtonStateFix));
-        harmony.PatchAll(typeof(Patches.Fix.OverlayGripSlipFix));
         harmony.PatchAll(typeof(Patches.Fix.OverlayRollCurveFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix));
@@ -106,11 +112,7 @@ public class Plugin : BaseUnityPlugin
 
         // Community Request
         harmony.PatchAll(typeof(Patches.CommunityRequest.LoadLayoutKeyboard));
-        harmony.PatchAll(typeof(Patches.CommunityRequest.OverlayAttachSmooth));
-        harmony.PatchAll(typeof(Patches.CommunityRequest.OverlayConfirmClose));
         harmony.PatchAll(typeof(Patches.CommunityRequest.MouseButtonSwap));
-        harmony.PatchAll(typeof(Patches.CommunityRequest.WindowToolbarGesture));
-        harmony.PatchAll(typeof(Patches.CommunityRequest.WindowToolbarKeyboard));
 
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));
 

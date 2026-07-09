@@ -68,13 +68,20 @@ namespace xsoverlay_tweak
         public static ConfigEntry<int> InactiveRefreshRate;
         public static ConfigEntry<bool> uOSCThreadLoop;
 
-        // Quality of Life
+        // Overlay
         public static ConfigEntry<bool> DefaultCaptureOverlayTexture;
+        public static ConfigEntry<bool> OverlayCurveAutoRefresh;
+        public static ConfigEntry<bool> OverlayConfirmClose;
+        public static ConfigEntry<bool> OverlayAttachSmooth;
+        public static ConfigEntry<bool> OverlayGripAntiSlip;
+        public static ConfigEntry<bool> PinBlockInputNonEditMode;
+        public static ConfigEntry<bool> WindowToolbarGesture;
+        public static ConfigEntry<bool> WindowToolbarKeyboard;
+
+        // Quality of Life
         public static ConfigEntry<bool> DoubleClickConfirm;
         public static ConfigEntry<bool> KeyboardHoldingIndicator;
         public static ConfigEntry<int> LaserPointer;
-        public static ConfigEntry<bool> OverlayCurveAutoRefresh;
-        public static ConfigEntry<bool> PinBlockInputNonEditMode;
         public static ConfigEntry<float> PullTriggerClickThreshold;
         public static ConfigEntry<bool> SteamVRCompositorTextureFormatFix;
         public static ConfigEntry<bool> WebViewWiderScroll;
@@ -86,17 +93,12 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> HandleScrolling;
         public static ConfigEntry<bool> KeyboardControlButtonStateFix;
         public static ConfigEntry<bool> LoadLayoutScaleFix;
-        public static ConfigEntry<bool> OverlayGripSlipFix;
         public static ConfigEntry<bool> OverlayRollCurveFix;
         public static ConfigEntry<bool> WebViewFrozenFix;
 
         // Community Request
         public static ConfigEntry<bool> LoadLayoutKeyboard;
         public static ConfigEntry<bool> MouseButtonSwap;
-        public static ConfigEntry<bool> OverlayConfirmClose;
-        public static ConfigEntry<bool> OverlayAttachSmooth;
-        public static ConfigEntry<bool> WindowToolbarGesture;
-        public static ConfigEntry<bool> WindowToolbarKeyboard;
 
         public static ConfigEntry<bool> UpdateNotification;
 
@@ -165,14 +167,21 @@ namespace xsoverlay_tweak
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.\nVery low value: the Layout Mode Toggle binding listener will miss some frames.");
             uOSCThreadLoop = cfg.Bind("Optimization", "uOSCThreadLoop", true, "Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.");
 
+            // Overlay
+            DefaultCaptureOverlayTexture = cfg.Bind("Overlay", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
+            OverlayAttachSmooth = cfg.Bind("Overlay", "OverlayAttachSmooth", true, "When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.");
+            OverlayConfirmClose = cfg.Bind("Overlay", "OverlayConfirmClose", false, "Requires pressing the close overlay button three times to close.");
+            OverlayCurveAutoRefresh = cfg.Bind("Overlay", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
+            OverlayGripAntiSlip = cfg.Bind("Overlay", "OverlayGripAntiSlip", true, "Prevents Overlay from dropping or slipping out of Grip when moving it too fast.");
+            PinBlockInputNonEditMode = cfg.Bind("QualityOfLife", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' + 'Block Input' Overlay unless Layout Mode is active.");
+            WindowToolbarGesture = cfg.Bind("Overlay", "WindowToolbarGesture", true, "When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.");
+            WindowToolbarKeyboard = cfg.Bind("Overlay", "WindowToolbarKeyboard", false, "Add a keyboard  summon button to the Capture Overlay Toolbar.");
+
             // Quality of Life
-            DefaultCaptureOverlayTexture = cfg.Bind("QualityOfLife", "DefaultCaptureOverlayTexture", true, "Initializes a Capture Overlay with a white texture to prevent new spawns from appearing invisible.");
             DoubleClickConfirm = cfg.Bind("QualityOfLife", "DoubleClickConfirm", true, "Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.");
             HandleScrolling = cfg.Bind("QualityOfLife", "HandleScrolling", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
             KeyboardHoldingIndicator = cfg.Bind("QualityOfLife", "KeyboardHoldingIndicator", true, "Do Keyboard key-pressed animation while the key is being held or sticky.");
             LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.");
-            OverlayCurveAutoRefresh = cfg.Bind("QualityOfLife", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
-            PinBlockInputNonEditMode = cfg.Bind("QualityOfLife", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' + 'Block Input' Overlay unless Layout Mode is active.");
             PullTriggerClickThreshold = cfg.Bind("QualityOfLife", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
@@ -182,7 +191,6 @@ namespace xsoverlay_tweak
             CursorMovingInteractionFix = cfg.Bind("Fix", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.");
             KeyboardControlButtonStateFix = cfg.Bind("Fix", "KeyboardControlButtonStateFix", true, "Fix keyboard control button color not following the state when summoning.");
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
-            OverlayGripSlipFix = cfg.Bind("Fix", "OverlayGripSlipFix", true, "Prevents Overlay from dropping or slipping out of Grip when moving it too fast.");
             OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
             SteamVRCompositorTextureFormatFix = cfg.Bind("Fix", "SteamVRCompositorTextureFormatFix", true, "Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.");
             WebViewFrozenFix = cfg.Bind("Fix", "WebViewFrozenFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
@@ -190,10 +198,6 @@ namespace xsoverlay_tweak
             // Community Request
             LoadLayoutKeyboard = cfg.Bind("CommunityRequest", "LoadLayoutKeyboard", true, "Layout will save the current keyboard state to the selected profile.");
             MouseButtonSwap = cfg.Bind("CommunityRequest", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
-            OverlayAttachSmooth = cfg.Bind("CommunityRequest", "OverlayAttachSmooth", true, "When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.");
-            OverlayConfirmClose = cfg.Bind("CommunityRequest", "OverlayConfirmClose", false, "Requires pressing the close overlay button three times to close.");
-            WindowToolbarGesture = cfg.Bind("CommunityRequest", "WindowToolbarGesture", true, "When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.");
-            WindowToolbarKeyboard = cfg.Bind("CommunityRequest", "WindowToolbarKeyboard", false, "Add a keyboard  summon button to the Capture Overlay Toolbar.");
 
             // About
             UpdateNotification = cfg.Bind("About", "UpdateNotifications", true, "Displays a notification when a new version is available.");

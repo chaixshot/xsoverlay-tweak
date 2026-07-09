@@ -2,7 +2,7 @@
 using System.Collections;
 using XSOverlay;
 
-namespace xsoverlay_tweak.Patches.QualityOfLife
+namespace xsoverlay_tweak.Patches.Overlay
 {
     internal class OverlayCurveAutoRefresh
     {

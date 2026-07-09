@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace xsoverlay_tweak.Patches.QualityOfLife
+namespace xsoverlay_tweak.Patches.Overlay
 {
     internal class DefaultCaptureOverlayTexture
     {

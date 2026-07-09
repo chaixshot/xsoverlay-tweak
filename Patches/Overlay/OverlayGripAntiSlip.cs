@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 
-namespace xsoverlay_tweak.Patches.Fix
+namespace xsoverlay_tweak.Patches.Overlay
 {
-    internal class OverlayGripSlipFix
+    internal class OverlayGripAntiSlip
     {
         [HarmonyPatch(typeof(Raycaster), "CheckOverlayIntersection")]
         [HarmonyPostfix]
@@ -22,7 +22,7 @@ namespace xsoverlay_tweak.Patches.Fix
 
         private static bool IsEnable()
         {
-            return XConfig.OverlayGripSlipFix.Value;
+            return XConfig.OverlayGripAntiSlip.Value;
         }
     }
 }
