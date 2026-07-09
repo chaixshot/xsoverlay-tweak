@@ -38,6 +38,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.AlwaysHideCursor"] = XConfig.AlwaysHideCursor.Value,
                 ["XSOverlayTweak.AlwaysUpdateCursor"] = XConfig.AlwaysUpdateCursor.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
+                ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
                 ["XSOverlayTweak.MouseSmoothSpeed"] = XConfig.MouseSmoothSpeed.Value,
                 ["XSOverlayTweak.WindowsCursorPointer"] = XConfig.WindowsCursorPointer.Value,
 
@@ -110,7 +111,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.WindowToolbarKeyboard"] = XConfig.WindowToolbarKeyboard.Value,
 
                 // Quality of Life
-                ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
                 ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
@@ -157,6 +157,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.DoubleClickConfirm":
                     XConfig.DoubleClickConfirm.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.HandleScrolling":
+                    XConfig.HandleScrolling.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.MouseSmoothSpeed":
                     XConfig.MouseSmoothSpeed.Value = int.Parse(value);
@@ -334,9 +337,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
 
                 // Quality of Life
-                case "XSOverlayTweak.HandleScrolling":
-                    XConfig.HandleScrolling.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.LaserPointer":
                     XConfig.LaserPointer.Value = int.Parse(value);
                     break;

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using uWindowCapture;
 using XSOverlay;
-using xsoverlay_tweak.Patches.QualityOfLife;
+using xsoverlay_tweak.Patches.Cursor;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
