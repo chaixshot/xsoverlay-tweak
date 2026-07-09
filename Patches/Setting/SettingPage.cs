@@ -65,7 +65,8 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.KeyboardHoldingIndicator"] = XConfig.KeyboardHoldingIndicator.Value,
                 ["XSOverlayTweak.LoadLayoutKeyboard"] = XConfig.LoadLayoutKeyboard.Value,
 
-                // Mouse Navigation
+                // Mouse
+                ["XSOverlayTweak.MouseButtonSwap"] = XConfig.MouseButtonSwap.Value,
                 ["XSOverlayTweak.MouseNavigation"] = XConfig.MouseNavigation.Value,
                 ["XSOverlayTweak.MouseNavigationUseModifiedKey"] = XConfig.MouseNavigationUseModifiedKey.Value,
 
@@ -122,9 +123,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.SteamVRCompositorTextureFormatFix"] = XConfig.SteamVRCompositorTextureFormatFix.Value,
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
                 ["XSOverlayTweak.WebViewFrozenFix"] = XConfig.WebViewFrozenFix.Value,
-
-                // Community Request
-                ["XSOverlayTweak.MouseButtonSwap"] = XConfig.MouseButtonSwap.Value,
 
                 // About
                 ["XSOverlayTweak.UpdateNotification"] = XConfig.UpdateNotification.Value,
@@ -228,7 +226,10 @@ namespace xsoverlay_tweak.Patches.Setting
                     XConfig.LoadLayoutKeyboard.Value = bool.Parse(value);
                     break;
 
-                // Mouse Navigation
+                // Mouse
+                case "XSOverlayTweak.MouseButtonSwap":
+                    XConfig.MouseButtonSwap.Value = bool.Parse(value);
+                    break;
                 case "XSOverlayTweak.MouseNavigation":
                     XConfig.MouseNavigation.Value = bool.Parse(value);
                     break;
@@ -368,11 +369,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.WebViewFrozenFix":
                     XConfig.WebViewFrozenFix.Value = bool.Parse(value);
-                    break;
-
-                // Community Request
-                case "XSOverlayTweak.MouseButtonSwap":
-                    XConfig.MouseButtonSwap.Value = bool.Parse(value);
                     break;
 
                 // About

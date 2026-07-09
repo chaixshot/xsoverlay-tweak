@@ -15,7 +15,7 @@ using XSOverlay;
 using xsoverlay_tweak.Utils;
 using static XSOverlay.MouseInputDevice;
 
-namespace xsoverlay_tweak.Patches
+namespace xsoverlay_tweak.Patches.Mouse
 {
     internal class MouseNavigation
     {

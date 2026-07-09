@@ -41,6 +41,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> LoadLayoutKeyboard;
 
         // Mouse Navigation
+        public static ConfigEntry<bool> MouseButtonSwap;
         public static ConfigEntry<bool> MouseNavigation;
         public static ConfigEntry<bool> MouseNavigationUseModifiedKey;
 
@@ -98,9 +99,6 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> OverlayRollCurveFix;
         public static ConfigEntry<bool> WebViewFrozenFix;
 
-        // Community Request
-        public static ConfigEntry<bool> MouseButtonSwap;
-
         public static ConfigEntry<bool> UpdateNotification;
 
         public static void AllConfig(ConfigFile cfg)
@@ -141,9 +139,10 @@ namespace xsoverlay_tweak
             KeyboardHoldingIndicator = cfg.Bind("Keyboard", "KeyboardHoldingIndicator", true, "Do Keyboard key-pressed animation while the key is being held or sticky.");
             LoadLayoutKeyboard = cfg.Bind("Keyboard", "LoadLayoutKeyboard", true, "Layout will save the current keyboard state to the selected profile.");
 
-            // Mouse Navigation
-            MouseNavigation = cfg.Bind("MouseNavigation", "MouseNavigation", false, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.");
-            MouseNavigationUseModifiedKey = cfg.Bind("MouseNavigation", "MouseNavigationUseModifiedKey", false, "Use Alt+Left/Right keyboard shortcuts for navigation instead of Mouse Clicks.\nTargets the focused window instead of the hovered window.");
+            // Mouse
+            MouseButtonSwap = cfg.Bind("Mouse", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
+            MouseNavigation = cfg.Bind("Mouse", "MouseNavigation", false, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.");
+            MouseNavigationUseModifiedKey = cfg.Bind("Mouse", "MouseNavigationUseModifiedKey", false, "Use Alt+Left/Right keyboard shortcuts for navigation instead of Mouse Clicks.\nTargets the focused window instead of the hovered window.");
 
             // FocusedWindow
             ElevatedTaskView = cfg.Bind("QualityOfLife", "ElevatedTaskView", true, "Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.");
@@ -198,9 +197,6 @@ namespace xsoverlay_tweak
             OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
             SteamVRCompositorTextureFormatFix = cfg.Bind("Fix", "SteamVRCompositorTextureFormatFix", true, "Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.");
             WebViewFrozenFix = cfg.Bind("Fix", "WebViewFrozenFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
-
-            // Community Request
-            MouseButtonSwap = cfg.Bind("CommunityRequest", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
 
             // About
             UpdateNotification = cfg.Bind("About", "UpdateNotifications", true, "Displays a notification when a new version is available.");

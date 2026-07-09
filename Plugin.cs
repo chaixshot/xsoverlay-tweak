@@ -60,8 +60,9 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Keyboard.KeyboardHoldingIndicator));
         harmony.PatchAll(typeof(Patches.Keyboard.LoadLayoutKeyboard));
 
-        // Mouse Navigation
-        harmony.PatchAll(typeof(Patches.MouseNavigation));
+        // Mouse
+        harmony.PatchAll(typeof(Patches.Mouse.MouseButtonSwap));
+        harmony.PatchAll(typeof(Patches.Mouse.MouseNavigation));
 
         // FocusedWindow
         harmony.PatchAll(typeof(Patches.FocusedWindow.ElevatedTaskView));
@@ -112,9 +113,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix));
         harmony.PatchAll(typeof(Patches.Fix.WebViewTexturePixelFormatFix));
-
-        // Community Request
-        harmony.PatchAll(typeof(Patches.CommunityRequest.MouseButtonSwap));
 
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));
 
