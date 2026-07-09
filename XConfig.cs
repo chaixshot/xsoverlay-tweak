@@ -12,7 +12,6 @@ namespace xsoverlay_tweak
         // Cursor
         public static ConfigEntry<bool> AlwaysUpdateCursor;
         public static ConfigEntry<bool> AlwaysHideCursor;
-        public static ConfigEntry<bool> PhysicalMouseDetector;
         public static ConfigEntry<bool> CursorMovingInteractionFix;
         public static ConfigEntry<bool> DoubleClickConfirm;
         public static ConfigEntry<bool> HandleScrolling;
@@ -47,6 +46,7 @@ namespace xsoverlay_tweak
         // Mouse Navigation
         public static ConfigEntry<bool> MouseButtonSwap;
         public static ConfigEntry<int> MouseNavigation;
+        public static ConfigEntry<bool> PhysicalMouseDetector;
 
         // FocusedWindow
         public static ConfigEntry<bool> ElevatedTaskView;
@@ -125,13 +125,13 @@ namespace xsoverlay_tweak
             InactivePointerOpacity = cfg.Bind("Pointer", "InactivePointerOpacity", 50, "Sets the opacity level for the inactive hand's Pointer.");
             PointerDoubleClickDelay = cfg.Bind("Pointer", "PointerDoubleClickDelay", true, "Applies the Double Click Delay from XSOverlay settings to the physical Pointer itself, not just the cursor.");
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the global XSOverlay setting.");
-            PullTriggerPointerLock = cfg.Bind("QualityOfLife", "PullTriggerPointerLock", 3, "Locks/Smooths the Pointer while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay from XSOverlay settings.");
+            PullTriggerPointerLock = cfg.Bind("Pointer", "PullTriggerPointerLock", 3, "Locks/Smooths the Pointer while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay from XSOverlay settings.");
             TwoHandedMode = cfg.Bind("Pointer", "TwoHandedMode", false, "Allow both hands to become active hands at the same time to perform a Click simultaneously for two-hand interaction.");
 
             // Wrist
             fpsVRSocket = cfg.Bind("Wrist", "fpsVRSocket", 0, "Attaches the fpsVR Overlay to a specific socket position of XSOverlay.");
-            HideBattery = cfg.Bind("CommunityRequest", "HideBattery", false, "Hide the Wrist Overlay battery information widget.");
-            HideInvalidBattery = cfg.Bind("CommunityRequest", "HideInvalidBattery", true, "Hide the invalid battery device from Wrist Overlay.");
+            HideBattery = cfg.Bind("Wrist", "HideBattery", false, "Hide the Wrist Overlay battery information widget.");
+            HideInvalidBattery = cfg.Bind("Wrist", "HideInvalidBattery", true, "Hide the invalid battery device from Wrist Overlay.");
             WristClipDistance = cfg.Bind("Wrist", "WristClipDistance", 60, "Wrist Overlay auto hide based on head distance.");
             WristOverPosition = cfg.Bind("Wrist", "WristOverPosition", true, "Increases the allowed positioning radius of the Wrist Overlay.");
             WristStateRestore = cfg.Bind("Wrist", "WristStateRestore", true, "Restore the last Wrist Overlay state at launch.");
