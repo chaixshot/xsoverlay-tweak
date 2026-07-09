@@ -37,6 +37,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Cursor
                 ["XSOverlayTweak.AlwaysHideCursor"] = XConfig.AlwaysHideCursor.Value,
                 ["XSOverlayTweak.AlwaysUpdateCursor"] = XConfig.AlwaysUpdateCursor.Value,
+                ["XSOverlayTweak.CursorMovingInteractionFix"] = XConfig.CursorMovingInteractionFix.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
                 ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
                 ["XSOverlayTweak.MouseSmoothSpeed"] = XConfig.MouseSmoothSpeed.Value,
@@ -117,7 +118,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.WindowsAccentColor"] = XConfig.WindowsAccentColor.Value,
 
                 // Fix
-                ["XSOverlayTweak.CursorMovingInteractionFix"] = XConfig.CursorMovingInteractionFix.Value,
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
                 ["XSOverlayTweak.SteamVRCompositorTextureFormatFix"] = XConfig.SteamVRCompositorTextureFormatFix.Value,
                 ["XSOverlayTweak.OverlayRollCurveFix"] = XConfig.OverlayRollCurveFix.Value,
@@ -154,6 +154,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.AlwaysHideCursor":
                     XConfig.AlwaysHideCursor.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.CursorMovingInteractionFix":
+                    XConfig.CursorMovingInteractionFix.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.DoubleClickConfirm":
                     XConfig.DoubleClickConfirm.Value = bool.Parse(value);
@@ -351,9 +354,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
 
                 // Fix
-                case "XSOverlayTweak.CursorMovingInteractionFix":
-                    XConfig.CursorMovingInteractionFix.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.LoadLayoutScaleFix":
                     XConfig.LoadLayoutScaleFix.Value = bool.Parse(value);
                     break;

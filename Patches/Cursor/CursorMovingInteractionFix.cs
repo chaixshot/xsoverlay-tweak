@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using XSOverlay;
 
-namespace xsoverlay_tweak.Patches.Fix
+namespace xsoverlay_tweak.Patches.Cursor
 {
     internal class CursorMovingInteractionFix
     {

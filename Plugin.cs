@@ -32,6 +32,7 @@ public class Plugin : BaseUnityPlugin
         // Cursor
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysHideCursor));
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor));
+        harmony.PatchAll(typeof(Patches.Cursor.CursorMovingInteractionFix));
         harmony.PatchAll(typeof(Patches.Cursor.DoubleClickConfirm));
         harmony.PatchAll(typeof(Patches.Cursor.HandleScrolling));
         harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed));
@@ -107,7 +108,6 @@ public class Plugin : BaseUnityPlugin
 
         // Fix
         harmony.PatchAll(typeof(Patches.Fix.AdditionalFix));
-        harmony.PatchAll(typeof(Patches.Fix.CursorMovingInteractionFix));
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
         harmony.PatchAll(typeof(Patches.Fix.OverlayRollCurveFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));

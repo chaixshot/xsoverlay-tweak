@@ -13,6 +13,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> AlwaysUpdateCursor;
         public static ConfigEntry<bool> AlwaysHideCursor;
         public static ConfigEntry<bool> PhysicalMouseDetector;
+        public static ConfigEntry<bool> CursorMovingInteractionFix;
         public static ConfigEntry<bool> DoubleClickConfirm;
         public static ConfigEntry<bool> HandleScrolling;
         public static ConfigEntry<int> MouseSmoothSpeed;
@@ -93,7 +94,6 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> WindowsAccentColor;
 
         // Fix
-        public static ConfigEntry<bool> CursorMovingInteractionFix;
         public static ConfigEntry<bool> LoadLayoutScaleFix;
         public static ConfigEntry<bool> OverlayRollCurveFix;
         public static ConfigEntry<bool> WebViewFrozenFix;
@@ -111,6 +111,7 @@ namespace xsoverlay_tweak
             // Cursor
             AlwaysHideCursor = cfg.Bind("Cursor", "AlwaysHideCursor", false, "Forcefully hides the system Windows Cursor in Desktop and Window Capture Overlay.");
             AlwaysUpdateCursor = cfg.Bind("Cursor", "AlwaysUpdateCursor", false, "Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.\nWithout this, the Windows Cursor often appears to lag one frame behind the Pointer position.");
+            CursorMovingInteractionFix = cfg.Bind("Cursor", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.");
             DoubleClickConfirm = cfg.Bind("Cursor", "DoubleClickConfirm", true, "Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.");
             HandleScrolling = cfg.Bind("Cursor", "HandleScrolling", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
             MouseSmoothSpeed = cfg.Bind("Cursor", "MouseSmoothSpeed", 3, "Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.");
@@ -191,7 +192,6 @@ namespace xsoverlay_tweak
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
 
             // Fix
-            CursorMovingInteractionFix = cfg.Bind("Fix", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.");
             LoadLayoutScaleFix = cfg.Bind("Fix", "LoadLayoutScaleFix", true, "Ensures saved scale values are applied correctly when loading an Overlay Layout.");
             OverlayRollCurveFix = cfg.Bind("Fix", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
             SteamVRCompositorTextureFormatFix = cfg.Bind("Fix", "SteamVRCompositorTextureFormatFix", true, "Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.");
