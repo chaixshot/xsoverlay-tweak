@@ -22,7 +22,6 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysHideCursor', name: 'Always Hide', description: 'Forcefully hides the system Windows Cursor in Desktop and Window Capture Overlay.', default: false },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysUpdateCursor', name: 'Always Update', description: 'Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.<br>Without this, the Windows Cursor often appears to lag one frame behind the Pointer position.', default: false },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.', default: 'Medium', options: ['Ultra Low', 'Very Low', 'Low', 'Medium', 'High', 'Very High'] },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PhysicalMouseDetector', name: 'Physical Mouse Detector', description: 'Relinquishes Pointer control when physical mouse movement is detected.<br>Pointer Click to regain control.', default: true },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.WindowsCursorPointer', name: 'Windows Cursor Pointer', description: 'Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.<br>- Animated mode always updates the cursor texture, which might impact performance.', default: 'Enable', options: ['Disable', 'Enable', 'Enable + Animated'] },
         ]
     },
@@ -60,6 +59,7 @@ const SECTIONS = [
         name: 'Mouse ', priority: 6, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseButtonSwap', name: 'Mouse Button Swap', description: 'Detect the Windows setting \'Switch primary and secondary buttons\' to auto-swap controller binding.', default: true },
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseNavigation', name: 'Mouse Navigation', description: 'Custom keybindings for Mouse Forward/Back navigation.<br>Configuration: Press \'Bindings\' tab in XSOverlay settings to open SteamVR bindings menu.<br>Edit the Current Binding and add a button for \'MouseBack/Forward\'.<br>- Using Alt + Left/Right keyboard shortcuts to target the focused window instead of the hovered window.';, default: "Disabled", options: ["Disabled", "Enable (Mouse 4/Mouse 5)", "Enable (Alt + Left/Right)"] },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PhysicalMouseDetector', name: 'Physical Mouse Detector', description: 'Relinquishes Pointer control when physical mouse movement is detected.<br>Pointer Click to regain control.', default: true },
         ]
     },
     {

@@ -2,7 +2,7 @@
 using XSOverlay;
 using xsoverlay_tweak.Utils;
 
-namespace xsoverlay_tweak.Patches.Cursor
+namespace xsoverlay_tweak.Patches.Mouse
 {
     internal class PhysicalMouseDetector
     {

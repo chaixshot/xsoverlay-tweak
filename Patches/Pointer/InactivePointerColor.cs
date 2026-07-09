@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using XSOverlay;
-using xsoverlay_tweak.Patches.Cursor;
+using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer

@@ -38,7 +38,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.AlwaysHideCursor"] = XConfig.AlwaysHideCursor.Value,
                 ["XSOverlayTweak.AlwaysUpdateCursor"] = XConfig.AlwaysUpdateCursor.Value,
                 ["XSOverlayTweak.MouseSmoothSpeed"] = XConfig.MouseSmoothSpeed.Value,
-                ["XSOverlayTweak.PhysicalMouseDetector"] = XConfig.PhysicalMouseDetector.Value,
                 ["XSOverlayTweak.WindowsCursorPointer"] = XConfig.WindowsCursorPointer.Value,
 
                 // Pointer
@@ -68,6 +67,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Mouse
                 ["XSOverlayTweak.MouseButtonSwap"] = XConfig.MouseButtonSwap.Value,
                 ["XSOverlayTweak.MouseNavigation"] = XConfig.MouseNavigation.Value,
+                ["XSOverlayTweak.PhysicalMouseDetector"] = XConfig.PhysicalMouseDetector.Value,
 
                 // FocusedWindow
                 ["XSOverlayTweak.ElevatedTaskView"] = XConfig.ElevatedTaskView.Value,
@@ -155,9 +155,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 case "XSOverlayTweak.AlwaysHideCursor":
                     XConfig.AlwaysHideCursor.Value = bool.Parse(value);
                     break;
-                case "XSOverlayTweak.PhysicalMouseDetector":
-                    XConfig.PhysicalMouseDetector.Value = bool.Parse(value);
-                    break;
                 case "XSOverlayTweak.MouseSmoothSpeed":
                     XConfig.MouseSmoothSpeed.Value = int.Parse(value);
                     break;
@@ -231,6 +228,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.MouseNavigation":
                     XConfig.MouseNavigation.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.PhysicalMouseDetector":
+                    XConfig.PhysicalMouseDetector.Value = bool.Parse(value);
                     break;
 
                 // FocusedWindow

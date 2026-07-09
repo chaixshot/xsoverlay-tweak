@@ -3,7 +3,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using XSOverlay;
-using xsoverlay_tweak.Patches.Cursor;
+using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Utils;
 

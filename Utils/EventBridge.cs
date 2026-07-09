@@ -6,7 +6,7 @@ using UnityEngine;
 using uWindowCapture;
 using XSOverlay;
 using XSOverlay.WebApp;
-using xsoverlay_tweak.Patches.Cursor;
+using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Patches.Pointer;
 
 namespace xsoverlay_tweak.Utils

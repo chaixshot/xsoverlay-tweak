@@ -32,7 +32,6 @@ public class Plugin : BaseUnityPlugin
         // Cursor
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysHideCursor));
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor));
-        harmony.PatchAll(typeof(Patches.Cursor.PhysicalMouseDetector));
         harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed));
         harmony.PatchAll(typeof(Patches.Cursor.WindowsCursorPointer));
 
@@ -63,6 +62,7 @@ public class Plugin : BaseUnityPlugin
         // Mouse
         harmony.PatchAll(typeof(Patches.Mouse.MouseButtonSwap));
         harmony.PatchAll(typeof(Patches.Mouse.MouseNavigation));
+        harmony.PatchAll(typeof(Patches.Mouse.PhysicalMouseDetector));
 
         // FocusedWindow
         harmony.PatchAll(typeof(Patches.FocusedWindow.ElevatedTaskView));

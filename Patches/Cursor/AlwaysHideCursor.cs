@@ -4,6 +4,7 @@ using UnityEngine;
 using XSOverlay;
 using System.Runtime.CompilerServices;
 using xsoverlay_tweak.Utils;
+using xsoverlay_tweak.Patches.Mouse;
 
 namespace xsoverlay_tweak.Patches.Cursor
 {

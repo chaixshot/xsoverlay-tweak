@@ -111,7 +111,6 @@ namespace xsoverlay_tweak
             AlwaysHideCursor = cfg.Bind("Cursor", "AlwaysHideCursor", false, "Forcefully hides the system Windows Cursor in Desktop and Window Capture Overlay.");
             AlwaysUpdateCursor = cfg.Bind("Cursor", "AlwaysUpdateCursor", false, "Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.\nWithout this, the Windows Cursor often appears to lag one frame behind the Pointer position.");
             MouseSmoothSpeed = cfg.Bind("Cursor", "MouseSmoothSpeed", 3, "Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.");
-            PhysicalMouseDetector = cfg.Bind("Cursor", "PhysicalMouseDetector", true, "Relinquishes Pointer control when physical mouse movement is detected.\nPointer Click to regain control.");
             WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", 1, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.\n- Animated mode always updates the cursor texture, which might impact performance.");
 
             // Pointer
@@ -141,6 +140,7 @@ namespace xsoverlay_tweak
             // Mouse
             MouseButtonSwap = cfg.Bind("Mouse", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
             MouseNavigation = cfg.Bind("Mouse", "MouseNavigation", 0, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.\n- Using Alt + Left/Right keyboard shortcuts to target the focused window instead of the hovered window.");
+            PhysicalMouseDetector = cfg.Bind("Mouse", "PhysicalMouseDetector", true, "Relinquishes Pointer control when physical mouse movement is detected.\nPointer Click to regain control.");
 
             // FocusedWindow
             ElevatedTaskView = cfg.Bind("QualityOfLife", "ElevatedTaskView", true, "Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.");
