@@ -115,7 +115,7 @@ namespace xsoverlay_tweak.Patches.Mouse
 
         private static void SimulateBackNavigation(InputSimulator sim)
         {
-            if (XConfig.MouseNavigationUseModifiedKey.Value)
+            if (XConfig.MouseNavigation.Value.Equals(2))
                 sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.MENU, VirtualKeyCode.LEFT);
             else
                 sim.Mouse.XButtonClick(1);
@@ -123,7 +123,7 @@ namespace xsoverlay_tweak.Patches.Mouse
 
         private static void SimulateForwardNavigation(InputSimulator sim)
         {
-            if (XConfig.MouseNavigationUseModifiedKey.Value)
+            if (XConfig.MouseNavigation.Value.Equals(2))
                 sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.MENU, VirtualKeyCode.RIGHT);
             else
                 sim.Mouse.XButtonClick(2);
@@ -185,7 +185,7 @@ namespace xsoverlay_tweak.Patches.Mouse
 
         private static bool IsEnable()
         {
-            return XConfig.MouseNavigation.Value;
+            return XConfig.MouseNavigation.Value != 0;
         }
     }
 }

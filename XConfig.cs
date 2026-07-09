@@ -42,8 +42,7 @@ namespace xsoverlay_tweak
 
         // Mouse Navigation
         public static ConfigEntry<bool> MouseButtonSwap;
-        public static ConfigEntry<bool> MouseNavigation;
-        public static ConfigEntry<bool> MouseNavigationUseModifiedKey;
+        public static ConfigEntry<int> MouseNavigation;
 
         // FocusedWindow
         public static ConfigEntry<bool> ElevatedTaskView;
@@ -141,8 +140,7 @@ namespace xsoverlay_tweak
 
             // Mouse
             MouseButtonSwap = cfg.Bind("Mouse", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
-            MouseNavigation = cfg.Bind("Mouse", "MouseNavigation", false, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.");
-            MouseNavigationUseModifiedKey = cfg.Bind("Mouse", "MouseNavigationUseModifiedKey", false, "Use Alt+Left/Right keyboard shortcuts for navigation instead of Mouse Clicks.\nTargets the focused window instead of the hovered window.");
+            MouseNavigation = cfg.Bind("Mouse", "MouseNavigation", 0, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.\n- Using Alt + Left/Right keyboard shortcuts to target the focused window instead of the hovered window.");
 
             // FocusedWindow
             ElevatedTaskView = cfg.Bind("QualityOfLife", "ElevatedTaskView", true, "Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.");

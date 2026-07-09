@@ -59,8 +59,7 @@ const SECTIONS = [
     {
         name: 'Mouse', priority: 6, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseButtonSwap', name: 'Mouse Button Swap', description: 'Detect the Windows setting \'Switch primary and secondary buttons\' to auto-swap controller binding.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseNavigation', name: 'Enable', description: 'Custom keybindings for Mouse Forward/Back navigation.<br>Configuration: Press \'Bindings\' tab in XSOverlay settings to open SteamVR bindings menu.<br>Edit the Current Binding and add a button for \'MouseBack/Forward\'.', default: false },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.MouseNavigationUseModifiedKey', name: 'Use Alt+Left/Right', description: 'Use Alt+Left/Right keyboard shortcuts for navigation instead of Mouse Clicks.<br>Targets the focused window instead of the hovered window.', default: false },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseNavigation', name: 'Enable', description: 'Custom keybindings for Mouse Forward/Back navigation.<br>Configuration: Press \'Bindings\' tab in XSOverlay settings to open SteamVR bindings menu.<br>Edit the Current Binding and add a button for \'MouseBack/Forward\'.<br>- Using Alt + Left/Right keyboard shortcuts to target the focused window instead of the hovered window.', default: "Disabled", options: ["Disabled", "Enable (Mouse 4/Mouse 5)", "Enable (Alt + Left/Right)"] },
         ]
     },
     {

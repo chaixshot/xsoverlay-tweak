@@ -68,7 +68,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Mouse
                 ["XSOverlayTweak.MouseButtonSwap"] = XConfig.MouseButtonSwap.Value,
                 ["XSOverlayTweak.MouseNavigation"] = XConfig.MouseNavigation.Value,
-                ["XSOverlayTweak.MouseNavigationUseModifiedKey"] = XConfig.MouseNavigationUseModifiedKey.Value,
 
                 // FocusedWindow
                 ["XSOverlayTweak.ElevatedTaskView"] = XConfig.ElevatedTaskView.Value,
@@ -231,10 +230,7 @@ namespace xsoverlay_tweak.Patches.Setting
                     XConfig.MouseButtonSwap.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.MouseNavigation":
-                    XConfig.MouseNavigation.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.MouseNavigationUseModifiedKey":
-                    XConfig.MouseNavigationUseModifiedKey.Value = bool.Parse(value);
+                    XConfig.MouseNavigation.Value = int.Parse(value);
                     break;
 
                 // FocusedWindow
