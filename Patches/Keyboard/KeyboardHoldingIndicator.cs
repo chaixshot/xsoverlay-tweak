@@ -31,7 +31,7 @@ namespace xsoverlay_tweak.Patches.Keyboard
         [HarmonyPostfix]
         public static void ReleaseStickyKeyEvent(KeyboardKey __instance)
         {
-            if (IsEnable() && __instance.IsDoubleTappable)
+            if (IsEnable())
                 DoKeyDownAnimation(__instance);
         }
 
