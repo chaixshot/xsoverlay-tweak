@@ -41,7 +41,7 @@ namespace xsoverlay_tweak.Patches.Haptic
             PlayDoubleClickHaptic();
         }
 
-        [HarmonyPatch(typeof(MouseSimulator), "LeftButtonClick")]
+        [HarmonyPatch(typeof(MouseSimulator), "LeftButtonClick"), HarmonyPatch(typeof(MouseSimulator), "LeftButtonDown")]
         [HarmonyPrefix]
         public static void LeftClick()
         {
@@ -59,7 +59,7 @@ namespace xsoverlay_tweak.Patches.Haptic
                 lastLeftClickTime = currentTime;
         }
 
-        [HarmonyPatch(typeof(MouseSimulator), "RightButtonClick")]
+        [HarmonyPatch(typeof(MouseSimulator), "RightButtonClick"), HarmonyPatch(typeof(MouseSimulator), "RightButtonDown")]
         [HarmonyPrefix]
         public static void RightClick()
         {
@@ -77,7 +77,7 @@ namespace xsoverlay_tweak.Patches.Haptic
                 lastRightClickTime = currentTime;
         }
 
-        [HarmonyPatch(typeof(MouseSimulator), "MiddleButtonClick")]
+        [HarmonyPatch(typeof(MouseSimulator), "MiddleButtonClick"), HarmonyPatch(typeof(MouseSimulator), "MiddleButtonDown")]
         [HarmonyPrefix]
         public static void MiddleClick()
         {
