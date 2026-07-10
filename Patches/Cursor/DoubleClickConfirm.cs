@@ -52,25 +52,25 @@ namespace xsoverlay_tweak.Patches.Cursor
                     if (__instance.CanClickDesktopCursor)
                         if (!clickActions.IsHoldingMouseClick)
                         {
-                            bool isDoubleXSO = false;
-                            bool isDoubleWin = false;
                             float delay = Time.time - DoubleClickState.lastClickTime;
+                            bool isDoubleClick = false;
+                            bool isWDoubleClick = delay <= wDoubleClickTime;
 
-                            if (delay <= XSettingsManager.Instance.Settings.DoubleClickDelay && delay > wDoubleClickTime)
+                            if (!isWDoubleClick && delay <= XSettingsManager.Instance.Settings.DoubleClickDelay)
                             {
-                                isDoubleXSO = true;
+                                isDoubleClick = true;
                                 DoubleClickState.lastClickTime = 0f;
                             }
-                            else if (delay <= wDoubleClickTime)
+                            else if (isWDoubleClick)
                             {
-                                isDoubleWin = true;
+                                isDoubleClick = true;
                                 DoubleClickState.lastClickTime = 0f;
                             }
                             else
                                 DoubleClickState.lastClickTime = Time.time;
 
                             // Cache the cursor position and set it back when double-click to avoid the cursor moving from hand movement between clicks
-                            if (isDoubleXSO || isDoubleWin)
+                            if (isDoubleClick)
                                 MouseOperations.SetCursorPosition((int)lastDesktopCoordinates.x, (int)lastDesktopCoordinates.y);
                             else
                                 if (!___HoldingTouch)
@@ -78,7 +78,7 @@ namespace xsoverlay_tweak.Patches.Cursor
                                 else
                                     lastDesktopCoordinates = ___CachedTouchPosition;
 
-                            if (isDoubleXSO)
+                            if (isDoubleClick)
                             {
                                 switch (clickActions.ActionIndex)
                                 {
