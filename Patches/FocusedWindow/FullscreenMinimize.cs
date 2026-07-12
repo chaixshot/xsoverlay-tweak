@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Valve.VR; // Ensure the OpenVR namespace is included
 using XSOverlay;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
@@ -19,7 +21,17 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
                 if (isShow)
                 {
-                    IntPtr hwnd = Utils.GetForegroundWindow();
+                    IntPtr hwnd = IntPtr.Zero;
+                    uint vrPid = 0;
+
+                    if (OpenVR.Applications != null)
+                        vrPid = OpenVR.Applications.GetCurrentSceneProcessId();
+
+                    if (vrPid != 0)
+                        hwnd = GetWindowHandleFromPid((int)vrPid);
+                    else
+                        hwnd = Utils.GetForegroundWindow();
+
                     if (hwnd != IntPtr.Zero && IsWindowFullscreen(hwnd))
                     {
                         lastWindow = hwnd;
@@ -32,6 +44,22 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                     lastWindow = IntPtr.Zero;
                 }
             };
+        }
+
+        /// <summary>
+        /// Looks up the main window handle associated with the active VR game PID.
+        /// </summary>
+        private static IntPtr GetWindowHandleFromPid(int pid)
+        {
+            try
+            {
+                using Process proc = Process.GetProcessById(pid);
+                return proc.MainWindowHandle;
+            }
+            catch
+            {
+                return IntPtr.Zero;
+            }
         }
 
         private static bool IsWindowFullscreen(IntPtr hWnd)
