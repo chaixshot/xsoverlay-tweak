@@ -7,7 +7,7 @@ using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
 {
-    internal class HangTaskView
+    internal class FocusWindowHang
     {
         private static IntPtr hookHandle;
         private static Utils.WinEventDelegate hookDelegate;
@@ -19,7 +19,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         [HarmonyPostfix]
         public static void ListenForHangChanges()
         {
-            XConfig.HangTaskView.SettingChanged += (sender, args) =>
+            XConfig.FocusWindowHang.SettingChanged += (sender, args) =>
             {
                 if (IsEnable())
                     SetupHook();
@@ -30,13 +30,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             XSOEventSystem.OnToggleLayoutMode += async (IsShow) =>
             {
                 if (IsEnable() && IsShow)
-                    if (IsCurrentWindowHanging())
-                    {
-                        await Utils.ShowWindowsTaskView();
-
-                        if (IsCurrentWindowHanging())
-                            Utils.ShellStartMenu();
-                    }
+                    HandleHangingWindow();
             };
 
             OnFocusedWindowChanged += (isHanging) =>
@@ -49,6 +43,21 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 SetupHook();
 
             AppDomain.CurrentDomain.ProcessExit += (s, e) => ShutdownHook();
+        }
+
+        private static async void DoTask()
+        {
+            int mode = XConfig.FocusWindowElevated.Value;
+
+            if (mode == 1) // Task View
+            {
+                await Utils.ShowWindowsTaskView();
+
+                if (IsCurrentWindowHanging())
+                    Utils.ShellStartMenu();
+            }
+            else if (mode == 2) // Start menu
+                Utils.ShellStartMenu();
         }
 
         /// <summary>
@@ -76,12 +85,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 if (!confirmed) return;
 
                 if (hwnd == Utils.GetForegroundWindow()) // Make sure the window is still the same
-                {
-                    await Utils.ShowWindowsTaskView();
-
-                    if (IsCurrentWindowHanging())
-                        Utils.ShellStartMenu();
-                }
+                    DoTask();
             });
         }
 
@@ -103,7 +107,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             }
         }
 
-        public static bool IsCurrentWindowHanging()
+        private static bool IsCurrentWindowHanging()
         {
             IntPtr hwnd = Utils.GetForegroundWindow();
             return hwnd != IntPtr.Zero && Utils.IsHungAppWindow(hwnd);
@@ -152,7 +156,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         private static bool IsEnable()
         {
-            return XConfig.HangTaskView.Value;
+            return XConfig.FocusWindowHang.Value != 0;
         }
     }
 }

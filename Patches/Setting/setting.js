@@ -68,9 +68,9 @@ const SECTIONS = [
     },
     {
         name: 'Focused Window', priority: 7, settings: [
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.ElevatedTaskView', name: 'Elevated Task View', description: 'Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.HangTaskView', name: 'Hang Task View', description: 'Show Windows Task View when the focused window is hung or not responding to prevent interaction deadlock.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.FullscreenMinimize', name: 'Fullscreen Minimize', description: 'Minimize the current focused fullscreen window when toggling on Layout Mode.', default: true },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.FocusWindowElevated', name: 'Elevated', description: 'Do action when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.', default: "Show Task View", options: ["Nothing", "Show Task View", "Show Start Menu"] },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.FocusWindowHang', name: 'Hang', description: 'Do action when the focused window is hung or not responding to prevent interaction deadlock.', default: "Show Task View", options: ["Nothing", "Show Task View", "Show Start Menu"] },
+            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.FocusWindowFullscreen', name: 'Fullscreen', description: 'Do action if the current focused or game window is in fullscreen mode when toggling on Layout Mode.', default: "Show Task View", options: ["Nothing", "Show Task View", "Show Start Menu", "Minimize Window"] },
         ]
     },
     {

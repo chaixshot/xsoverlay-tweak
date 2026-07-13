@@ -49,9 +49,9 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> PhysicalMouseDetector;
 
         // FocusedWindow
-        public static ConfigEntry<bool> ElevatedTaskView;
-        public static ConfigEntry<bool> HangTaskView;
-        public static ConfigEntry<bool> FullscreenMinimize;
+        public static ConfigEntry<int> FocusWindowElevated;
+        public static ConfigEntry<int> FocusWindowHang;
+        public static ConfigEntry<int> FocusWindowFullscreen;
 
         // Dashboard
         public static ConfigEntry<bool> DashboardNotification;
@@ -148,9 +148,9 @@ namespace xsoverlay_tweak
             PhysicalMouseDetector = cfg.Bind("Mouse", "PhysicalMouseDetector", true, "Relinquishes Pointer control when physical mouse movement is detected.\nPointer Click to regain control.");
 
             // FocusedWindow
-            ElevatedTaskView = cfg.Bind("QualityOfLife", "ElevatedTaskView", true, "Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.");
-            HangTaskView = cfg.Bind("QualityOfLife", "HangTaskView", true, "Show Windows Task View when the focused window is hung or not responding to prevent interaction deadlock.");
-            FullscreenMinimize = cfg.Bind("QualityOfLife", "FullscreenMinimize", true, "Minimize the current focused fullscreen window when toggling on Layout Mode.");
+            FocusWindowElevated = cfg.Bind("QualityOfLife", "FocusWindowElevated", 1, "Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.");
+            FocusWindowHang = cfg.Bind("QualityOfLife", "FocusWindowHang", 1, "Show Windows Task View when the focused window is hung or not responding to prevent interaction deadlock.");
+            FocusWindowFullscreen = cfg.Bind("QualityOfLife", "FocusWindowFullscreen", 1, "Minimize the current focused fullscreen window when toggling on Layout Mode.");
 
             // Dashboard
             DashboardNotification = cfg.Bind("Dashboard", "DashboardNotification", true, "Keeps Notifications visible while the SteamVR Dashboard is open.");

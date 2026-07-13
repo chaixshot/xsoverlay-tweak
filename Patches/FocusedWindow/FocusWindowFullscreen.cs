@@ -7,7 +7,7 @@ using XSOverlay;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
 {
-    internal class FullscreenMinimize
+    internal class FocusWindowFullscreen
     {
         private static IntPtr lastWindow = IntPtr.Zero; // Keeps track of the window we minimized so we can bring it back
 
@@ -15,7 +15,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         [HarmonyPostfix]
         public static void ListenForLayoutChanges()
         {
-            XSOEventSystem.OnToggleLayoutMode += (isShow) =>
+            XSOEventSystem.OnToggleLayoutMode += async (isShow) =>
             {
                 if (!IsEnable()) return;
 
@@ -27,23 +27,45 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                     if (OpenVR.Applications != null)
                         vrPid = OpenVR.Applications.GetCurrentSceneProcessId();
 
-                    if (vrPid != 0)
+                    if (vrPid != 0) // Get from OpnVR
                         hwnd = GetWindowHandleFromPid((int)vrPid);
-                    else
+                    else // Get from focused window
                         hwnd = Utils.GetForegroundWindow();
 
                     if (hwnd != IntPtr.Zero && IsWindowFullscreen(hwnd))
                     {
                         lastWindow = hwnd;
-                        Utils.ShowWindow(hwnd, Utils.SW_MINIMIZE);
+                        DoTask(hwnd);
                     }
                 }
-                else if (lastWindow != IntPtr.Zero)
+                else if (lastWindow != IntPtr.Zero) // Edit mode toggle off
                 {
-                    Utils.ShowWindow(lastWindow, Utils.SW_RESTORE);
-                    lastWindow = IntPtr.Zero;
+                    if (XConfig.FocusWindowFullscreen.Value == 1 || XConfig.FocusWindowFullscreen.Value == 2) // Focus back
+                        Utils.SetForegroundWindow(lastWindow);
+                    else if (XConfig.FocusWindowFullscreen.Value == 3) // Resore from minimze
+                    {
+                        Utils.ShowWindow(lastWindow, Utils.SW_RESTORE);
+                        lastWindow = IntPtr.Zero;
+                    }
                 }
             };
+        }
+
+        private static async void DoTask(IntPtr hwnd)
+        {
+            int mode = XConfig.FocusWindowFullscreen.Value;
+
+            if (mode == 1) // Task View
+            {
+                await Utils.ShowWindowsTaskView();
+
+                if (IsWindowFullscreen(hwnd))
+                    Utils.ShellStartMenu();
+            }
+            else if (mode == 2) // Start menu
+                Utils.ShellStartMenu();
+            else if (mode == 3) // Minimize
+                Utils.ShowWindow(hwnd, Utils.SW_MINIMIZE);
         }
 
         /// <summary>
@@ -83,7 +105,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         private static bool IsEnable()
         {
-            return XConfig.FullscreenMinimize.Value;
+            return XConfig.FocusWindowFullscreen.Value != 0;
         }
     }
 }

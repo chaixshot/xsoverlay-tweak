@@ -74,9 +74,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.PhysicalMouseDetector"] = XConfig.PhysicalMouseDetector.Value,
 
                 // FocusedWindow
-                ["XSOverlayTweak.ElevatedTaskView"] = XConfig.ElevatedTaskView.Value,
-                ["XSOverlayTweak.HangTaskView"] = XConfig.HangTaskView.Value,
-                ["XSOverlayTweak.FullscreenMinimize"] = XConfig.FullscreenMinimize.Value,
+                ["XSOverlayTweak.FocusWindowElevated"] = XConfig.FocusWindowElevated.Value,
+                ["XSOverlayTweak.FocusWindowHang"] = XConfig.FocusWindowHang.Value,
+                ["XSOverlayTweak.FocusWindowFullscreen"] = XConfig.FocusWindowFullscreen.Value,
 
                 // Dashboard Overlay
                 ["XSOverlayTweak.DashboardNotification"] = XConfig.DashboardNotification.Value,
@@ -246,14 +246,14 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
 
                 // FocusedWindow
-                case "XSOverlayTweak.ElevatedTaskView":
-                    XConfig.ElevatedTaskView.Value = bool.Parse(value);
+                case "XSOverlayTweak.FocusWindowElevated":
+                    XConfig.FocusWindowElevated.Value = int.Parse(value);
                     break;
-                case "XSOverlayTweak.HangTaskView":
-                    XConfig.HangTaskView.Value = bool.Parse(value);
+                case "XSOverlayTweak.FocusWindowHang":
+                    XConfig.FocusWindowHang.Value = int.Parse(value);
                     break;
-                case "XSOverlayTweak.FullscreenMinimize":
-                    XConfig.FullscreenMinimize.Value = bool.Parse(value);
+                case "XSOverlayTweak.FocusWindowFullscreen":
+                    XConfig.FocusWindowFullscreen.Value = int.Parse(value);
                     break;
 
                 // Dashboard Overlay

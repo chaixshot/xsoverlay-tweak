@@ -6,7 +6,7 @@ using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
 {
-    internal class ElevatedTaskView
+    internal class FocusWindowElevated
     {
         private static IntPtr hookHandle;
         private static Utils.WinEventDelegate hookDelegate;
@@ -19,7 +19,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         {
             if (IsXSOverlayElevated()) return;
 
-            XConfig.ElevatedTaskView.SettingChanged += (sender, args) =>
+            XConfig.FocusWindowElevated.SettingChanged += (sender, args) =>
             {
                 if (IsEnable())
                     SetupHook();
@@ -33,12 +33,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 if (IsEnable() && IsShow)
                 {
                     if (IsCurrentWindowElevated())
-                    {
-                        await Utils.ShowWindowsTaskView();
-
-                        if (IsCurrentWindowElevated())
-                            Utils.ShellStartMenu();
-                    }
+                        DoTask();
                 }
             };
 
@@ -46,18 +41,28 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             OnFocusedWindowChanged += async (isElevated) =>
             {
                 if (isElevated && (EventBridge.IsHoverAnyDesktopOrWindowCapture || Overlay_Manager.Instance.editMode))
-                {
-                    await Utils.ShowWindowsTaskView();
-
-                    if (IsCurrentWindowElevated())
-                        Utils.ShellStartMenu();
-                }
+                    DoTask();
             };
 
             if (IsEnable())
                 SetupHook();
 
             AppDomain.CurrentDomain.ProcessExit += (s, e) => ShutdownHook();
+        }
+
+        private static async void DoTask()
+        {
+            int mode = XConfig.FocusWindowElevated.Value;
+
+            if (mode == 1) // Task View
+            {
+                await Utils.ShowWindowsTaskView();
+
+                if (IsCurrentWindowElevated())
+                    Utils.ShellStartMenu();
+            }
+            else if (mode == 2) // Start menu
+                Utils.ShellStartMenu();
         }
 
         /// <summary>
@@ -73,7 +78,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             return false;
         }
 
-        public static bool IsCurrentWindowElevated()
+        private static bool IsCurrentWindowElevated()
         {
             IntPtr hwnd = Utils.GetForegroundWindow();
             return hwnd != IntPtr.Zero && IsWindowElevated(hwnd);
@@ -159,7 +164,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         private static bool IsEnable()
         {
-            return XConfig.ElevatedTaskView.Value;
+            return XConfig.FocusWindowElevated.Value != 0;
         }
     }
 }

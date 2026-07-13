@@ -70,9 +70,9 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Mouse.PhysicalMouseDetector));
 
         // FocusedWindow
-        harmony.PatchAll(typeof(Patches.FocusedWindow.ElevatedTaskView));
-        harmony.PatchAll(typeof(Patches.FocusedWindow.HangTaskView));
-        harmony.PatchAll(typeof(Patches.FocusedWindow.FullscreenMinimize));
+        harmony.PatchAll(typeof(Patches.FocusedWindow.FocusWindowElevated));
+        harmony.PatchAll(typeof(Patches.FocusedWindow.FocusWindowHang));
+        harmony.PatchAll(typeof(Patches.FocusedWindow.FocusWindowFullscreen));
 
         // Dashboard
         harmony.PatchAll(typeof(Patches.SteamDashboard));
