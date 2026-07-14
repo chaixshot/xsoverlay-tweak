@@ -21,10 +21,15 @@ namespace xsoverlay_tweak.Patches.Keyboard
 
         [HarmonyPatch(typeof(KeyboardKey), "VirtualKeyboardEvent")]
         [HarmonyPostfix]
-        public static void VirtualKeyboardEvent(KeyboardKey __instance)
+        public static void VirtualKeyboardEvent(KeyboardKey __instance, bool ___IsKeyDown)
         {
             if (IsEnable())
+            {
+                if (__instance.IsKeyToggle) // Caps Lock
+                    __instance.IsKeyHeld = !___IsKeyDown;
+
                 DoKeyDownAnimation(__instance);
+            }
         }
 
         [HarmonyPatch(typeof(KeyboardKey), nameof(KeyboardKey.ReleaseStickyKeyEvent))]
