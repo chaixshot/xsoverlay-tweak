@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
+using Valve.Newtonsoft.Json;
+using Valve.Newtonsoft.Json.Linq;
 using XSOverlay;
 using xsoverlay_tweak.Utils;
 

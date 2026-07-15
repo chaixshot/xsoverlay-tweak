@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
+using Valve.Newtonsoft.Json;
+using Valve.Newtonsoft.Json.Linq;
 using Valve.VR;
 using Vuplex.WebView;
 using XSOverlay;

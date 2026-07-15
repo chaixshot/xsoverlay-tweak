@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Valve.Newtonsoft.Json;
 using XSOverlay.WebApp;
 using XSOverlay.Websockets.API;
 
