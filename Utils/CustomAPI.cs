@@ -110,16 +110,19 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPostfix]
         public static void AddCustomAPI(ApiHandler __instance)
         {
+            // Call after wrist media player toggled
             __instance.Commands.Add("Tweak_ToggleMediaPlayer", delegate (string sender, string jsonData, string data)
             {
                 OnToggleMediaPlayer.Invoke(bool.Parse(jsonData));
             });
 
+            // Call after wrist media player toggled by clicking the button
             __instance.Commands.Add("Tweak_ClickToggleMediaPlayer", delegate (string sender, string jsonData, string data)
             {
                 OnClickToggleMediaPlayer.Invoke(bool.Parse(jsonData));
             });
 
+            // Call after the notification is shown, including shows from the queue.
             __instance.Commands.Add("Tweak_ShowNotification", delegate (string sender, string jsonData, string data)
             {
                 XSONotificationObject notification = JsonConvert.DeserializeObject<XSONotificationObject>(jsonData);
