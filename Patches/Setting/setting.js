@@ -119,6 +119,7 @@ const SECTIONS = [
     {
         name: 'Quality of Life', priority: 12, settings: [
             { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.LaserPointer', name: 'Laser', description: 'Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.<br>- Mouse Smooth: apply mouse smooth behavior to the Laser when active.', default: 'Enable', options: ['Disable', 'Enable', 'Enable + Mouse Smooth'] },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.NotificationLeashedTracker', name: 'Notification Leashed Tracker', description: 'Notification tracking using leash-like behavior instead of smooth.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewWiderScroll', name: 'WebView Wider Scroll', description: 'Makes the WebView scrollbar wider for easier interaction.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowsAccentColor', name: 'Windows Accent Color', description: 'Using Windows accent color as XSOverlay accent color.', default: true },
         ]

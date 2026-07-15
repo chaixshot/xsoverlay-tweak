@@ -115,6 +115,7 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // Quality of Life
                 ["XSOverlayTweak.LaserPointer"] = XConfig.LaserPointer.Value,
+                ["XSOverlayTweak.NotificationLeashedTracker"] = XConfig.NotificationLeashedTracker.Value,
                 ["XSOverlayTweak.WebViewWiderScroll"] = XConfig.WebViewWiderScroll.Value,
                 ["XSOverlayTweak.WindowsAccentColor"] = XConfig.WindowsAccentColor.Value,
 
@@ -348,6 +349,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Quality of Life
                 case "XSOverlayTweak.LaserPointer":
                     XConfig.LaserPointer.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.NotificationLeashedTracker":
+                    XConfig.NotificationLeashedTracker.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.WebViewWiderScroll":
                     XConfig.WebViewWiderScroll.Value = bool.Parse(value);

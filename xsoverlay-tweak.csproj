@@ -400,10 +400,6 @@
     </Reference>
   </ItemGroup>
   
-  <ItemGroup>
-    <Folder Include="Patches\CommunityRequest\" />
-  </ItemGroup>
-  
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="taskkill /F /T /im XSOverlay.exe /FI &quot;STATUS eq RUNNING&quot;&#xD;&#xA;taskkill /F /T /im &quot;Vuplex WebView.vuplex&quot; /FI &quot;STATUS eq RUNNING&quot;" />
   </Target>
