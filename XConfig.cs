@@ -115,8 +115,8 @@ namespace xsoverlay_tweak
             DoubleClickConfirm = cfg.Bind("Cursor", "DoubleClickConfirm", true, "Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.");
             HandleScrolling = cfg.Bind("Cursor", "HandleScrolling", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
             MouseSmoothSpeed = cfg.Bind("Cursor", "MouseSmoothSpeed", 3, "Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.");
-            WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", 1, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.\n- Animated mode always updates the cursor texture, which might impact performance.");
-            PullTriggerClickThreshold = cfg.Bind("Cursor", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n- Uses the Trigger Value from SteamVR Input.");
+            WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", 1, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.\n\n- Animated: always updates the cursor texture, which might impact performance.");
+            PullTriggerClickThreshold = cfg.Bind("Cursor", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n\n- Uses the Trigger Value from SteamVR Input.");
 
             // Pointer
             ActivePointerWebView = cfg.Bind("Pointer", "ActivePointerWebView", true, "Applies the inactive Pointer features to WebView Overlay such as Settings, Wrist, and others.");
@@ -125,7 +125,7 @@ namespace xsoverlay_tweak
             InactivePointerOpacity = cfg.Bind("Pointer", "InactivePointerOpacity", 50, "Sets the opacity level for the inactive hand's Pointer.");
             PointerDoubleClickDelay = cfg.Bind("Pointer", "PointerDoubleClickDelay", true, "Applies the Double Click Delay from XSOverlay settings to the physical Pointer itself, not just the cursor.");
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the global XSOverlay setting.");
-            PullTriggerPointerLock = cfg.Bind("Pointer", "PullTriggerPointerLock", 3, "Locks/Smooths the Pointer while the Trigger is held for easier double clicking.\n- Uses the Trigger Value from SteamVR Input and Double Click Delay from XSOverlay settings.");
+            PullTriggerPointerLock = cfg.Bind("Pointer", "PullTriggerPointerLock", 3, "Locks/Smooths the Pointer while the Trigger is held for easier double clicking.\n\n- Uses the Trigger Value from SteamVR Input and Double Click Delay from XSOverlay settings.");
             TwoHandedMode = cfg.Bind("Pointer", "TwoHandedMode", false, "Allow both hands to become active hands at the same time to perform a Click simultaneously for two-hand interaction.");
 
             // Wrist
@@ -144,13 +144,13 @@ namespace xsoverlay_tweak
 
             // Mouse
             MouseButtonSwap = cfg.Bind("Mouse", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");
-            MouseNavigation = cfg.Bind("Mouse", "MouseNavigation", 0, "Custom keybindings for Mouse Forward/Back navigation.\nConfiguration: Press 'Bindings' tab in XSOverlay settings to open SteamVR bindings menu.\nEdit the Current Binding and add a button for 'MouseBack/MouseForward'.\n- Using Alt + Left/Right keyboard shortcuts to target the focused window instead of the hovered window.");
+            MouseNavigation = cfg.Bind("Mouse", "MouseNavigation", 0, "Custom keybindings for Mouse Forward/Back navigation.\n\n- Press 'Bindings' tab in XSOverlay settings to open\n\tSteamVR bindings menu.\n\tEdit the Current Binding, add and assign the button click mode\n\tfor 'MouseBack' and 'Forward'.\n- Mouse 4/Mouse: target at the hovering window.\n- Alt + Left/Right: target at the focused window.");
             PhysicalMouseDetector = cfg.Bind("Mouse", "PhysicalMouseDetector", true, "Relinquishes Pointer control when physical mouse movement is detected.\nPointer Click to regain control.");
 
             // FocusedWindow
-            FocusWindowElevated = cfg.Bind("QualityOfLife", "FocusWindowElevated", 1, "Show Windows Task View when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.");
-            FocusWindowHang = cfg.Bind("QualityOfLife", "FocusWindowHang", 1, "Show Windows Task View when the focused window is hung or not responding to prevent interaction deadlock.");
-            FocusWindowFullscreen = cfg.Bind("QualityOfLife", "FocusWindowFullscreen", 1, "Minimize the current focused fullscreen window when toggling on Layout Mode.");
+            FocusWindowElevated = cfg.Bind("FocusedWindow", "FocusWindowElevated", 1, "Do action when the focused window is running as Administrator and XSOverlay is running as User to prevent interaction deadlock.");
+            FocusWindowHang = cfg.Bind("FocusedWindow", "FocusWindowHang", 1, "Do action when the focused window is hung or not responding to prevent interaction deadlock.");
+            FocusWindowFullscreen = cfg.Bind("FocusedWindow", "FocusWindowFullscreen", 1, "Do action if the current focused or game window is in fullscreen mode when toggling on Layout Mode.");
 
             // Dashboard
             DashboardNotification = cfg.Bind("Dashboard", "DashboardNotification", true, "Keeps Notifications visible while the SteamVR Dashboard is open.");
@@ -169,10 +169,10 @@ namespace xsoverlay_tweak
             StickyKeyHaptic = cfg.Bind("Haptic", "StickyKeyHaptic", true, "Plays a haptic feedback when keyboard key is sticky.");
             PullTriggerPointerLockHaptic = cfg.Bind("Haptic", "PullTriggerPointerLockHaptic", 30, "Plays a haptic feedback when Pull Trigger Pointer Lock.");
             ToggleEditModeHaptic = cfg.Bind("Haptic", "ToggleEditModeHaptic", true, "Plays a haptic feedback when toggle Layout Mode.");
-            WebViewHaptic = cfg.Bind("Haptic", "WebViewHaptic", 30, "Plays a haptic feedback when Pointer is hovering a Keyboard key.");
+            WebViewHaptic = cfg.Bind("Haptic", "WebViewHaptic", 30, "Plays a haptic feedback when Pointer is hovering a WebView element.");
 
             // Optimization
-            EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", 2, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.\n- Pinned Visible: will not trigger when Pinned Overlay is still visible in the play space.");
+            EfficiencyMode = cfg.Bind("Optimization", "EfficiencyMode", 2, "Enables Windows Efficiency Mode for XSOverlay to reduce CPU usage when not interacting with any Overlay.\n\n- Pinned Visible: does not trigger when Pinned Overlay is still visible in the play space.");
             InactiveRefreshRate = cfg.Bind("Optimization", "InactiveRefreshRate", 15, "The target Refresh Rate for XSOverlay rendering when not interacting with any Overlay.\nVery low value: the Layout Mode Toggle binding listener will miss some frames.");
             uOSCThreadLoop = cfg.Bind("Optimization", "uOSCThreadLoop", true, "Instead of connecting to OSC in the loop thread, connect to the OSC server when new data is sent.");
 
@@ -182,8 +182,8 @@ namespace xsoverlay_tweak
             OverlayConfirmClose = cfg.Bind("Overlay", "OverlayConfirmClose", false, "Requires pressing the close overlay button three times to close.");
             OverlayCurveAutoRefresh = cfg.Bind("Overlay", "OverlayCurveAutoRefresh", true, "Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected");
             OverlayGripAntiSlip = cfg.Bind("Overlay", "OverlayGripAntiSlip", true, "Prevents Overlay from dropping or slipping out of Grip when moving it too fast.");
-            OverlayRollCurveFix = cfg.Bind("Overlay", "OverlayRollFlickerFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
-            PinBlockInputNonEditMode = cfg.Bind("QualityOfLife", "BlockInputNonEditMode", true, "Blocks interaction with 'Pinned' + 'Block Input' Overlay unless Layout Mode is active.");
+            OverlayRollCurveFix = cfg.Bind("Overlay", "OverlayRollCurveFix", true, "Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.");
+            PinBlockInputNonEditMode = cfg.Bind("Overlay", "PinBlockInputNonEditMode", true, "Blocks interaction with 'Pinned' + 'Block Input' Overlay unless Layout Mode is active.");
             WindowToolbarGesture = cfg.Bind("Overlay", "WindowToolbarGesture", true, "When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.");
             WindowToolbarKeyboard = cfg.Bind("Overlay", "WindowToolbarKeyboard", false, "Add a keyboard  summon button to the Capture Overlay Toolbar.");
 
@@ -198,7 +198,6 @@ namespace xsoverlay_tweak
             WebViewFrozenFix = cfg.Bind("Fix", "WebViewFrozenFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
 
             // About
-            UpdateNotification = cfg.Bind("About", "UpdateNotifications", true, "Displays a notification when a new version is available.");
         }
     }
 }
