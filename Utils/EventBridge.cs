@@ -53,7 +53,7 @@ namespace xsoverlay_tweak.Utils
         public static void InitializeEvents(DeviceManager __instance)
         {
             // Listen to notification push
-            XSOEventSystem.OnQueueNotification += (notify) =>
+            CustomAPI.OnShowNotification += (notify) =>
             {
                 IsNotificationVisible = true;
 
