@@ -90,7 +90,7 @@ namespace xsoverlay_tweak
 
         // Quality of Life
         public static ConfigEntry<int> LaserPointer;
-        public static ConfigEntry<bool> NotificationLeashedTracker;
+        public static ConfigEntry<int> NotificationLeashedTracker;
         public static ConfigEntry<bool> SteamVRCompositorTextureFormatFix;
         public static ConfigEntry<bool> WebViewWiderScroll;
         public static ConfigEntry<bool> WindowsAccentColor;
@@ -190,7 +190,7 @@ namespace xsoverlay_tweak
 
             // Quality of Life
             LaserPointer = cfg.Bind("QualityOfLife", "LaserPointer", 1, "Draws a Laser Pointer from the VR controllers to mimic the SteamVR Dashboard for accurate targeting.\n- Mouse Smooth: apply mouse smooth behavior to the Laser when active");
-            NotificationLeashedTracker = cfg.Bind("QualityOfLife", "NotificationLeashedTracker", true, "Notification tracking using leash-like behavior instead of smooth.");
+            NotificationLeashedTracker = cfg.Bind("QualityOfLife", "NotificationLeashedTracker", 2, "Notification tracking using leash-like behavior instead of smooth.");
             WebViewWiderScroll = cfg.Bind("QualityOfLife", "WebViewWiderScroll", true, "Makes the WebView scrollbar wider for easier interaction.");
             WindowsAccentColor = cfg.Bind("QualityOfLife", "WindowsAccentColor", true, "Using Windows accent color as XSOverlay accent color.");
 

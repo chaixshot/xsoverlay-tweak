@@ -351,7 +351,7 @@ namespace xsoverlay_tweak.Patches.Setting
                     XConfig.LaserPointer.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.NotificationLeashedTracker":
-                    XConfig.NotificationLeashedTracker.Value = bool.Parse(value);
+                    XConfig.NotificationLeashedTracker.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.WebViewWiderScroll":
                     XConfig.WebViewWiderScroll.Value = bool.Parse(value);
