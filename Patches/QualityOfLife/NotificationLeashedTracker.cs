@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 using UnityEngine;
 using XSOverlay;
 using xsoverlay_tweak.Utils;
@@ -11,199 +9,206 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
     [HarmonyPatch]
     internal class NotificationLeashedTracker
     {
-        private static TrackToObject trackerInstance;
-        private static bool forceUpdate;
+        private static CustomTrackerToObject customTracker;
+        private static TrackToObject nativeTracker;
+        private static GameObject nativeTrackerGameObject;
 
-        private static readonly FieldInfo TargetTransform = AccessTools.Field(typeof(TrackToObject), "targetTransform");
-        private static readonly FieldInfo LastCheckedTargetRotation = AccessTools.Field(typeof(TrackToObject), "LastCheckedTargetRotation");
-        private static readonly FieldInfo IsMoving = AccessTools.Field(typeof(TrackToObject), "IsMoving");
+        private static readonly FieldInfo NotificationTracker = AccessTools.Field(typeof(XSettingsManager), "NotificationTracker");
 
         [HarmonyPatch(typeof(XSettingsManager), "Awake")]
         [HarmonyPostfix]
-        public static void ChangeNotificationTrackerToLeashed(TrackToObject ___NotificationTracker)
+        public static void SwapTrackToObject(XSettingsManager __instance, TrackToObject ___NotificationTracker)
         {
-            TrackToObject.trackingType defaultTrackingType = ___NotificationTracker.TrackingType;
-            trackerInstance = ___NotificationTracker;
+            if (___NotificationTracker == null) return;
+
+            nativeTracker = ___NotificationTracker;
+            nativeTrackerGameObject = ___NotificationTracker.gameObject;
 
             XConfig.NotificationLeashedTracker.SettingChanged += (sender, args) =>
             {
                 if (IsEnable())
-                    trackerInstance.TrackingType = TrackToObject.trackingType.Leashed;
-                else
-                    trackerInstance.TrackingType = defaultTrackingType;
-            };
-
-            // Notification shows will trigger the leash position
-            CustomAPI.OnShowNotification += (notify) =>
-            {
-                if (IsEnable())
                 {
-                    forceUpdate = true;
-                    IsMoving.SetValue(trackerInstance, false);
+                    if (nativeTracker != null)
+                        ExecuteSwap(__instance);
+                }
+                else if (customTracker != null) // Restore
+                {
+                    nativeTracker = nativeTrackerGameObject.AddComponent<TrackToObject>();
+
+                    // Restore properties mapped from custom component
+                    nativeTracker.TrackingType = TrackToObject.trackingType.Smoothed;
+                    nativeTracker.TrackTarget = TrackToObject.trackTar.HMD;
+                    nativeTracker.offset = customTracker.offset;
+                    nativeTracker.OverrideTrackSpeed = customTracker.OverrideTrackSpeed;
+                    nativeTracker.trackSpeed = customTracker.trackSpeed;
+                    nativeTracker.lookAtTrackedObject = customTracker.lookAtTrackedObject;
+                    nativeTracker.ObjectToLookAt = customTracker.ObjectToLookAt;
+                    nativeTracker.overlayToEdit = customTracker.overlayToEdit;
+                    nativeTracker.enabled = true;
+
+                    NotificationTracker.SetValue(__instance, nativeTracker); // Re-assign the reference back to XSettingsManager
+
+                    UnityEngine.Object.Destroy(customTracker);
+                    customTracker = null;
                 }
             };
 
             if (IsEnable())
-                trackerInstance.TrackingType = TrackToObject.trackingType.Leashed;
-        }
+                ExecuteSwap(__instance);
 
-        [HarmonyPatch(typeof(TrackToObject), "LeashedFollow")]
-        [HarmonyTranspiler]
-        static IEnumerable<CodeInstruction> LockSlerpHeight(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = new List<CodeInstruction>(instructions);
-            bool patchedSlerp = false;
-            bool patchedDistance = false;
-
-            var slerpMethod = AccessTools.Method(typeof(Vector3), nameof(Vector3.Slerp), [typeof(Vector3), typeof(Vector3), typeof(float)]);
-            var distanceMethod = AccessTools.Method(typeof(Vector3), nameof(Vector3.Distance), [typeof(Vector3), typeof(Vector3)]);
-
-            var customSlerp = AccessTools.Method(typeof(NotificationLeashedTracker), nameof(CustomLockedSlerp));
-            var customDistance = AccessTools.Method(typeof(NotificationLeashedTracker), nameof(CustomLockedDistance));
-
-            for (int i = 0; i < codes.Count; i++)
+            static void ExecuteSwap(XSettingsManager xSettingsManager)
             {
-                // Slerp calculation
-                if (codes[i].opcode == OpCodes.Call && codes[i].operand is MethodInfo method && method == slerpMethod)
-                {
-                    codes[i].operand = customSlerp;
-                    patchedSlerp = true;
-                }
+                customTracker = nativeTrackerGameObject.AddComponent<CustomTrackerToObject>();
+                customTracker.Setup(nativeTracker);
 
-                // Distance comparison
-                if (codes[i].opcode == OpCodes.Call && codes[i].operand is MethodInfo distMethod && distMethod == distanceMethod)
-                {
-                    codes[i].operand = customDistance;
-                    patchedDistance = true;
-                }
+                UnityEngine.Object.Destroy(nativeTracker);
+                nativeTracker = null;
+
+                NotificationTracker.SetValue(xSettingsManager, null); // Tell XSettingsManager that the original component is gone for now
             }
-
-            if (!patchedSlerp)
-                Plugin.Logger.LogError("[LeashedFollowPatch] Failed to find the Vector3.Slerp call instruction!");
-            if (!patchedDistance)
-                Plugin.Logger.LogError("[LeashedFollowPatch] Failed to find the Vector3.Distance call instruction!");
-
-            return codes;
-        }
-
-        [HarmonyPatch(typeof(TrackToObject), "LeashedFollow")]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> OverrideOriginalLeashAngle(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = new List<CodeInstruction>(instructions);
-
-            MethodInfo angleMethod = AccessTools.Method(typeof(Quaternion), nameof(Quaternion.Angle), [typeof(Quaternion), typeof(Quaternion)]);
-            MethodInfo overrideAngleMethod = AccessTools.Method(typeof(NotificationLeashedTracker), nameof(GetCustomAngle));
-
-            bool patchedAngle = false;
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                // Intercept Quaternion.Angle
-                if (codes[i].opcode == OpCodes.Call && (MethodInfo)codes[i].operand == angleMethod)
-                {
-                    codes.Insert(i + 1, new CodeInstruction(OpCodes.Call, overrideAngleMethod));
-                    patchedAngle = true;
-                    i++;
-                }
-            }
-
-            if (!patchedAngle)
-                Debug.LogError("[NotificationLeashedTracker] Failed to find target instructions to patch!");
-
-            return codes;
-        }
-
-        // Overrides the angle variable (originally 'num4')
-        public static float GetCustomAngle(float originalAngle)
-        {
-            if (!IsEnable())
-                return originalAngle;
-
-            // If a notification was queued, bypass the calculations and force a movement cycle
-            if (forceUpdate)
-                return 999f;
-
-            if (trackerInstance == null)
-                return originalAngle;
-
-            // Retrieve the values of the private fields safely via reflection
-            Transform targetTransform = TargetTransform?.GetValue(trackerInstance) as Transform;
-            if (targetTransform == null)
-                return originalAngle;
-
-            Quaternion lastCheckedTargetRotation = (Quaternion)LastCheckedTargetRotation.GetValue(trackerInstance);
-            Quaternion deltaRotation = Quaternion.Inverse(lastCheckedTargetRotation) * targetTransform.rotation;
-            Vector3 eulerDeltas = deltaRotation.eulerAngles;
-
-            // Normalize angles to [-180, 180] degrees
-            float deltaX = Mathf.Abs(Mathf.DeltaAngle(0, eulerDeltas.x)); // Up/Down
-            float deltaY = Mathf.Abs(Mathf.DeltaAngle(0, eulerDeltas.y)); // Left/Right
-
-            float thresholdX = (Mathf.Abs(XSettingsManager.Instance.Settings.NotificationOffsets.y) + 1f) * 20f;
-            float thresholdY = (Mathf.Abs(XSettingsManager.Instance.Settings.NotificationOffsets.x) + 1f) * 10f;
-
-            // If either of your custom thresholds are breached, we return 999f
-            // to trick the compiler's original (num4 > 35f) check to evaluate to TRUE.
-            if (deltaX > thresholdX || deltaY > thresholdY)
-                return 999f;
-
-            return 0f; // Otherwise, stay at 0f so it remains under 35f (no movement)
-        }
-
-        // Smoothly slides X and Z while forcing Y to 1.0f ONLY when forceUpdate is true
-        private static Vector3 CustomLockedSlerp(Vector3 current, Vector3 target, float t)
-        {
-            // Only lock/flatten height if enabled AND forceUpdate is actively true
-            if (!IsEnable() || (XConfig.NotificationLeashedTracker.Value == 1 && !forceUpdate))
-                return Vector3.Slerp(current, target, t);
-
-            float targetY = GetTargetY();
-            current.y = targetY;
-            target.y = targetY;
-
-            Vector3 result = Vector3.Lerp(current, target, t);
-            result.y = targetY;
-            return result;
-        }
-
-        // Ensures the distance calculation ignores Y so the logic knows it arrived on X/Z!
-        private static float CustomLockedDistance(Vector3 a, Vector3 b)
-        {
-            if (!IsEnable() || (XConfig.NotificationLeashedTracker.Value == 1 && !forceUpdate))
-                return Vector3.Distance(a, b);
-
-            float targetY = GetTargetY();
-            a.y = targetY;
-            b.y = targetY;
-
-            float distance = Vector3.Distance(a, b);
-
-            // Once the object arrives within target distance on the X/Z plane, 
-            // the movement cycle is finishing, so we can turn off forceUpdate safely.
-            if (distance <= 0.0001f)
-                forceUpdate = false;
-
-            return distance;
-        }
-
-        // Helper to grab the tracking target's height safely dynamically
-        private static float GetTargetY()
-        {
-            if (trackerInstance != null)
-            {
-                Transform targetTransform = TargetTransform?.GetValue(trackerInstance) as Transform;
-                if (targetTransform != null)
-                {
-                    return targetTransform.position.y + trackerInstance.offset.y;
-                }
-            }
-            return 1.0f; // Fallback default if instance tracking breaks down
         }
 
         private static bool IsEnable()
         {
             return XConfig.NotificationLeashedTracker.Value != 0;
+        }
+    }
+
+    public class CustomTrackerToObject : MonoBehaviour
+    {
+        // Cached variables from original TrackToObject
+        public Unity_SteamVR_Handler svr;
+        public Vector3 offset;
+        public bool OverrideTrackSpeed;
+        public float trackSpeed;
+        public bool lookAtTrackedObject;
+        public GameObject ObjectToLookAt;
+        public Unity_Overlay overlayToEdit;
+
+        // Custom State tracking variables
+        private Transform targetTransform;
+        private Vector3 lastCheckedTargetPosition;
+        private Vector3 lastCheckedForward;
+        private Vector3 lastCheckedRight;
+        private Vector3 lastCheckedUp;
+        private Quaternion lastCheckedTargetRotation;
+
+        private bool isMoving;
+        private bool forceUpdate;
+        private bool lockHeight;
+
+        private readonly float distToMove = 20 * EventBridge.OneCentimetre;
+        private readonly float thresholdUpDown = 20f;
+        private readonly float thresholdLeftRight = 10f;
+
+        public void Setup(TrackToObject original)
+        {
+            offset = original.offset;
+            OverrideTrackSpeed = original.OverrideTrackSpeed;
+            trackSpeed = original.trackSpeed;
+            lookAtTrackedObject = original.lookAtTrackedObject;
+            ObjectToLookAt = original.ObjectToLookAt;
+            overlayToEdit = original.overlayToEdit;
+
+            svr = (Unity_SteamVR_Handler)UnityEngine.Object.FindObjectOfType(typeof(Unity_SteamVR_Handler));
+
+            CustomAPI.OnShowNotification += (notify) =>
+            {
+                forceUpdate = true;
+                lockHeight = true;
+                isMoving = false;
+            };
+        }
+
+        public void Update()
+        {
+            targetTransform = (svr != null && svr.hmdObject != null) ? svr.hmdObject.transform : null;
+
+            LeashedFollow(); // Execute Custom Leashed Follow logic
+
+            if (overlayToEdit != null && overlayToEdit.IsAttachedToDevice && overlayToEdit.WorldSpaceSceneImpostor != null)
+            {
+                overlayToEdit.WorldSpaceSceneImpostor.transform.localPosition = transform.position;
+                overlayToEdit.WorldSpaceSceneImpostor.transform.localRotation = transform.rotation;
+            }
+        }
+
+        private void LeashedFollow()
+        {
+            if (targetTransform == null) return;
+
+            if (isMoving)
+            {
+                Vector3 currentPos = transform.position;
+                Vector3 targetPos = lastCheckedTargetPosition;
+                targetPos += offset.x * lastCheckedRight;
+                targetPos += offset.y * lastCheckedUp;
+                targetPos += offset.z * lastCheckedForward;
+
+                float distance;
+                float speed = OverrideTrackSpeed ? trackSpeed : (float)XSettingsManager.Instance.Settings.PositionDampening;
+
+                if (lockHeight)
+                {
+                    float targetY = targetTransform.position.y + offset.y;
+                    currentPos.y = targetY;
+                    targetPos.y = targetY;
+
+                    transform.position = Vector3.Lerp(currentPos, targetPos, speed * Time.deltaTime);
+                    transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
+                }
+                else
+                    transform.position = Vector3.Slerp(transform.position, targetPos, speed * Time.deltaTime);
+
+                if (lockHeight)
+                {
+                    float targetY = targetTransform.position.y + offset.y;
+                    Vector3 flatA = transform.position; flatA.y = targetY;
+                    Vector3 flatB = targetPos; flatB.y = targetY;
+                    distance = Vector3.Distance(flatA, flatB);
+                }
+                else
+                    distance = Vector3.Distance(transform.position, targetPos);
+
+                if (lookAtTrackedObject && ObjectToLookAt != null)
+                    transform.rotation = Quaternion.LookRotation(transform.position - ObjectToLookAt.transform.position);
+
+                if (distance <= 0.0001f)
+                    isMoving = false;
+
+                if (XConfig.NotificationLeashedTracker.Value == 1 && !forceUpdate && distance <= 0.005f)
+                    lockHeight = false;
+            }
+
+            float distanceDelta = Vector3.Distance(lastCheckedTargetPosition, targetTransform.position);
+            bool shouldMove = forceUpdate || distanceDelta > distToMove || CheckRotationThresholds();
+
+            if (shouldMove)
+            {
+                lastCheckedTargetPosition = targetTransform.position;
+                lastCheckedTargetRotation = targetTransform.rotation;
+                lastCheckedForward = targetTransform.forward;
+                lastCheckedRight = targetTransform.right;
+                lastCheckedUp = targetTransform.up;
+                isMoving = true;
+                forceUpdate = false;
+            }
+        }
+
+        private bool CheckRotationThresholds()
+        {
+            if (targetTransform == null) return false;
+
+            Quaternion deltaRotation = Quaternion.Inverse(lastCheckedTargetRotation) * targetTransform.rotation;
+            Vector3 eulerDeltas = deltaRotation.eulerAngles;
+
+            float deltaX = Mathf.Abs(Mathf.DeltaAngle(0, eulerDeltas.x));
+            float deltaY = Mathf.Abs(Mathf.DeltaAngle(0, eulerDeltas.y));
+
+            float thresholdX = (Mathf.Abs(XSettingsManager.Instance.Settings.NotificationOffsets.y) + 1f) * thresholdUpDown;
+            float thresholdY = (Mathf.Abs(XSettingsManager.Instance.Settings.NotificationOffsets.x) + 1f) * thresholdLeftRight;
+
+            return deltaX > thresholdX || deltaY > thresholdY;
         }
     }
 }
