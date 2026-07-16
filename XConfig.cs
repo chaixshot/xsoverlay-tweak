@@ -200,6 +200,7 @@ namespace xsoverlay_tweak
             WebViewFrozenFix = cfg.Bind("Fix", "WebViewFrozenFix", true, "Fixes an issue where certain WebView UI elements were not clickable.");
 
             // About
+            UpdateNotification = cfg.Bind("About", "UpdateNotifications", true, "Displays a notification when a new version is available.");
         }
     }
 }
