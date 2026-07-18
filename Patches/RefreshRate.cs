@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Patches.Optimization;
 using xsoverlay_tweak.Utils;
 
@@ -141,7 +142,7 @@ namespace xsoverlay_tweak.Patches
 
         private static bool IsOnlyHoverOverlay()
         {
-            return !XConfig.OnlyHoverOverlay.Value || EventBridge.IsHoverAnyOverlay;
+            return !XConfig.OnlyHoverOverlay.Value || (EventBridge.IsHoverAnyOverlay && PhysicalMouseDetector.IsPhysicalMovement);
         }
 
         private static bool IsOnlyInLayoutMode()
