@@ -63,7 +63,7 @@ namespace xsoverlay_tweak.Patches.Mouse
                 lastTriggerTime = Time.unscaledTime;
 
                 // Back Navigation
-                if (EventBridge.IsHoverAnyDesktopOrWindowCapture)
+                if (EventBridge.IsHoverAnyDesktopOrWindowCapture())
                     if (CheckActionTriggered(Actions.MouseBack.Path, ref ActionHandleBack, ref BackWasPressedLastFrame))
                     {
                         SimulateBackNavigation(XInputManager.sim);
@@ -72,7 +72,7 @@ namespace xsoverlay_tweak.Patches.Mouse
                     }
 
                 // Forward Navigation
-                if (EventBridge.IsHoverAnyDesktopOrWindowCapture)
+                if (EventBridge.IsHoverAnyDesktopOrWindowCapture())
                     if (CheckActionTriggered(Actions.MouseForward.Path, ref ActionHandleForward, ref ForwardWasPressedLastFrame))
                     {
                         SimulateForwardNavigation(XInputManager.sim);

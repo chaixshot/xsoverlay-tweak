@@ -40,7 +40,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             // Hovering desktop capture and new focus window is elevated
             OnFocusedWindowChanged += async (isElevated) =>
             {
-                if (isElevated && (EventBridge.IsHoverAnyDesktopOrWindowCapture || Overlay_Manager.Instance.editMode))
+                if (isElevated && (EventBridge.IsHoverAnyDesktopOrWindowCapture() || Overlay_Manager.Instance.editMode))
                     DoTask();
             };
 

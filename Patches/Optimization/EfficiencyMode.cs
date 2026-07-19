@@ -66,7 +66,7 @@ namespace xsoverlay_tweak.Patches.Optimization
 
         public static bool ShouldInEfficiencyMode()
         {
-            bool inNonActive = IsEfficiencyModeEnable() && !Overlay_Manager.Instance.editMode && !EventBridge.IsHoverAnyOverlay && !EventBridge.IsNotificationVisible;
+            bool inNonActive = IsEfficiencyModeEnable() && !Overlay_Manager.Instance.editMode && !EventBridge.IsHoverAnyOverlay() && !EventBridge.IsNotificationVisible;
 
             if (XConfig.EfficiencyMode.Value.Equals(1))
                 return inNonActive;

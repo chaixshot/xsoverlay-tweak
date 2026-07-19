@@ -142,7 +142,7 @@ namespace xsoverlay_tweak.Patches
 
         private static bool IsOnlyHoverOverlay()
         {
-            return !XConfig.OnlyHoverOverlay.Value || (EventBridge.IsHoverAnyOverlay && PhysicalMouseDetector.IsPhysicalMovement);
+            return !XConfig.OnlyHoverOverlay.Value || (EventBridge.IsHoverAnyOverlay() && PhysicalMouseDetector.IsPhysicalMovement);
         }
 
         private static bool IsOnlyInLayoutMode()

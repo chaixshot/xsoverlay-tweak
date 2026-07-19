@@ -16,10 +16,10 @@ namespace xsoverlay_tweak.Utils
         public static readonly float OneCentimetre = 0.01f;
         public static readonly float OneDegree = 1.0f;
 
-        public static bool IsHoverAnyOverlay = false;
-        public static bool IsHoverAnyDesktopOrWindowCapture = false;
-        public static bool IsHoverAnyDesktopCapture = false;
-        public static bool IsHoverAnyWindowCapture = false;
+        private static bool isHoverAnyOverlay = false;
+        private static bool isHoverAnyDesktopOrWindowCapture = false;
+        private static bool isHoverAnyDesktopCapture = false;
+        private static bool isHoverAnyWindowCapture = false;
 
         public static bool IsKeyboardSpawing = false;
 
@@ -68,13 +68,13 @@ namespace xsoverlay_tweak.Utils
             {
                 XSOEventSystem.OnSwitchHoveringOverlay += (raycaster, overlay) =>
                 {
-                    IsHoverAnyOverlay = true;
+                    isHoverAnyOverlay = true;
                     if (overlay?.IsDesktopOrWindowCapture == true)
-                        IsHoverAnyDesktopOrWindowCapture = true;
+                        isHoverAnyDesktopOrWindowCapture = true;
                     if (overlay?.IsDesktopCapture == true)
-                        IsHoverAnyDesktopCapture = true;
+                        isHoverAnyDesktopCapture = true;
                     if (overlay?.IsWindowCapture == true)
-                        IsHoverAnyWindowCapture = true;
+                        isHoverAnyWindowCapture = true;
 
                     if (IsActiveHand(raycaster))
                         CurrentHoveringOverlay = overlay;
@@ -86,7 +86,7 @@ namespace xsoverlay_tweak.Utils
 
                 XSOEventSystem.OnTakeControlOfDesktopCursor += (raycaster) =>
                 {
-                    IsHoverAnyOverlay = true;
+                    isHoverAnyOverlay = true;
                     Ref_DeviceManager.GetHMDRefreshRate(__instance);
 
                     if (IsActiveHand(raycaster))
@@ -100,10 +100,10 @@ namespace xsoverlay_tweak.Utils
 
                 XSOEventSystem.OnReleaseControlOfDesktopCursor += (raycaster) =>
                 {
-                    IsHoverAnyOverlay = false;
-                    IsHoverAnyDesktopOrWindowCapture = false;
-                    IsHoverAnyDesktopCapture = false;
-                    IsHoverAnyWindowCapture = false;
+                    isHoverAnyOverlay = false;
+                    isHoverAnyDesktopOrWindowCapture = false;
+                    isHoverAnyDesktopCapture = false;
+                    isHoverAnyWindowCapture = false;
                     Ref_DeviceManager.GetHMDRefreshRate(__instance);
 
                     CurrentHoveringOverlayCoroutine = Plugin.Instance.StartCoroutine(ClearCurrentHoveringOverlayTimer());
@@ -212,6 +212,26 @@ namespace xsoverlay_tweak.Utils
         public static bool IsRaycasterHand(Raycaster raycaster)
         {
             return raycaster.HapticDeviceName != Raycaster.HapticDevice.None;
+        }
+
+        public static bool IsHoverAnyOverlay()
+        {
+            return isHoverAnyOverlay;
+        }
+
+        public static bool IsHoverAnyDesktopOrWindowCapture()
+        {
+            return isHoverAnyDesktopOrWindowCapture && !PhysicalMouseDetector.IsPhysicalMovement;
+        }
+
+        public static bool IsHoverAnyDesktopCapture()
+        {
+            return isHoverAnyDesktopCapture && !PhysicalMouseDetector.IsPhysicalMovement;
+        }
+
+        public static bool IsHoverAnyWindowCapture()
+        {
+            return isHoverAnyWindowCapture && !PhysicalMouseDetector.IsPhysicalMovement;
         }
 
         private static IEnumerator ClearCurrentHoveringOverlayTimer()
