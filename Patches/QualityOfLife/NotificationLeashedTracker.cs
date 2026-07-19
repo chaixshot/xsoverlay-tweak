@@ -58,13 +58,13 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
             static void ExecuteSwap(XSettingsManager xSettingsManager)
             {
+                nativeTracker.enabled = false;
+
                 customTracker = nativeTrackerGameObject.AddComponent<CustomTrackerToObject>();
                 customTracker.Setup(nativeTracker);
 
                 UnityEngine.Object.Destroy(nativeTracker);
                 nativeTracker = null;
-
-                NotificationTracker.SetValue(xSettingsManager, null); // Tell XSettingsManager that the original component is gone for now
             }
         }
 
@@ -139,18 +139,19 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
             if (isMoving)
             {
+                Vector3 xoffset = XSettingsManager.Instance.Settings.NotificationOffsets;
                 Vector3 currentPos = transform.position;
                 Vector3 targetPos = lastCheckedTargetPosition;
-                targetPos += offset.x * lastCheckedRight;
-                targetPos += offset.y * lastCheckedUp;
-                targetPos += offset.z * lastCheckedForward;
+                targetPos += xoffset.x * lastCheckedRight;
+                targetPos += xoffset.y * lastCheckedUp;
+                targetPos += xoffset.z * lastCheckedForward;
 
                 float distance;
                 float speed = OverrideTrackSpeed ? trackSpeed : (float)XSettingsManager.Instance.Settings.PositionDampening;
 
                 if (lockHeight)
                 {
-                    float targetY = targetTransform.position.y + offset.y;
+                    float targetY = targetTransform.position.y + xoffset.y;
                     currentPos.y = targetY;
                     targetPos.y = targetY;
 
@@ -162,7 +163,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
                 if (lockHeight)
                 {
-                    float targetY = targetTransform.position.y + offset.y;
+                    float targetY = targetTransform.position.y + xoffset.y;
                     Vector3 flatA = transform.position; flatA.y = targetY;
                     Vector3 flatB = targetPos; flatB.y = targetY;
                     distance = Vector3.Distance(flatA, flatB);
@@ -201,12 +202,13 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
             Quaternion deltaRotation = Quaternion.Inverse(lastCheckedTargetRotation) * targetTransform.rotation;
             Vector3 eulerDeltas = deltaRotation.eulerAngles;
+            Vector3 xoffset = XSettingsManager.Instance.Settings.NotificationOffsets;
 
             float deltaX = Mathf.Abs(Mathf.DeltaAngle(0, eulerDeltas.x));
             float deltaY = Mathf.Abs(Mathf.DeltaAngle(0, eulerDeltas.y));
 
-            float thresholdX = (Mathf.Abs(XSettingsManager.Instance.Settings.NotificationOffsets.y) + 1f) * thresholdUpDown;
-            float thresholdY = (Mathf.Abs(XSettingsManager.Instance.Settings.NotificationOffsets.x) + 1f) * thresholdLeftRight;
+            float thresholdX = (Mathf.Abs(xoffset.y) + 1f) * thresholdUpDown;
+            float thresholdY = (Mathf.Abs(xoffset.x) + 1f) * thresholdLeftRight;
 
             return deltaX > thresholdX || deltaY > thresholdY;
         }
