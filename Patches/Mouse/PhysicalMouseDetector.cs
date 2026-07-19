@@ -18,6 +18,18 @@ namespace xsoverlay_tweak.Patches.Mouse
                 if (IsEnable())
                     IsPhysicalMovement = true;
             };
+
+            XSOEventSystem.OnToggleLayoutMode += (isEditMode) =>
+            {
+                if (isEditMode && IsPhysicalMovement)
+                    IsPhysicalMovement = false;
+            };
+
+            XConfig.PhysicalMouseDetector.SettingChanged += (sender, args) =>
+            {
+                if (!IsEnable())
+                    IsPhysicalMovement = false;
+            };
         }
 
         [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
