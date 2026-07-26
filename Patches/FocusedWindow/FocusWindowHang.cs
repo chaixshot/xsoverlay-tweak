@@ -3,6 +3,7 @@ using HarmonyLib;
 using System;
 using System.Threading;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
@@ -29,14 +30,14 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
             XSOEventSystem.OnToggleLayoutMode += async (IsShow) =>
             {
-                if (IsEnable() && IsShow)
-                    HandleHangingWindow();
+                if (IsEnable())
+                    DoTask();
             };
 
             OnFocusedWindowChanged += (isHanging) =>
             {
-                if (isHanging && (EventBridge.IsHoverAnyDesktopOrWindowCapture() || Overlay_Manager.Instance.editMode))
-                    HandleHangingWindow();
+                if (isHanging)
+                    DoTask();
             };
 
             if (IsEnable())
@@ -45,48 +46,48 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             AppDomain.CurrentDomain.ProcessExit += (s, e) => ShutdownHook();
         }
 
-        private static async void DoTask()
-        {
-            int mode = XConfig.FocusWindowElevated.Value;
-
-            if (mode == 1) // Task View
-            {
-                await Utils.ShowWindowsTaskView();
-
-                if (IsCurrentWindowHanging())
-                    Utils.ShellStartMenu();
-            }
-            else if (mode == 2) // Start menu
-                Utils.ShellStartMenu();
-        }
-
         /// <summary>
         /// Centralized logic to strip input priority and invoke Task View if a window hangs
         /// </summary>
-        private static void HandleHangingWindow()
+        private static void DoTask()
         {
-            bool confirmed = false;
-            IntPtr hwnd = Utils.GetForegroundWindow();
+            bool inActive = EventBridge.IsHoverAnyDesktopOrWindowCapture() || Overlay_Manager.Instance.editMode;
 
-            XSTools.ExecuteOnMainThread(async () =>
+            if (inActive && !PhysicalMouseDetector.IsPhysicalMovement)
             {
-                await UniTask.Delay(150); // Make sure the app is not just loading
-
-                for (int i = 0; i < 3; i++)
+                XSTools.ExecuteOnMainThread(async () =>
                 {
-                    if (Utils.IsHungAppWindow(hwnd))
+                    bool confirmed = true;
+                    IntPtr hwnd = Utils.GetForegroundWindow();
+
+                    for (int i = 0; i < 3; i++) // Make sure the app is not just loading
                     {
-                        confirmed = true;
-                        break;
+                        await UniTask.Delay(300);
+
+                        if (!Utils.IsHungAppWindow(hwnd))
+                        {
+                            confirmed = false;
+                            break;
+                        }
                     }
-                    await UniTask.Delay(300);
-                }
 
-                if (!confirmed) return;
+                    if (confirmed)
+                        if (hwnd == Utils.GetForegroundWindow()) // Make sure the window is still the same
+                        {
+                            int mode = XConfig.FocusWindowElevated.Value;
 
-                if (hwnd == Utils.GetForegroundWindow()) // Make sure the window is still the same
-                    DoTask();
-            });
+                            if (mode == 1) // Task View
+                            {
+                                await Utils.ShowWindowsTaskView();
+
+                                if (IsCurrentWindowHanging())
+                                    Utils.ShellStartMenu();
+                            }
+                            else if (mode == 2) // Start menu
+                                Utils.ShellStartMenu();
+                        }
+                });
+            }
         }
 
         /// <summary>
@@ -98,12 +99,11 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             {
                 await UniTask.Delay(1000, cancellationToken: token);
 
-                if (EventBridge.IsHoverAnyDesktopOrWindowCapture() || Overlay_Manager.Instance.editMode)
-                    if (IsCurrentWindowHanging())
-                    {
-                        HandleHangingWindow();
-                        await UniTask.Delay(3000, cancellationToken: token);
-                    }
+                if (IsCurrentWindowHanging())
+                {
+                    DoTask();
+                    await UniTask.Delay(3000, cancellationToken: token);
+                }
             }
         }
 

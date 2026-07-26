@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Mouse;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
 {
@@ -15,29 +16,28 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         {
             XSOEventSystem.OnToggleLayoutMode += async (isShow) =>
             {
-                if (!IsEnable()) return;
-
-                if (isShow)
-                {
-                    IntPtr hwnd = Utils.GetForegroundWindow();
-
-                    if (hwnd != IntPtr.Zero && IsWindowFullscreen(hwnd))
+                if (IsEnable() && !PhysicalMouseDetector.IsPhysicalMovement)
+                    if (isShow)
                     {
-                        lastWindow = hwnd;
-                        DoTask(hwnd);
+                        IntPtr hwnd = Utils.GetForegroundWindow();
+
+                        if (hwnd != IntPtr.Zero && IsWindowFullscreen(hwnd))
+                        {
+                            lastWindow = hwnd;
+                            DoTask(hwnd);
+                        }
                     }
-                }
-                else if (lastWindow != IntPtr.Zero) // Edit mode toggle off
-                {
-                    int mode = XConfig.FocusWindowFullscreen.Value;
+                    else if (lastWindow != IntPtr.Zero) // Edit mode toggle off
+                    {
+                        int mode = XConfig.FocusWindowFullscreen.Value;
 
-                    if (mode == 1 || mode == 2) // Focus back
-                        Utils.SetForegroundWindow(lastWindow);
-                    else if (mode == 3) // Resore from minimze
-                        Utils.ShowWindow(lastWindow, Utils.SW_RESTORE);
+                        if (mode == 1 || mode == 2) // Focus back
+                            Utils.SetForegroundWindow(lastWindow);
+                        else if (mode == 3) // Resore from minimze
+                            Utils.ShowWindow(lastWindow, Utils.SW_RESTORE);
 
-                    lastWindow = IntPtr.Zero;
-                }
+                        lastWindow = IntPtr.Zero;
+                    }
             };
         }
 

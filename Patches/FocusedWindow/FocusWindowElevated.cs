@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using XSOverlay;
+using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
@@ -30,17 +31,14 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             // Toggle edit mode and focused window is elevated
             XSOEventSystem.OnToggleLayoutMode += async (IsShow) =>
             {
-                if (IsEnable() && IsShow)
-                {
-                    if (IsCurrentWindowElevated())
-                        DoTask();
-                }
+                if (IsEnable() && IsCurrentWindowElevated())
+                    DoTask();
             };
 
             // Hovering desktop capture and new focus window is elevated
             OnFocusedWindowChanged += async (isElevated) =>
             {
-                if (isElevated && (EventBridge.IsHoverAnyDesktopOrWindowCapture() || Overlay_Manager.Instance.editMode))
+                if (isElevated)
                     DoTask();
             };
 
@@ -52,17 +50,22 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         private static async void DoTask()
         {
-            int mode = XConfig.FocusWindowElevated.Value;
+            bool inActive = EventBridge.IsHoverAnyDesktopOrWindowCapture() || Overlay_Manager.Instance.editMode;
 
-            if (mode == 1) // Task View
+            if (inActive && !PhysicalMouseDetector.IsPhysicalMovement)
             {
-                await Utils.ShowWindowsTaskView();
+                int mode = XConfig.FocusWindowElevated.Value;
 
-                if (IsCurrentWindowElevated())
+                if (mode == 1) // Task View
+                {
+                    await Utils.ShowWindowsTaskView();
+
+                    if (IsCurrentWindowElevated())
+                        Utils.ShellStartMenu();
+                }
+                else if (mode == 2) // Start menu
                     Utils.ShellStartMenu();
             }
-            else if (mode == 2) // Start menu
-                Utils.ShellStartMenu();
         }
 
         /// <summary>
