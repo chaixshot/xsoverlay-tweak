@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Runtime.InteropServices;
+using WindowsInput.Native;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Mouse;
 
@@ -29,13 +30,25 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                     }
                     else if (lastWindow != IntPtr.Zero) // Edit mode toggle off
                     {
-                        int mode = XConfig.FocusWindowFullscreen.Value;
+                        switch (XConfig.FocusWindowFullscreen.Value)
+                        {
+                            case 1: // Close Task View
+                                if (Utils.IsTaskViewOpen())
+                                    XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
+                                Utils.SetForegroundWindow(lastWindow);
 
-                        if (mode == 1 || mode == 2) // Focus back
-                            Utils.SetForegroundWindow(lastWindow);
-                        else if (mode == 3) // Resore from minimze
-                            Utils.ShowWindow(lastWindow, Utils.SW_RESTORE);
+                                break;
+                            case 2: // Close Start Menu
+                                if (Utils.IsStartMenuOpen())
+                                    XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
+                                Utils.SetForegroundWindow(lastWindow);
 
+                                break;
+                            case 3: // Restore from minimze
+                                Utils.ShowWindow(lastWindow, Utils.SW_RESTORE);
+
+                                break;
+                        }
                         lastWindow = IntPtr.Zero;
                     }
             };

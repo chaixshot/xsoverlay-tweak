@@ -66,6 +66,9 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("dwmapi.dll")]
+        internal static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out int pvAttribute, int cbAttribute);
+
         [StructLayout(LayoutKind.Sequential)]
         internal struct RECT { public int Left, Top, Right, Bottom; }
 
@@ -98,6 +101,8 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         internal const uint WM_SYSCOMMAND = 0x0112;
         internal const int SC_TASKLIST = 0xF130;
+
+        internal const int DWMWA_CLOAKED = 14;
         #endregion
 
         /// <summary>
@@ -148,6 +153,44 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             IntPtr progmanHandle = FindWindow("Progman", null);
             if (progmanHandle != IntPtr.Zero)
                 SendMessage(progmanHandle, WM_SYSCOMMAND, (IntPtr)SC_TASKLIST, IntPtr.Zero); // SendMessage ignores UIPI blocks completely
+        }
+
+        public static bool IsStartMenuOpen()
+        {
+            IntPtr startHwnd = FindWindow("Windows.UI.Core.CoreWindow", "Start");
+
+            if (startHwnd == IntPtr.Zero)
+                return false;
+
+            int hResult = DwmGetWindowAttribute(startHwnd, DWMWA_CLOAKED, out int isCloaked, sizeof(int));
+
+            if (hResult != 0)
+                return false;
+
+            return isCloaked == 0;
+        }
+
+        /// <summary>
+        /// Detects if the Windows Task View (Win + Tab) is currently open on screen.
+        /// </summary>
+        public static bool IsTaskViewOpen()
+        {
+            // Windows 10 Task View
+            IntPtr taskViewHwnd = FindWindow("Windows.UI.Core.CoreWindow", "Task View");
+
+            // Windows 11 Task View fallback
+            if (taskViewHwnd == IntPtr.Zero)
+                taskViewHwnd = FindWindow("XamlExplorerHostIslandWindow", "Task View");
+
+            if (taskViewHwnd == IntPtr.Zero)
+                return false;
+
+            int hResult = DwmGetWindowAttribute(taskViewHwnd, DWMWA_CLOAKED, out int isCloaked, sizeof(int));
+
+            if (hResult != 0)
+                return false;
+
+            return isCloaked == 0;
         }
     }
 }
