@@ -43,19 +43,24 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         private static async void DoTask(IntPtr hwnd)
         {
-            int mode = XConfig.FocusWindowFullscreen.Value;
-
-            if (mode == 1) // Task View
+            switch (XConfig.FocusWindowFullscreen.Value)
             {
-                await Utils.ShowWindowsTaskView();
+                case 1: // Task View
+                    await Utils.ShowWindowsTaskView();
 
-                if (IsWindowFullscreen(hwnd))
+                    if (IsWindowFullscreen(hwnd))
+                        Utils.ShellStartMenu();
+
+                    break;
+                case 2: // Start menu
                     Utils.ShellStartMenu();
+
+                    break;
+                case 3: // Minimize
+                    Utils.ShowWindow(hwnd, Utils.SW_MINIMIZE);
+
+                    break;
             }
-            else if (mode == 2) // Start menu
-                Utils.ShellStartMenu();
-            else if (mode == 3) // Minimize
-                Utils.ShowWindow(hwnd, Utils.SW_MINIMIZE);
         }
 
         private static bool IsWindowFullscreen(IntPtr hWnd)

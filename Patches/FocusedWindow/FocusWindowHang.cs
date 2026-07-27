@@ -74,17 +74,20 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                     if (confirmed)
                         if (hwnd == Utils.GetForegroundWindow()) // Make sure the window is still the same
                         {
-                            int mode = XConfig.FocusWindowElevated.Value;
-
-                            if (mode == 1) // Task View
+                            switch (XConfig.FocusWindowElevated.Value)
                             {
-                                await Utils.ShowWindowsTaskView();
+                                case 1: // Task View
+                                    await Utils.ShowWindowsTaskView();
 
-                                if (IsCurrentWindowHanging())
+                                    if (IsCurrentWindowHanging())
+                                        Utils.ShellStartMenu();
+
+                                    break;
+                                case 2: // Start menu
                                     Utils.ShellStartMenu();
+
+                                    break;
                             }
-                            else if (mode == 2) // Start menu
-                                Utils.ShellStartMenu();
                         }
                 });
             }
