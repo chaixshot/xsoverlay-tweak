@@ -39,6 +39,12 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         [DllImport("user32.dll")]
         internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr voidProcessId);
 
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetDesktopWindow();
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetShellWindow();
+
         [DllImport("kernel32.dll")]
         internal static extern IntPtr OpenProcess(uint processAccess, bool bInheritHandle, uint processId);
 

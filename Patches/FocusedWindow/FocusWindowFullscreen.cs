@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using WindowsInput.Native;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Mouse;
+using static xsoverlay_tweak.Patches.FocusedWindow.Utils;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
 {
@@ -78,21 +79,30 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         private static bool IsWindowFullscreen(IntPtr hWnd)
         {
-            if (hWnd == IntPtr.Zero || !Utils.GetWindowRect(hWnd, out Utils.RECT windowRect))
+            // Failsafe checks: Ensure we aren't checking a null handle, the desktop itself, or the Windows shell
+            if (hWnd == IntPtr.Zero || hWnd == GetDesktopWindow() || hWnd == GetShellWindow())
                 return false;
 
-            IntPtr hMonitor = Utils.MonitorFromWindow(hWnd, Utils.MONITOR_DEFAULTTONEAREST);
+            // Get the screen rectangle of the window
+            if (!GetWindowRect(hWnd, out RECT windowRect))
+                return false;
+
+            // Find which monitor this window is currently occupying
+            IntPtr hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
             if (hMonitor == IntPtr.Zero)
                 return false;
 
-            Utils.MONITORINFO monitorInfo = new() { cbSize = Marshal.SizeOf(typeof(Utils.MONITORINFO)) };
-            if (!Utils.GetMonitorInfo(hMonitor, ref monitorInfo))
-                return false;
+            // Get the bounds of that specific monitor
+            MONITORINFO monitorInfo = new();
+            monitorInfo.cbSize = Marshal.SizeOf(monitorInfo);
 
-            return windowRect.Left <= monitorInfo.rcMonitor.Left &&
-                   windowRect.Top <= monitorInfo.rcMonitor.Top &&
-                   windowRect.Right >= monitorInfo.rcMonitor.Right &&
-                   windowRect.Bottom >= monitorInfo.rcMonitor.Bottom;
+            if (GetMonitorInfo(hMonitor, ref monitorInfo))
+                return (windowRect.Left <= monitorInfo.rcMonitor.Left &&
+                        windowRect.Top <= monitorInfo.rcMonitor.Top &&
+                        windowRect.Right >= monitorInfo.rcMonitor.Right &&
+                        windowRect.Bottom >= monitorInfo.rcMonitor.Bottom);
+
+            return false;
         }
 
         private static bool IsEnable()
