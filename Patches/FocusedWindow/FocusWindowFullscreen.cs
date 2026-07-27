@@ -21,7 +21,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 if (IsEnable() && !PhysicalMouseDetector.IsPhysicalMovement)
                     if (isShow)
                     {
-                        IntPtr hwnd = Utils.GetForegroundWindow();
+                        IntPtr hwnd = GetForegroundWindow();
 
                         if (hwnd != IntPtr.Zero && IsWindowFullscreen(hwnd))
                         {
@@ -34,19 +34,19 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                         switch (XConfig.FocusWindowFullscreen.Value)
                         {
                             case 1: // Close Task View
-                                if (Utils.IsTaskViewOpen())
+                                if (IsTaskViewOpen())
                                     XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
-                                Utils.SetForegroundWindow(lastWindow);
+                                SetForegroundWindow(lastWindow);
 
                                 break;
                             case 2: // Close Start Menu
-                                if (Utils.IsStartMenuOpen())
+                                if (IsStartMenuOpen())
                                     XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
-                                Utils.SetForegroundWindow(lastWindow);
+                                SetForegroundWindow(lastWindow);
 
                                 break;
                             case 3: // Restore from minimze
-                                Utils.ShowWindow(lastWindow, Utils.SW_RESTORE);
+                                ShowWindow(lastWindow, SW_RESTORE);
 
                                 break;
                         }
@@ -60,18 +60,18 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             switch (XConfig.FocusWindowFullscreen.Value)
             {
                 case 1: // Task View
-                    await Utils.ShowWindowsTaskView();
+                    await ShowWindowsTaskView();
 
                     if (IsWindowFullscreen(hwnd))
-                        Utils.ShellStartMenu();
+                        ShellStartMenu();
 
                     break;
                 case 2: // Start menu
-                    Utils.ShellStartMenu();
+                    ShellStartMenu();
 
                     break;
                 case 3: // Minimize
-                    Utils.ShowWindow(hwnd, Utils.SW_MINIMIZE);
+                    ShowWindow(hwnd, SW_MINIMIZE);
 
                     break;
             }

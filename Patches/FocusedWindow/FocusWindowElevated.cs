@@ -4,13 +4,14 @@ using System.Runtime.InteropServices;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Utils;
+using static xsoverlay_tweak.Patches.FocusedWindow.Utils;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
 {
     internal class FocusWindowElevated
     {
         private static IntPtr hookHandle;
-        private static Utils.WinEventDelegate hookDelegate;
+        private static WinEventDelegate hookDelegate;
 
         private static event Action<bool> OnFocusedWindowChanged;
 
@@ -57,14 +58,14 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 switch (XConfig.FocusWindowElevated.Value)
                 {
                     case 1: // Task View
-                        await Utils.ShowWindowsTaskView();
+                        await ShowWindowsTaskView();
 
                         if (IsCurrentWindowElevated())
-                            Utils.ShellStartMenu();
+                            ShellStartMenu();
 
                         break;
                     case 2: // Start menu
-                        Utils.ShellStartMenu();
+                        ShellStartMenu();
 
                         break;
                 }
@@ -86,7 +87,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         private static bool IsCurrentWindowElevated()
         {
-            IntPtr hwnd = Utils.GetForegroundWindow();
+            IntPtr hwnd = GetForegroundWindow();
             return hwnd != IntPtr.Zero && IsWindowElevated(hwnd);
         }
 
@@ -111,25 +112,25 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             try
             {
                 // Get the Process ID from the Window Handle
-                Utils.GetWindowThreadProcessId(hWnd, pidPtr);
+                GetWindowThreadProcessId(hWnd, pidPtr);
                 uint processId = (uint)Marshal.ReadInt32(pidPtr);
                 if (processId == 0) return false;
 
                 // Open the process with limited query rights
-                hProcess = Utils.OpenProcess(Utils.PROCESS_QUERY_LIMITED_INFORMATION, false, processId);
+                hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, processId);
                 if (hProcess == IntPtr.Zero) return false;
 
                 // Open the process's access token
-                if (!Utils.OpenProcessToken(hProcess, Utils.TOKEN_QUERY, out hToken)) return true;
+                if (!OpenProcessToken(hProcess, TOKEN_QUERY, out hToken)) return true;
 
                 // Query the TokenElevationType
                 pElevationType = Marshal.AllocHGlobal(sizeof(int));
-                if (Utils.GetTokenInformation(hToken, Utils.TokenElevationType, pElevationType, sizeof(int), out uint returnLength))
+                if (GetTokenInformation(hToken, TokenElevationType, pElevationType, sizeof(int), out uint returnLength))
                 {
                     int elevationType = Marshal.ReadInt32(pElevationType);
 
                     // TokenElevationTypeFull (2) means the process is running elevated (as Admin)
-                    return elevationType == Utils.TokenElevationTypeFull;
+                    return elevationType == TokenElevationTypeFull;
                 }
             }
             catch (Exception ex)
@@ -141,8 +142,8 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 // Clean up all allocated unmanaged memory and handles
                 if (pidPtr != IntPtr.Zero) Marshal.FreeHGlobal(pidPtr);
                 if (pElevationType != IntPtr.Zero) Marshal.FreeHGlobal(pElevationType);
-                if (hToken != IntPtr.Zero) Utils.CloseHandle(hToken);
-                if (hProcess != IntPtr.Zero) Utils.CloseHandle(hProcess);
+                if (hToken != IntPtr.Zero) CloseHandle(hToken);
+                if (hProcess != IntPtr.Zero) CloseHandle(hProcess);
             }
 
             return false;
@@ -152,10 +153,10 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         {
             if (hookHandle != IntPtr.Zero) return;
 
-            hookDelegate = new Utils.WinEventDelegate(WinEventCallback);
-            hookHandle = Utils.SetWinEventHook(
-                Utils.EVENT_SYSTEM_FOREGROUND, Utils.EVENT_SYSTEM_FOREGROUND,
-                IntPtr.Zero, hookDelegate, 0, 0, Utils.WINEVENT_OUTOFCONTEXT
+            hookDelegate = new WinEventDelegate(WinEventCallback);
+            hookHandle = SetWinEventHook(
+                EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND,
+                IntPtr.Zero, hookDelegate, 0, 0, WINEVENT_OUTOFCONTEXT
             );
         }
 
@@ -163,7 +164,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
         {
             if (hookHandle == IntPtr.Zero) return;
 
-            Utils.UnhookWinEvent(hookHandle);
+            UnhookWinEvent(hookHandle);
             hookHandle = IntPtr.Zero;
             hookDelegate = null;
         }

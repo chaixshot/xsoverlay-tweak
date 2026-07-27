@@ -5,13 +5,14 @@ using System.Threading;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Utils;
+using static xsoverlay_tweak.Patches.FocusedWindow.Utils;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow
 {
     internal class FocusWindowHang
     {
         private static IntPtr hookHandle;
-        private static Utils.WinEventDelegate hookDelegate;
+        private static WinEventDelegate hookDelegate;
         private static CancellationTokenSource pollingCts; // Added to manage the background loop lifetime
 
         private static event Action<bool> OnFocusedWindowChanged;
@@ -58,13 +59,13 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                 XSTools.ExecuteOnMainThread(async () =>
                 {
                     bool confirmed = true;
-                    IntPtr hwnd = Utils.GetForegroundWindow();
+                    IntPtr hwnd = GetForegroundWindow();
 
                     for (int i = 0; i < 3; i++) // Make sure the app is not just loading
                     {
                         await UniTask.Delay(300);
 
-                        if (!Utils.IsHungAppWindow(hwnd))
+                        if (!IsHungAppWindow(hwnd))
                         {
                             confirmed = false;
                             break;
@@ -72,19 +73,19 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                     }
 
                     if (confirmed)
-                        if (hwnd == Utils.GetForegroundWindow()) // Make sure the window is still the same
+                        if (hwnd == GetForegroundWindow()) // Make sure the window is still the same
                         {
                             switch (XConfig.FocusWindowElevated.Value)
                             {
                                 case 1: // Task View
-                                    await Utils.ShowWindowsTaskView();
+                                    await ShowWindowsTaskView();
 
                                     if (IsCurrentWindowHanging())
-                                        Utils.ShellStartMenu();
+                                        ShellStartMenu();
 
                                     break;
                                 case 2: // Start menu
-                                    Utils.ShellStartMenu();
+                                    ShellStartMenu();
 
                                     break;
                             }
@@ -112,15 +113,15 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
         private static bool IsCurrentWindowHanging()
         {
-            IntPtr hwnd = Utils.GetForegroundWindow();
-            return hwnd != IntPtr.Zero && Utils.IsHungAppWindow(hwnd);
+            IntPtr hwnd = GetForegroundWindow();
+            return hwnd != IntPtr.Zero && IsHungAppWindow(hwnd);
         }
 
         private static void WinEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
             if (hwnd == IntPtr.Zero || idObject != 0) return;
 
-            bool isHanging = Utils.IsHungAppWindow(hwnd);
+            bool isHanging = IsHungAppWindow(hwnd);
             OnFocusedWindowChanged?.Invoke(isHanging);
         }
 
@@ -129,10 +130,10 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
             if (hookHandle != IntPtr.Zero) return;
 
             // Start Hook
-            hookDelegate = new Utils.WinEventDelegate(WinEventCallback);
-            hookHandle = Utils.SetWinEventHook(
-                Utils.EVENT_SYSTEM_FOREGROUND, Utils.EVENT_SYSTEM_FOREGROUND,
-                IntPtr.Zero, hookDelegate, 0, 0, Utils.WINEVENT_OUTOFCONTEXT
+            hookDelegate = new WinEventDelegate(WinEventCallback);
+            hookHandle = SetWinEventHook(
+                EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND,
+                IntPtr.Zero, hookDelegate, 0, 0, WINEVENT_OUTOFCONTEXT
             );
 
             // Start Polling Loop
@@ -152,7 +153,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
             // Stop Hook
             if (hookHandle == IntPtr.Zero) return;
-            Utils.UnhookWinEvent(hookHandle);
+            UnhookWinEvent(hookHandle);
             hookHandle = IntPtr.Zero;
             hookDelegate = null;
         }
