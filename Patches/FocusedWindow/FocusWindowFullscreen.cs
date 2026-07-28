@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using Cysharp.Threading.Tasks;
+using HarmonyLib;
 using System;
 using System.Runtime.InteropServices;
 using WindowsInput.Native;
@@ -35,13 +36,19 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
                         {
                             case 1: // Close Task View
                                 if (IsTaskViewOpen())
+                                {
                                     XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
+                                    await UniTask.Delay(300);
+                                }
                                 SetForegroundWindow(lastWindow);
 
                                 break;
                             case 2: // Close Start Menu
                                 if (IsStartMenuOpen())
+                                {
                                     XInputManager.sim.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
+                                    await UniTask.Delay(300);
+                                }
                                 SetForegroundWindow(lastWindow);
 
                                 break;
