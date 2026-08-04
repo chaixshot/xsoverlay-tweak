@@ -1,87 +1,49 @@
 ﻿using HarmonyLib;
-using UnityEngine;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 using XSOverlay;
 
 namespace xsoverlay_tweak.Patches.Wrist
 {
+    [HarmonyPatch]
     internal class WristOverPosition
     {
-        private static Vector3 position = Vector3.zero;
-        private static Quaternion rotation = Quaternion.identity;
-        private static Unity_Overlay wrist;
-
-        //** Pre OnMove
         [HarmonyPatch(typeof(Raycaster), "Drop")]
-        [HarmonyPrefix]
-        public static void PreDrop(Raycaster __instance)
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> RaycasterDrop(IEnumerable<CodeInstruction> instructions)
         {
-            if (!IsEnable()) return;
+            if (!IsEnable()) return instructions;
 
-            if (__instance.HeldOverlay != null)
-                if (__instance.HeldOverlay.IsWristOverlay)
+            List<CodeInstruction> codes = new(instructions);
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Ldc_R4 && (float)codes[i].operand == 0.075f)
+                    codes[i] = new CodeInstruction(OpCodes.Ldc_R4, 0.23f);
+            }
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(XSettingsManager), "LoadWristOffsets")]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> LoadWristOffsets(IEnumerable<CodeInstruction> instructions)
+        {
+            if (!IsEnable()) return instructions;
+
+            bool patched = false;
+            List<CodeInstruction> codes = new(instructions);
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Ldc_R4 && (float)codes[i].operand == 0.075f)
                 {
-                    wrist = __instance.HeldOverlay;
-
-                    Transform transform = XSettingsManager.Instance.WristDefaultPointLeft;
-
-                    if (Vector3.Distance(__instance.HeldOverlay.transform.position, transform.position) > 0.075f * 3f)
-                    {
-                        Vector3 vector = __instance.HeldOverlay.transform.position - transform.position;
-                        position = transform.transform.position + vector.normalized * 0.075f * 3f;
-                    }
-                    else
-                        position = __instance.HeldOverlay.transform.position;
+                    patched = true;
+                    codes[i] = new CodeInstruction(OpCodes.Ldc_R4, 0.23f);
                 }
-        }
-
-        //** Post OnMove
-        [HarmonyPatch(typeof(Raycaster), "Drop")]
-        [HarmonyPostfix]
-        public static void PostDrop(Raycaster __instance)
-        {
-            if (!IsEnable()) return;
-
-            if (wrist != null)
-            {
-                wrist.transform.position = position;
-                wrist.WorldSpaceSceneImpostor.transform.localPosition = position;
-                wrist = null;
             }
-        }
 
-        //?? Pre OnLoad
-        [HarmonyPatch(typeof(XSettingsManager), "LoadWristOffsets")]
-        [HarmonyPrefix]
-        public static void PreLoadWristOffsets(XSettingsManager __instance)
-        {
-            if (!IsEnable()) return;
+            if (!patched)
+                Plugin.Logger.LogError("WristOverPosition patch failed: Could not find target instruction in XSettingsManager.LoadWristOffsets. The mod may be outdated.");
 
-            Transform transform = XSettingsManager.Instance.WristDefaultPointLeft;
-
-            if (Vector3.Distance(__instance.Settings.WristOffsets, transform.position) > 0.075f * 3f)
-            {
-                Vector3 vector = __instance.Settings.WristOffsets - transform.position;
-                position = transform.transform.position + vector.normalized * 0.075f * 3f;
-            }
-            else
-                position = __instance.Settings.WristOffsets;
-
-            rotation = Quaternion.Euler(__instance.Settings.WristRotation); ;
-        }
-
-        //?? Post OnLoad
-        [HarmonyPatch(typeof(XSettingsManager), "LoadWristOffsets")]
-        [HarmonyPostfix]
-        public static void PostDLoadWristOffsets(XSettingsManager __instance)
-        {
-            if (!IsEnable()) return;
-
-            Unity_Overlay wrist = (Unity_Overlay)AccessTools.Field(typeof(XSettingsManager), "SVR_WristOverlay").GetValue(__instance);
-
-            wrist.transform.position = position;
-            wrist.transform.rotation = rotation;
-            wrist.transform.localPosition = position;
-            wrist.transform.localRotation = rotation;
+            return codes;
         }
 
         private static bool IsEnable()
