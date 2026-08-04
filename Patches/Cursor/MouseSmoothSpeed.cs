@@ -30,7 +30,6 @@ namespace xsoverlay_tweak.Patches.Cursor
         public static void AppylySmoothSpeed(Raycaster raycaster)
         {
             EventBridge.Ref_Raycaster.InterpolationSpeed(raycaster) = GetSpeed(XConfig.MouseSmoothSpeed.Value);
-
         }
 
         public static float GetSpeed(int speed)

@@ -15,10 +15,9 @@ namespace xsoverlay_tweak.Patches.Fix
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> UseNativeTextureFormat(IEnumerable<CodeInstruction> instructions)
         {
+            if (!IsEnable()) return instructions;
+
             List<CodeInstruction> codes = new(instructions);
-
-            if (!IsEnable()) return codes;
-
             MethodInfo getOverlayTexture = AccessTools.Method(typeof(Valve.VR.CVROverlay), nameof(Valve.VR.CVROverlay.GetOverlayTexture));
             MethodInfo createExternalTexture = AccessTools.Method(
                 typeof(Texture2D),
@@ -61,11 +60,11 @@ namespace xsoverlay_tweak.Patches.Fix
                 codes[formatIndex] = new CodeInstruction(OpCodes.Ldloc_S, nativeFormatLocal);
                 codes[formatIndex].labels.AddRange(originalFormatInstruction.labels);
                 codes[formatIndex].blocks.AddRange(originalFormatInstruction.blocks);
-                codes.InsertRange(formatIndex + 1, new[]
-                {
+                codes.InsertRange(formatIndex + 1,
+                [
                     new CodeInstruction(OpCodes.Ldc_I4_S, (sbyte)TextureFormat.BGRA32),
                     new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SteamVRCompositorTextureFormatFix), nameof(GetSteamVRTextureFormat)))
-                });
+                ]);
                 patchedCalls++;
                 i += 2;
             }

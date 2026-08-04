@@ -15,7 +15,6 @@ namespace xsoverlay_tweak.Patches.Pointer
             if (!EventBridge.IsActiveHand(__instance))
                 if (___VisualCursorElementOverlay.opacity.Equals(1) && !EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay))
                     ___VisualCursorElementOverlay.opacity = XConfig.InactivePointerOpacity.Value / 100f;
-
         }
     }
 }
