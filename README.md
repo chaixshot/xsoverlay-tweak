@@ -83,7 +83,7 @@
 - **Wrist State Restore**: Restore the last Wrist Overlay state at launch.
 
 ## ⛏️ Installation
-1. Download the plugin ZIP from [Releases](https://github.com/chaixshot/xxsoverlay-tweak/releases/latest)
+1. Download the plugin ZIP from [Releases](https://github.com/chaixshot/xsoverlay-tweak/releases/latest)
 2. Extract the ZIP and drop the files and folders inside ``xsoverlay-tweak`` to ``[Steam]/steamapps/common/[XSOverlay]``
 3. Launch XSOverlay.
 4. Enjoy!
