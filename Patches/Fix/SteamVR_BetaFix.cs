@@ -21,16 +21,20 @@ namespace xsoverlay_tweak.Patches.Fix
         [HarmonyPostfix]
         public static void FixPointerClipping(
             Raycaster __instance,
-            ref GameObject ___VisualCursorElement,
-            ref Vector3 ___CurrentRayPosition,
-            ref Vector3 ___RayHitPoint,
-            ref Vector3 ___CurrentRayDirection)
+            ref GameObject ___VisualCursorElement)
         {
             if (!IsEnable() || !IsOverlayClipping || !EventBridge.IsRaycasterHand(__instance)) return;
 
-            // Push back hit point 3mm
-            Vector3 position = (___RayHitPoint = (___CurrentRayPosition + ___CurrentRayDirection * __instance.FinalSteamVRRaycastResults.fDistance) - (___CurrentRayDirection * 0.003f));
-            ___VisualCursorElement.transform.position = position;
+            ___VisualCursorElement.transform.position -= ___VisualCursorElement.transform.forward * 0.003f;
+        }
+
+        [HarmonyPatch(typeof(Tooltip), "LateUpdate")]
+        [HarmonyPostfix]
+        public static void FixTooltipClipping(Unity_Overlay ___TooltipOverlay)
+        {
+            if (!IsEnable() || !IsOverlayClipping) return;
+
+            ___TooltipOverlay.transform.position -= ___TooltipOverlay.transform.forward * 0.01f;
         }
 
         [HarmonyPatch(typeof(OpenVR), nameof(OpenVR.Init))]
