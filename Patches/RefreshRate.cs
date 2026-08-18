@@ -76,7 +76,6 @@ namespace xsoverlay_tweak.Patches
                 // Original
                 {
                     ___HMDRefreshRate = __instance.FetchHMDRefreshRate();
-                    HMDRefreshRate = ___HMDRefreshRate;
 
                     if (!___HMDRefreshRateDetermined)
                     {
@@ -84,13 +83,15 @@ namespace xsoverlay_tweak.Patches
                         ___HMDRefreshRateDetermined = true;
                     }
 
-                    if (HMDRefreshRate != ___OldRefreshRate)
+                    if (___HMDRefreshRate != ___OldRefreshRate)
                     {
                         ___HMDRefreshRateDetermined = false;
                     }
 
                     ___OldRefreshRate = ___HMDRefreshRate;
                 }
+
+                HMDRefreshRate = ___HMDRefreshRate;
 
                 // Modify
                 {
@@ -113,7 +114,7 @@ namespace xsoverlay_tweak.Patches
             return false;
         }
 
-        [HarmonyPatch(typeof(Raycaster), "Grab")]
+        [HarmonyPatch(typeof(Raycaster), "BeginGrab")]
         [HarmonyPostfix]
         public static void FixPushPullSpeed(ref float ___GrabbedDistance)
         {
