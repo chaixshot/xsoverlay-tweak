@@ -7,7 +7,6 @@ using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Haptic
 {
-    [HarmonyPatch(typeof(Overlay_Manager))]
     internal class WebViewHaptic
     {
         private const string HapticJS = @"
@@ -49,7 +48,7 @@ namespace xsoverlay_tweak.Patches.Haptic
                 }, true);
             })();";
 
-        [HarmonyPatch("OnRegisterWebviewOverlay")]
+        [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
         public static void WebviewOverlay(OverlayWebView wv)
         {
@@ -57,15 +56,12 @@ namespace xsoverlay_tweak.Patches.Haptic
 
             IWebView webView = wv._webView.WebView;
 
+            // Listen for messages from the injected JavaScript
             webView.MessageEmitted += (sender, args) =>
             {
                 if (!IsEnable() || args.Value != "XSOverlayTweak-Haptic-Hover") return;
 
-                Raycaster raycaster = DesktopCursorManager.Instance.GetCurrentInputDevice();
-
-                if (raycaster != null && raycaster.HeldOverlay == null)
-                    if (raycaster.HoveringOverlay?.WebViewHandler?.WebView == (IWebView)sender)
-                        AdvancedHaptics.Rumble(raycaster.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.WebViewHaptic.Value / 100f);
+                AdvancedHaptics.Rumble(EventBridge.GetActiveRaycaster()?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.WebViewHaptic.Value / 100f);
             };
 
             // Inject the script when loading completes
