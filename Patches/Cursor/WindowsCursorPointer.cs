@@ -3,7 +3,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using uWindowCapture;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Utils;
@@ -83,7 +82,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             };
         }
 
-        [HarmonyPatch("Update")]
+        [HarmonyPatch("PreparePointerFrame")]
         [HarmonyPostfix]
         public static void ChangePointerTextureToWindowsCursor(Raycaster __instance, ref Unity_Overlay ___VisualCursorElementOverlay, Texture2D ___CursorIcon)
         {
@@ -100,6 +99,8 @@ namespace xsoverlay_tweak.Patches.Cursor
                     {
                         ___VisualCursorElementOverlay.AutoUpdateOverlayTexture = false;
                         ___VisualCursorElementOverlay.colorTint = Color.white;
+                        ___VisualCursorElementOverlay.overlay.overlayColor = Color.white;
+                        ___VisualCursorElementOverlay.overlay.overlayRenderModelColor = Color.white;
                     }
 
                     if (Time.unscaledTime - Data.LastFrameUpdateTime > 0.066f || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture) // ~15 FPS
@@ -192,6 +193,10 @@ namespace xsoverlay_tweak.Patches.Cursor
             CursorLocked_Ref(instance) = true;
             visualOverlay.AutoUpdateOverlayTexture = true;
             visualOverlay.overlayTexture = defaultIcon;
+
+            visualOverlay.colorTint = XSettingsManager.Instance.Settings.AccentColor;
+            visualOverlay.overlay.overlayColor = XSettingsManager.Instance.Settings.AccentColor;
+            visualOverlay.overlay.overlayRenderModelColor = XSettingsManager.Instance.Settings.AccentColor;
         }
 
         private static bool IsPossiblyAnimatedCursor(IntPtr hCursor)
@@ -218,8 +223,8 @@ namespace xsoverlay_tweak.Patches.Cursor
                 if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
                     if (Data.IsCursor)
                     {
-                        RayCastResult? desktopCoordinate = EventBridge.Ref_Raycaster.GetDesktopCoordinate(__instance);
-                        MouseOperations.SetCursorPosition((int)desktopCoordinate.Value.desktopCoord.x, (int)desktopCoordinate.Value.desktopCoord.y);
+                        if (EventBridge.Ref_Raycaster.TryGetDesktopCoordinate(__instance, out Vector2 desktopCoordinate))
+                            MouseOperations.SetCursorPosition((int)desktopCoordinate.x, (int)desktopCoordinate.y);
                     }
         }
 

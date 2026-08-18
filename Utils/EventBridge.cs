@@ -42,10 +42,12 @@ namespace xsoverlay_tweak.Utils
 
         internal class Ref_Raycaster
         {
+            public delegate bool TryGetDesktopCoordinateDelegate(Raycaster instance, out Vector2 desktopCoordinate);
+
             public static readonly Action<Raycaster> TakeControlOverCursorIfNotInControl = AccessTools.MethodDelegate<Action<Raycaster>>(AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl"));
-            public static readonly Func<Raycaster, RayCastResult?> GetDesktopCoordinate = AccessTools.MethodDelegate<Func<Raycaster, RayCastResult?>>(AccessTools.Method(typeof(Raycaster), "GetDesktopCoordinate"));
             public static readonly AccessTools.FieldRef<Raycaster, float> InterpolationSpeed = AccessTools.FieldRefAccess<Raycaster, float>("InterpolationSpeed");
             public static readonly AccessTools.FieldRef<Raycaster, float> InterpolationDistance = AccessTools.FieldRefAccess<Raycaster, float>("InterpolationDistance");
+            public static readonly TryGetDesktopCoordinateDelegate TryGetDesktopCoordinate = (TryGetDesktopCoordinateDelegate)AccessTools.Method(typeof(Raycaster), "TryGetDesktopCoordinate").CreateDelegate(typeof(TryGetDesktopCoordinateDelegate));
         }
 
         [HarmonyPatch(typeof(DeviceManager), "Start")]
