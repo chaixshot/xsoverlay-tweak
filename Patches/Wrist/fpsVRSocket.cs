@@ -25,7 +25,7 @@ namespace xsoverlay_tweak.Patches.Wrist
         {
             XSOEventSystem.OnToggleLayoutMode += (enable) =>
             {
-                if (!IsEnabled()) return;
+                if (!IsEnable()) return;
 
                 if (XConfig.fpsVRSocket.Value == 1 || XConfig.fpsVRSocket.Value == 2) // Top, Bottom
                     RefreshWristState(enable, 0.4f);
@@ -33,7 +33,7 @@ namespace xsoverlay_tweak.Patches.Wrist
 
             XSOEventSystem.OnStartStopPerformanceMonitor += (enable) =>
             {
-                if (!IsEnabled()) return;
+                if (!IsEnable()) return;
 
                 IsPerformanceMonitor = enable;
 
@@ -43,7 +43,7 @@ namespace xsoverlay_tweak.Patches.Wrist
 
             CustomAPI.OnToggleMediaPlayer += (enable) =>
             {
-                if (!IsEnabled()) return;
+                if (!IsEnable()) return;
 
                 IsMediaPlayer = enable;
 
@@ -53,7 +53,7 @@ namespace xsoverlay_tweak.Patches.Wrist
 
             CustomAPI.OnClickToggleMediaPlayer += (enable) =>
             {
-                if (!IsEnabled()) return;
+                if (!IsEnable()) return;
 
                 IsMediaPlayer = enable;
 
@@ -63,14 +63,14 @@ namespace xsoverlay_tweak.Patches.Wrist
 
             XConfig.fpsVRSocket.SettingChanged += (sender, args) =>
             {
-                if (!IsEnabled()) return;
+                if (!IsEnable()) return;
 
                 ChangefpsVRTranform();
             };
 
             XConfig.HideInvalidBattery.SettingChanged += async (sender, args) =>
             {
-                if (!IsEnabled()) return;
+                if (!IsEnable()) return;
 
                 await Task.Delay(100); // Forget why is here
                 ChangefpsVRTranform();
@@ -78,7 +78,7 @@ namespace xsoverlay_tweak.Patches.Wrist
 
             XConfig.HideBattery.SettingChanged += (sender, args) =>
             {
-                if (!IsEnabled()) return;
+                if (!IsEnable()) return;
 
                 ChangefpsVRTranform();
             };
@@ -88,7 +88,7 @@ namespace xsoverlay_tweak.Patches.Wrist
         [HarmonyPostfix]
         public static void WristOverlayFadedIn(Unity_Overlay __instance)
         {
-            if (!IsEnabled()) return;
+            if (!IsEnable()) return;
 
             if (__instance.IsWristOverlay)
                 if (!IsClosing)
@@ -102,7 +102,7 @@ namespace xsoverlay_tweak.Patches.Wrist
         [HarmonyPostfix]
         public static void UpdateOnScaling(Unity_Overlay activeOverlay)
         {
-            if (!IsEnabled()) return;
+            if (!IsEnable()) return;
 
             if (WristOverlay.Instance.overlay == activeOverlay)
                 ChangefpsVRTranform();
@@ -112,7 +112,7 @@ namespace xsoverlay_tweak.Patches.Wrist
         [HarmonyPostfix]
         public static void UpdateOnMoving(Unity_Overlay overlay)
         {
-            if (!IsEnabled()) return;
+            if (!IsEnable()) return;
 
             if (WristOverlay.Instance.overlay == overlay)
                 ChangefpsVRTranform();
@@ -262,7 +262,7 @@ namespace xsoverlay_tweak.Patches.Wrist
                 ChangefpsVRTranform();
         }
 
-        private static bool IsEnabled()
+        private static bool IsEnable()
         {
             return XConfig.fpsVRSocket.Value != 0;
         }
