@@ -43,7 +43,7 @@ namespace xsoverlay_tweak.Patches.Cursor
                 if (horizontalTicks > 0)
                 {
                     ____horizontalTicks -= horizontalTicks;
-                    XInputManager.sim.Mouse.HorizontalScroll(((scrollX > 0f) ? 1 : -1) * horizontalTicks);
+                    InputManager.sim.Mouse.HorizontalScroll(((scrollX > 0f) ? 1 : -1) * horizontalTicks);
                 }
 
                 // Handle Vertical Scrolling
@@ -52,7 +52,7 @@ namespace xsoverlay_tweak.Patches.Cursor
                 if (verticalTicks > 0)
                 {
                     ____tickAccumulator -= verticalTicks;
-                    MouseOperations.Scroll((((scrollY > 0f) ? 1 : (-1))) * verticalTicks, XInputManager.sim);
+                    MouseOperations.Scroll((((scrollY > 0f) ? 1 : (-1))) * verticalTicks, InputManager.sim);
                 }
             }
             else if (__instance?.HoveringOverlay?.IsPluginApplication == true)
