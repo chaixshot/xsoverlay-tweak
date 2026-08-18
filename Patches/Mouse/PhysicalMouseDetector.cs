@@ -32,7 +32,7 @@ namespace xsoverlay_tweak.Patches.Mouse
             };
         }
 
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
+        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleHeadWebAppInput")]
         [HarmonyPrefix]
         public static bool ClickToRegainControl(Raycaster __instance)
         {
@@ -48,7 +48,7 @@ namespace xsoverlay_tweak.Patches.Mouse
             return true;
         }
 
-        [HarmonyPatch(typeof(Raycaster), "SyncedOverlayUpdate")]
+        [HarmonyPatch(typeof(Raycaster), "PointerHoverAndStateManagement")]
         [HarmonyPrefix]
         public static bool BlockSeningNewCursorPostion()
         {
