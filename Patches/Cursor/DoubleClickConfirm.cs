@@ -91,20 +91,20 @@ namespace xsoverlay_tweak.Patches.Cursor
                                 {
                                     case 0: // Left
                                         if (isDoubleClickXSO)
-                                            XInputManager.sim.Mouse.LeftButtonDoubleClick();
+                                            InputManager.sim.Mouse.LeftButtonDoubleClick();
                                         else
-                                            XInputManager.sim.Mouse.LeftButtonClick();
+                                            InputManager.sim.Mouse.LeftButtonClick();
                                         break;
                                     case 1: // Right
                                         if (isDoubleClickXSO)
-                                            XInputManager.sim.Mouse.RightButtonDoubleClick();
+                                            InputManager.sim.Mouse.RightButtonDoubleClick();
                                         else
-                                            XInputManager.sim.Mouse.RightButtonClick();
+                                            InputManager.sim.Mouse.RightButtonClick();
                                         break;
                                     case 2: // Middle
                                         if (isDoubleClickXSO)
-                                            XInputManager.sim.Mouse.MiddleButtonClick();
-                                        XInputManager.sim.Mouse.MiddleButtonClick();
+                                            InputManager.sim.Mouse.MiddleButtonClick();
+                                        InputManager.sim.Mouse.MiddleButtonClick();
                                         break;
                                 }
 
@@ -120,22 +120,22 @@ namespace xsoverlay_tweak.Patches.Cursor
                                     case 0: // Left
                                         ___HadMouseInputDown = true;
                                         if (isDoubleClickXSO)
-                                            MouseOperations.LMouseClick(XInputManager.sim); // Fixes original XSO double-click quirk
-                                        MouseOperations.LMouseDown(XInputManager.sim);
+                                            MouseOperations.LMouseClick(InputManager.sim); // Fixes original XSO double-click quirk
+                                        MouseOperations.LMouseDown(InputManager.sim);
                                         break;
 
                                     case 1: // Right
                                         ___HadMouseRightInputDown = true;
                                         if (isDoubleClickXSO)
-                                            MouseOperations.RMouseClick(XInputManager.sim);
-                                        MouseOperations.RMouseDown(XInputManager.sim);
+                                            MouseOperations.RMouseClick(InputManager.sim);
+                                        MouseOperations.RMouseDown(InputManager.sim);
                                         break;
 
                                     case 2: // Middle
                                         ___HadMouseMiddleInputDown = true;
                                         if (isDoubleClickXSO)
-                                            MouseOperations.MMouseClick(XInputManager.sim);
-                                        MouseOperations.MMouseDown(XInputManager.sim);
+                                            MouseOperations.MMouseClick(InputManager.sim);
+                                        MouseOperations.MMouseDown(InputManager.sim);
                                         break;
                                 }
 
