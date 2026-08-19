@@ -22,7 +22,7 @@ namespace xsoverlay_tweak.Patches.Haptic
             HoverDictionary.Add(__instance, new());
         }
 
-        [HarmonyPatch("Grab")]
+        [HarmonyPatch("BeginGrab")]
         [HarmonyPostfix]
         public static void Grab(Raycaster __instance)
         {
