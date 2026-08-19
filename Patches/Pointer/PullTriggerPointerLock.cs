@@ -4,7 +4,6 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using XSOverlay;
-using xsoverlay_tweak.Patches.Cursor;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
@@ -23,6 +22,7 @@ namespace xsoverlay_tweak.Patches.Pointer
         public static readonly ConditionalWeakTable<Raycaster, RaycasterState> InstanceState = new();
 
         private static readonly Func<Raycaster, float> GetTriggerAxis = AccessTools.MethodDelegate<Func<Raycaster, float>>(AccessTools.Method(typeof(Raycaster), "GetTriggerAxis"));
+        private static float pointerSmoothing = XSettingsManager.Instance.Settings.PointerSmoothing;
 
         [HarmonyPatch(typeof(Raycaster), "Start")]
         [HarmonyPostfix]
@@ -42,7 +42,7 @@ namespace xsoverlay_tweak.Patches.Pointer
             };
         }
 
-        [HarmonyPatch(typeof(Raycaster), "Update")]
+        [HarmonyPatch(typeof(Raycaster), "PreparePointerFrame")]
         [HarmonyPostfix]
         public static void ListenTriggerAxis(Raycaster __instance, bool ___HadMouseInputDown, bool ___HoldingTouch, bool ___IsWebViewTouchEventDown)
         {
@@ -73,10 +73,14 @@ namespace xsoverlay_tweak.Patches.Pointer
                     if (Data.IsStopping)
                         Plugin.Instance.StopCoroutine(Data.Coroutine);
 
+                    if (!Data.WasSmooth)
+                    {
+                        pointerSmoothing = XSettingsManager.Instance.Settings.PointerSmoothing;
+                        XSettingsManager.Instance.Settings.PointerSmoothing = 10f;
+                    }
+
                     Data.IsStopping = false;
                     Data.WasSmooth = true;
-
-                    EventBridge.Ref_Raycaster.InterpolationSpeed(__instance) = 1f;
                 }
                 else if (Data.WasSmooth && !Data.IsStopping)
                 {
@@ -126,7 +130,8 @@ namespace xsoverlay_tweak.Patches.Pointer
         [HarmonyPrefix]
         public static bool BlockPointerMovement(Raycaster __instance)
         {
-            if (!IsEnable() || !EventBridge.IsRaycasterHand(__instance) || !PointerDoubleClickDelay.IsEnable()) return true;
+            if (!IsEnable() || !EventBridge.IsRaycasterHand(__instance)) return true;
+            if (EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay)) return true;
 
             if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
                 return !Data.IsBlock;
@@ -138,7 +143,8 @@ namespace xsoverlay_tweak.Patches.Pointer
         [HarmonyPrefix]
         public static bool BlockSearchForOverlays(Raycaster __instance)
         {
-            if (!IsEnable() || !EventBridge.IsRaycasterHand(__instance) || !PointerDoubleClickDelay.IsEnable()) return true;
+            if (!IsEnable() || !EventBridge.IsRaycasterHand(__instance)) return true;
+            if (EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay)) return true;
 
             if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
                 return !Data.IsBlock;
@@ -171,7 +177,7 @@ namespace xsoverlay_tweak.Patches.Pointer
             if (InstanceState.TryGetValue(instance, out RaycasterState Data))
             {
                 if (Data.WasSmooth)
-                    MouseSmoothSpeed.AppylySmoothSpeed(instance);
+                    XSettingsManager.Instance.Settings.PointerSmoothing = pointerSmoothing;
 
                 Data.WasSmooth = false;
                 Data.IsBlock = false;
