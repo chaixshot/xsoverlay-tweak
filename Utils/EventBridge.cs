@@ -48,6 +48,11 @@ namespace xsoverlay_tweak.Utils
             public static readonly AccessTools.FieldRef<Raycaster, float> InterpolationSpeed = AccessTools.FieldRefAccess<Raycaster, float>("InterpolationSpeed");
             public static readonly AccessTools.FieldRef<Raycaster, float> InterpolationDistance = AccessTools.FieldRefAccess<Raycaster, float>("InterpolationDistance");
             public static readonly TryGetDesktopCoordinateDelegate TryGetDesktopCoordinate = (TryGetDesktopCoordinateDelegate)AccessTools.Method(typeof(Raycaster), "TryGetDesktopCoordinate").CreateDelegate(typeof(TryGetDesktopCoordinateDelegate));
+
+            // NativeHoverState
+            private static readonly Type NativeHoverState = typeof(Raycaster).GetNestedType("NativeHoverState", AccessTools.all);
+            public static readonly IDictionary NativeHoverStates = (IDictionary)AccessTools.Field(typeof(Raycaster), "NativeHoverStates").GetValue(null);
+            public static readonly AccessTools.FieldRef<object, Raycaster> NativeHoverState_Owner = AccessTools.FieldRefAccess<Raycaster>(NativeHoverState, "Owner");
         }
 
         [HarmonyPatch(typeof(DeviceManager), "Start")]
@@ -145,16 +150,34 @@ namespace xsoverlay_tweak.Utils
             NotificationCoroutine = null;
         }
 
-        public static bool IsActiveHand(Raycaster __instance, bool skipTwoHanded = false)
+        public static bool IsWebViewActiveHand(Raycaster raycaster)
+        {
+            Unity_Overlay overlay = raycaster.HoveringOverlay;
+
+            if (overlay != null)
+                if (overlay.OverlayWebView != null && Ref_Raycaster.NativeHoverStates.Contains(overlay))
+                {
+                    object nativeHoverState = Ref_Raycaster.NativeHoverStates[overlay];
+
+                    if (nativeHoverState != null && Ref_Raycaster.NativeHoverState_Owner(nativeHoverState) == raycaster)
+                        return true;
+                }
+
+            return false;
+        }
+
+        public static bool IsActiveHand(Raycaster raycaster, bool skipTwoHanded = false)
         {
             if (PhysicalMouseDetector.IsPhysicalMovement)
                 return false;
             else if (TwoHandedMode.IsEnable() && !skipTwoHanded)
                 return true;
-            else if (DesktopCursorManager.Instance.GetCurrentInputDevice() != __instance)
-                return false;
+            else if (DesktopCursorManager.Instance.GetCurrentInputDevice() == raycaster)
+                return true;
+            else if (IsWebViewActiveHand(raycaster))
+                return true;
 
-            return true;
+            return false;
         }
 
         public static bool IsOverlayWebView(Unity_Overlay overlay)
