@@ -409,8 +409,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 {
                     Task.Run(async () =>
                     {
-                        await Task.Delay(1000);
-
                         wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
                         {
                             //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
