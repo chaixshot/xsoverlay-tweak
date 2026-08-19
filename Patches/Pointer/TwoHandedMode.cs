@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using uWindowCapture;
 using XSOverlay;
-using xsoverlay_tweak.Patches.Cursor;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
@@ -32,7 +30,7 @@ namespace xsoverlay_tweak.Patches.Pointer
             };
         }
 
-        [HarmonyPatch("HandleClicksForDesktopWindows"), HarmonyPatch("HandleTouchInputForDesktopWindows"), HarmonyPatch("HandleTouchInputForWebApplications")]
+        [HarmonyPatch("HandleClicksForDesktopWindows"), HarmonyPatch("HandleTouchInputForDesktopWindows"), HarmonyPatch("HandleHeadWebAppInput")]
         [HarmonyPrefix]
         public static void ClickToBecomeActiveHandAndDoClick(Raycaster __instance)
         {
@@ -42,8 +40,8 @@ namespace xsoverlay_tweak.Patches.Pointer
             {
                 EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
 
-                RayCastResult? desktopCoordinate = EventBridge.Ref_Raycaster.GetDesktopCoordinate(__instance);
-                MouseOperations.SetCursorPosition((int)desktopCoordinate.Value.desktopCoord.x, (int)desktopCoordinate.Value.desktopCoord.y);
+                if (EventBridge.Ref_Raycaster.TryGetDesktopCoordinate(__instance, out Vector2 desktopCoordinate))
+                    MouseOperations.SetCursorPosition((int)desktopCoordinate.x, (int)desktopCoordinate.y);
 
                 __instance.CanClickDesktopCursor = true;
             }
@@ -72,7 +70,6 @@ namespace xsoverlay_tweak.Patches.Pointer
         public static bool ScrollingNonCurrentHandFix(Raycaster __instance)
         {
             if (!IsEnable()) return true;
-            if (HandleScrolling.IsEnable()) return true;
 
             if (!EventBridge.IsActiveHand(__instance, true))
                 return false;
