@@ -114,7 +114,7 @@ namespace xsoverlay_tweak
             AlwaysUpdateCursor = cfg.Bind("Cursor", "AlwaysUpdateCursor", false, "Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.\nWithout this, the Windows Cursor often appears to lag one frame behind the Pointer position.");
             CursorMovingInteractionFix = cfg.Bind("Cursor", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.");
             DoubleClickConfirm = cfg.Bind("Cursor", "DoubleClickConfirm", true, "Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.");
-            HandleScrolling = cfg.Bind("Cursor", "HandleScrolling", true, "Support horizontal scrolling and control scroll speed with the thumbstick axis value.");
+            HandleScrolling = cfg.Bind("Cursor", "HandleScrolling", true, "Support horizontal scrolling.");
             MouseSmoothSpeed = cfg.Bind("Cursor", "MouseSmoothSpeed", 3, "Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.");
             WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", 1, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.\n\n- Animated: always updates the cursor texture, which might impact performance.");
             PullTriggerClickThreshold = cfg.Bind("Cursor", "PullTriggerClickThreshold", 0.5f, "The Trigger pull threshold required to trigger a Left Click.\n\n- Uses the Trigger Value from SteamVR Input.");

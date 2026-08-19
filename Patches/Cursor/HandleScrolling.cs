@@ -9,24 +9,21 @@ namespace xsoverlay_tweak.Patches.Cursor
     internal class HandleScrolling
     {
         private static float ____horizontalTicks;
+        private static readonly float scrollClicksPerSecond = 25f;
 
         [HarmonyPatch(typeof(Raycaster), "HandleScrolling")]
         [HarmonyPrefix]
-        public static bool FixScrollingSpeed(Raycaster __instance, MouseInputDevice ___InputDevice, int ___ScrollClicksPerSecond, ref float ____tickAccumulator, Vector2 ___CursorUVNormalized)
+        public static bool FixScrollingSpeed(Raycaster __instance, MouseInputDevice ___InputDevice, Vector2 ___CursorUVNormalized)
         {
             if (!IsEnable()) return true;
 
-            // Read BOTH horizontal (x)and vertical (y) axes from the input device
-            float scrollX = ___InputDevice.Scroll.axis.x;
-            float scrollY = ___InputDevice.Scroll.axis.y;
-
+            float scrollX = ___InputDevice.Scroll.axis.x; // horizontal (x) from the input device
             float absX = Mathf.Abs(scrollX);
-            float absY = Mathf.Abs(scrollY);
 
-            // If both axes are inside the deadzone, or click engine is broken, stop processing
+            // If X axe are inside the deadzone, or click engine is broken, stop processing
             float deadzone = 0.01f;
-            if ((absX <= deadzone && absY <= deadzone) || (float)___ScrollClicksPerSecond <= 0f)
-                return false;
+            if ((absX <= deadzone) || (float)scrollClicksPerSecond <= 0f)
+                return true;
 
             // Two handed mode enable fix scrolling non current hand
             if (TwoHandedMode.IsEnable() && !EventBridge.IsActiveHand(__instance, true))
@@ -38,50 +35,18 @@ namespace xsoverlay_tweak.Patches.Cursor
             if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
             {
                 // Handle Horizontal Scrolling
-                ____horizontalTicks += absX * (float)___ScrollClicksPerSecond * scrollFactor;
+                ____horizontalTicks += absX * (float)scrollClicksPerSecond * scrollFactor;
                 int horizontalTicks = (int)____horizontalTicks;
                 if (horizontalTicks > 0)
                 {
                     ____horizontalTicks -= horizontalTicks;
                     InputManager.sim.Mouse.HorizontalScroll(((scrollX > 0f) ? 1 : -1) * horizontalTicks);
                 }
-
-                // Handle Vertical Scrolling
-                ____tickAccumulator += absY * (float)___ScrollClicksPerSecond * scrollFactor;
-                int verticalTicks = (int)____tickAccumulator;
-                if (verticalTicks > 0)
-                {
-                    ____tickAccumulator -= verticalTicks;
-                    MouseOperations.Scroll((((scrollY > 0f) ? 1 : (-1))) * verticalTicks, InputManager.sim);
-                }
-            }
-            else if (__instance?.HoveringOverlay?.IsPluginApplication == true)
-            {
-                // Vector mapping for embedded browser engine frames: 
-                // Inverts Y for browser standard window scrolling coordinates, retains direct X
-                float mulFactor = 6f; // Increase speed to match the desktop
-                float webScrollX = scrollX * scrollFactor;
-                float webScrollY = 0f - (scrollY * scrollFactor);
-
-                // 0.00275 is the minimum value allowed for scrolling  WebView
-                webScrollX = scrollX > 0f ? Mathf.Min(-0.00275f, webScrollX) : Mathf.Max(0.00275f, webScrollX);
-                webScrollY = scrollY > 0f ? Mathf.Min(-0.00275f, webScrollY) : Mathf.Max(0.00275f, webScrollY);
-
-                ____tickAccumulator += Mathf.Max(absX, absY) * (float)___ScrollClicksPerSecond * scrollFactor * mulFactor;
-                int verticalTicks = (int)____tickAccumulator;
-                if (verticalTicks > 0)
-                {
-                    ____tickAccumulator -= verticalTicks;
-                    __instance.HoveringOverlay.WebViewHandler.WebView.Scroll(
-                        new(webScrollX * mulFactor, webScrollY * mulFactor),
-                        ___CursorUVNormalized
-                    );
-                }
             }
 
             EventBridge.HandleScrolling(___InputDevice.Scroll.axis, ___CursorUVNormalized);
 
-            return false;
+            return true;
         }
 
         public static bool IsEnable()
