@@ -29,7 +29,7 @@ namespace xsoverlay_tweak.Patches.Fix
         }
 
         //!! Not work by clicking
-        /*[HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
+        /*[HarmonyPatch(typeof(Raycaster), "HandleHeadWebAppInput")]
         [HarmonyPrefix]
         public static void ClickWebView(Raycaster __instance)
         {
@@ -46,7 +46,7 @@ namespace xsoverlay_tweak.Patches.Fix
             }
         }*/
 
-        [HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
+        [HarmonyPatch(typeof(Raycaster), "HandleHeadWebAppInput")]
         [HarmonyPostfix]
         public static void WindowSettingsSwitch(Raycaster __instance)
         {
