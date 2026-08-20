@@ -22,7 +22,10 @@ namespace xsoverlay_tweak.Utils
                 "settings.js",
                 "tooltip.js",
                 "windowSettings.js",
-                "toolbar.js"
+                "toolbar.js",
+                "keyboard.js",
+                "chatbox-keyboard.js",
+                "chatbox-settings.js",
             };
 
             // Loop through each file path to globalize elements and imports

@@ -1,59 +1,57 @@
 ﻿using HarmonyLib;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using System.Threading.Tasks;
+using Vuplex.WebView;
+using XSOverlay;
+using XSOverlay.WebApp;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Haptic
 {
-    [HarmonyPatch(typeof(Raycaster))]
     internal class KeyboardKeyHaptic
     {
-        private class HoverData
-        {
-            public GameObject OldHoverObject;
-        }
-        private static readonly ConditionalWeakTable<Raycaster, HoverData> HoverDictionary = new();
+        private const string HapticJS = @"
+            (function hook() {
+                if (!window.SetPointerHover) return setTimeout(hook, 100);
+                if (window.XSOverlayTweak_KeyboardKeyHaptic) return;
+                window.XSOverlayTweak_KeyboardKeyHaptic = true;
 
-        [HarmonyPatch("Start")]
+                window._origHover = window.SetPointerHover;
+                window.SetPointerHover = (pointerId, nextElement) => {
+                    const isNew = nextElement && window.GetKeyboardPointer?.(pointerId)?.hoverElement !== nextElement;
+                    window._origHover(pointerId, nextElement);
+                    if (isNew) window.vuplex.postMessage('XSOverlayTweak-KeyboardHaptic-Hover:' + pointerId);
+                };
+            })();";
+
+        [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void Initialize(Raycaster __instance)
+        public static void WebviewOverlay(OverlayWebView wv)
         {
-            if (!EventBridge.IsRaycasterHand(__instance)) return;
-
-            HoverDictionary.Add(__instance, new());
-        }
-
-        [HarmonyPatch("OnGuiHover")]
-        [HarmonyPostfix]
-        public static void PlayHapticOnHoverButton(Raycaster __instance, List<RaycastResult> ___PointerResult)
-        {
-            if (!IsEnable() || !EventBridge.IsRaycasterHand(__instance) || __instance?.HoveringOverlay?.IsPluginApplication == true || __instance.HeldOverlay != null) return;
-
-            if (HoverDictionary.TryGetValue(__instance, out HoverData Data))
+            if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Keyboard)
             {
-                bool IsFound = false;
+                IWebView webView = wv._webView.WebView;
 
-                foreach (RaycastResult item in ___PointerResult)
+                // Listen for messages from the injected JavaScript
+                webView.MessageEmitted += (sender, args) =>
                 {
-                    if (item.gameObject.TryGetComponent(out Button component) && component.interactable)
+                    if (!IsEnable() || !args.Value.StartsWith("XSOverlayTweak-KeyboardHaptic-Hover:")) return;
+
+                    string pointerId = args.Value.Substring("XSOverlayTweak-KeyboardHaptic-Hover:".Length);
+                    AdvancedHaptics.Rumble(pointerId == "1", 0.001f, 320f, XConfig.KeyboardKeyHaptic.Value / 100f);
+                };
+
+                // Inject the script when loading completes
+                webView.LoadProgressChanged += (s, e) =>
+                {
+                    if (e.Type == ProgressChangeType.Finished)
                     {
-                        GameObject HoverObject = component.gameObject;
-
-                        if (Data.OldHoverObject != HoverObject)
-                            AdvancedHaptics.Rumble(__instance.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.KeyboardKeyHaptic.Value / 100f);
-
-                        IsFound = true;
-                        Data.OldHoverObject = HoverObject;
-
-                        break;
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(1000);
+                            webView.ExecuteJavaScript(HapticJS, null);
+                        });
                     }
-                }
-
-                if (!IsFound)
-                    Data.OldHoverObject = null;
+                };
             }
         }
 
