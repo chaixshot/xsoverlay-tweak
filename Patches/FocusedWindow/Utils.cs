@@ -129,7 +129,7 @@ namespace xsoverlay_tweak.Patches.FocusedWindow
 
                     try
                     {
-                        XInputManager.sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LWIN, VirtualKeyCode.TAB);
+                        InputManager.sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LWIN, VirtualKeyCode.TAB);
                     }
                     catch (Exception)
                     {
