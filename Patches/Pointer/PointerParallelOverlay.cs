@@ -8,12 +8,11 @@ using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
 {
-    [HarmonyPatch(typeof(Raycaster))]
     internal class PointerParallelOverlay
     {
-        [HarmonyPatch("SearchForOverlays")]
+        [HarmonyPatch(typeof(Raycaster), "SearchForOverlays")]
         [HarmonyPostfix]
-        public static void CursorParallelToCurveoverlay(
+        public static void PointerParallelToTargetOverlay(
             Raycaster __instance,
             VROverlayIntersectionResults_t ovrIntersectionResults,
             MouseInputDevice ___InputDevice,
@@ -70,6 +69,14 @@ namespace xsoverlay_tweak.Patches.Pointer
                         ___VisualCursorElementClickAnimation.transform.rotation = ___VisualCursorElement.transform.rotation;
                     }
                 }
+        }
+
+        [HarmonyPatch(typeof(Tooltip), "LateUpdate")]
+        [HarmonyPostfix]
+        public static void TooltipParallelToParentOverlay(Unity_Overlay ___TooltipOverlay, Unity_Overlay ___TooltipParent)
+        {
+            if (___TooltipOverlay != null && ___TooltipParent != null)
+                ___TooltipOverlay.transform.rotation = ___TooltipParent.transform.rotation;
         }
 
         private static bool IsEnable()
