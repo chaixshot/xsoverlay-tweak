@@ -71,7 +71,6 @@ namespace xsoverlay_tweak.Patches.Keyboard
             JToken keyboardData = root["keyboard"];
             Overlay_Manager overlay_Manager = Overlay_Manager.Instance;
             Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
-            KeyboardGlobalManager keyboardManager = (KeyboardGlobalManager)AccessTools.Field(typeof(Overlay_Manager), "keyboardManager").GetValue(overlay_Manager);
 
             if (keyboardData == null) // No keyboard save in Layout
                 EventBridge.ExecuteApiToggleKeyboard(false);
@@ -98,10 +97,7 @@ namespace xsoverlay_tweak.Patches.Keyboard
                         bool shouldPin = (bool)keyboardData["isPinned"];
 
                         if (shouldPin != keyboard.isPinned)
-                        {
                             overlay_Manager.PinKeyboard();
-                            overlay_Manager.PinWindowSpecificWindow(keyboard);
-                        }
                     }
 
                     if (keyboardData["isLocked"] != null)

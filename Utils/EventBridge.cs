@@ -217,16 +217,16 @@ namespace xsoverlay_tweak.Utils
         {
             Overlay_Manager overlay_Manager = Overlay_Manager.Instance;
             Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
-            KeyboardGlobalManager keyboardManager = (KeyboardGlobalManager)AccessTools.Field(typeof(Overlay_Manager), "keyboardManager").GetValue(overlay_Manager);
+            bool isActive = overlay_Manager.Keyboard.gameObject.activeSelf;
 
             IsKeyboardSpawing = true;
 
             if (isShow)
             {
-                if (!overlay_Manager.Keyboard.activeSelf || keyboardManager?.HasKeyboardBeenOpened == false) // Show keyboard if unsummoned
+                if (!isActive) // Show keyboard if unsummoned
                     ServerClientBridge.Instance.Api.Commands["Keyboard"]("", "", "");
             }
-            else if (overlay_Manager.Keyboard.activeSelf && keyboardManager?.HasKeyboardBeenOpened == true) // Hide keyboard if summoned
+            else if (isActive) // Hide keyboard if summoned
             {
                 if (keyboard.isPinned) // Pinned keyboard can't unsummon
                 {
