@@ -10,6 +10,7 @@ using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Overlay
 {
+    [HarmonyPatch(typeof(Raycaster))]
     internal class WindowToolbarGesture
     {
         private class WindowData
@@ -20,15 +21,15 @@ namespace xsoverlay_tweak.Patches.Overlay
         }
         private static readonly ConditionalWeakTable<Unity_Overlay, WindowData> LastWindow = new();
 
-        [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
+        [HarmonyPatch("Start")]
         [HarmonyPostfix]
-        public static void ScrollWindowToolbarToChangeWindow()
+        public static void ScrollWindowToolbarToChangeWindow(Raycaster __instance)
         {
             EventBridge.OnHandleScrolling += (ScrollAxis, normalizedPoint) =>
             {
                 if (!IsEnable()) return;
 
-                if (EventBridge.CurrentHoveringOverlay?.overlayName == "window.toolbar")
+                if (__instance.HoveringOverlay?.overlayName == "window.toolbar")
                 {
                     Unity_Overlay targetOverlay = Overlay_Manager.Instance.WindowToolbarMover.ParentOverlay;
 
@@ -75,25 +76,26 @@ namespace xsoverlay_tweak.Patches.Overlay
             };
         }
 
-        [HarmonyPatch(typeof(Raycaster), "HandleTouchInputForWebApplications")]
+        [HarmonyPatch("OnClick")]
         [HarmonyPrefix]
-        public static bool RightClickWindowToolbar(Raycaster __instance, ClickActions clickActions)
+        public static bool RightClickWindowToolbar(Raycaster __instance, ClickActions clickActions, MouseInputDevice ___InputDevice)
         {
             if (!IsEnable()) return true;
 
-            if (EventBridge.CurrentHoveringOverlay?.overlayName == "window.toolbar")
-                if (EventBridge.IsActiveHand(__instance) && clickActions.ActionIndex == 1)
-                {
-                    Unity_Overlay targetOverlay = Overlay_Manager.Instance.WindowToolbarMover.ParentOverlay;
-
-                    if (LastWindow.TryGetValue(targetOverlay, out WindowData Data))
+            if (clickActions.InputSource == ___InputDevice.InputSource)
+                if (__instance.HoveringOverlay?.overlayName == "window.toolbar")
+                    if (clickActions.ActionIndex == 1) // Right Click
                     {
-                        WindowComponentManager windowComponent = targetOverlay.overlayRootObject.GetComponentInChildren<WindowComponentManager>(true);
-                        windowComponent.SetOverlayCaptureTarget(targetOverlay, Data.LastWindow);
+                        Unity_Overlay targetOverlay = Overlay_Manager.Instance.WindowToolbarMover.ParentOverlay;
 
-                        return false;
+                        if (LastWindow.TryGetValue(targetOverlay, out WindowData Data))
+                        {
+                            WindowComponentManager windowComponent = targetOverlay.overlayRootObject.GetComponentInChildren<WindowComponentManager>(true);
+                            windowComponent.SetOverlayCaptureTarget(targetOverlay, Data.LastWindow);
+
+                            return false;
+                        }
                     }
-                }
 
             return true;
         }
