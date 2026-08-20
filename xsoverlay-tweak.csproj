@@ -20,15 +20,16 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Remove="Patches\Setting\setting.js" />
+    <Compile Remove="Patches\Cursor\AlwaysUpdateCursor.cs" />
+    <Compile Remove="Patches\Cursor\MouseSmoothSpeed.cs" />
+    <Compile Remove="Patches\Fix\SteamVRCompositorTextureFormatFix.cs" />
+    <Compile Remove="Patches\Fix\WebViewFrozenFix.cs" />
+    <Compile Remove="Patches\Keyboard\KeyboardControlButtonStateFix.cs" />
+    <Compile Remove="Patches\Overlay\OverlayGripAntiSlip.cs" />
   </ItemGroup>
   
   <ItemGroup>
     <EmbeddedResource Include="Patches\Setting\setting.js" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="Patches\Cursor\AlwaysUpdateCursor.cs" />
   </ItemGroup>
   
   <ItemGroup>

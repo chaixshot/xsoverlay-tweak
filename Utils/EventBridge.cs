@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
-using uWindowCapture;
 using XSOverlay;
 using XSOverlay.WebApp;
 using xsoverlay_tweak.Patches.Mouse;
@@ -47,8 +46,6 @@ namespace xsoverlay_tweak.Utils
             public delegate bool TryGetDesktopCoordinateDelegate(Raycaster instance, out Vector2 desktopCoordinate);
 
             public static readonly Action<Raycaster> TakeControlOverCursorIfNotInControl = AccessTools.MethodDelegate<Action<Raycaster>>(AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl"));
-            public static readonly AccessTools.FieldRef<Raycaster, float> InterpolationSpeed = AccessTools.FieldRefAccess<Raycaster, float>("InterpolationSpeed");
-            public static readonly AccessTools.FieldRef<Raycaster, float> InterpolationDistance = AccessTools.FieldRefAccess<Raycaster, float>("InterpolationDistance");
             public static readonly TryGetDesktopCoordinateDelegate TryGetDesktopCoordinate = (TryGetDesktopCoordinateDelegate)AccessTools.Method(typeof(Raycaster), "TryGetDesktopCoordinate").CreateDelegate(typeof(TryGetDesktopCoordinateDelegate));
 
             // NativeHoverState
