@@ -108,7 +108,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.QualityOfLife.WindowsAccentColor));
 
         // Fix
-        harmony.PatchAll(typeof(Patches.Fix.AdditionalFix));
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix));
