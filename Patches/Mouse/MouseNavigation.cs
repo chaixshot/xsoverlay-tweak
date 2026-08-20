@@ -52,7 +52,7 @@ namespace xsoverlay_tweak.Patches.Mouse
         }
 
         // SteamVR input listen
-        [HarmonyPatch(typeof(MouseInputDevice), "Update")]
+        [HarmonyPatch(typeof(MouseInputDevice), "InputUpdateLoop")]
         [HarmonyPostfix]
         public static void SteamVRKeyBindingListener(MouseInputDevice __instance)
         {
@@ -66,7 +66,7 @@ namespace xsoverlay_tweak.Patches.Mouse
                 if (EventBridge.IsHoverAnyDesktopOrWindowCapture())
                     if (CheckActionTriggered(Actions.MouseBack.Path, ref ActionHandleBack, ref BackWasPressedLastFrame))
                     {
-                        SimulateBackNavigation(XInputManager.sim);
+                        SimulateBackNavigation(InputManager.sim);
 
                         AdvancedHaptics.Rumble(__instance.GrabAxis == ActivationAxis.LeftTrigger, 0.01f, 40f, 0.3f);
                     }
@@ -75,7 +75,7 @@ namespace xsoverlay_tweak.Patches.Mouse
                 if (EventBridge.IsHoverAnyDesktopOrWindowCapture())
                     if (CheckActionTriggered(Actions.MouseForward.Path, ref ActionHandleForward, ref ForwardWasPressedLastFrame))
                     {
-                        SimulateForwardNavigation(XInputManager.sim);
+                        SimulateForwardNavigation(InputManager.sim);
 
                         AdvancedHaptics.Rumble(__instance.GrabAxis == ActivationAxis.LeftTrigger, 0.01f, 40f, 0.3f);
                     }
