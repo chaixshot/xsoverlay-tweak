@@ -1,47 +1,23 @@
 ﻿using HarmonyLib;
-using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using Valve.VR;
-using XSOverlay;
+using XSOverlay.Websockets.API;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Haptic
 {
-    [HarmonyPatch(typeof(Raycaster))]
     internal class KeyboardPressHaptic : MonoBehaviour
     {
-        [HarmonyPatch("OnGuiPressDown")]
+        [HarmonyPatch(typeof(ApiHandler), "OnSendKeyboardEvent")]
         [HarmonyPostfix]
-        public static void PlayHapticOnPressButton(Raycaster __instance, SteamVR_Input_Sources inputSource, ref List<RaycastResult> ___PointerResult, MouseInputDevice ___InputDevice)
+        public static void PlayHapticOnPressButton(string jsonData)
         {
-            if (!IsEnable() || !EventBridge.IsRaycasterHand(__instance)) return;
-            if (___PointerResult == null || inputSource != ___InputDevice.InputSource || __instance.HoveringOverlay == null || __instance.HoveringOverlay.IsPluginApplication || ___InputDevice.ScaleGracePeriodActive)
-                return;
+            if (!IsEnable()) return;
 
-            for (int i = 0; i < ___PointerResult.Count; i++)
-            {
-                bool ShouldHaptic = false;
-                HapticButton hapticButton = ___PointerResult[i].gameObject.GetComponent<HapticButton>();
+            Objects.KeyboardEvent keyboardEvent = JsonConvert.DeserializeObject<Objects.KeyboardEvent>(jsonData);
 
-                if (hapticButton != null)
-                {
-                    GameObject.Destroy(hapticButton);
-                    ___PointerResult[i].gameObject.AddComponent<KeyboardPressHaptic>();
-                    ShouldHaptic = true;
-                }
-                else if (___PointerResult[i].gameObject.GetComponent<KeyboardPressHaptic>() != null)
-                    ShouldHaptic = true;
-
-                if (ShouldHaptic)
-                {
-                    AdvancedHaptics.Rumble(__instance.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 40, XConfig.KeyboardPressHaptic.Value / 100f);
-
-                    break;
-                }
-            }
-
-            return;
+            if (keyboardEvent.keyPressStyle != Enums.KeyPressStyle.Toggle)
+                AdvancedHaptics.Rumble(EventBridge.GetActiveRaycaster()?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 40, XConfig.KeyboardPressHaptic.Value / 100f);
         }
 
         private static bool IsEnable()

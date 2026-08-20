@@ -35,6 +35,8 @@ namespace xsoverlay_tweak.Utils
         public static event Action<Raycaster> OnReleaseControlOfDesktopCursor;
         public static event Action<Vector2, Vector2> OnHandleScrolling;
 
+        private static Raycaster activeRayacster;
+
         internal class Ref_DeviceManager
         {
             public static readonly Action<DeviceManager> GetHMDRefreshRate = AccessTools.MethodDelegate<Action<DeviceManager>>(AccessTools.Method(typeof(DeviceManager), "GetHMDRefreshRate"));
@@ -93,6 +95,7 @@ namespace xsoverlay_tweak.Utils
 
                 XSOEventSystem.OnTakeControlOfDesktopCursor += (raycaster) =>
                 {
+                    activeRayacster = raycaster;
                     isHoverAnyOverlay = true;
                     Ref_DeviceManager.GetHMDRefreshRate(__instance);
 
@@ -118,6 +121,13 @@ namespace xsoverlay_tweak.Utils
                     OnReleaseControlOfDesktopCursor?.Invoke(raycaster);
                 };
             }
+        }
+
+        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleHeadWebAppInput"), HarmonyPatch(typeof(Raycaster), "BeginWebViewTouch"), HarmonyPatch(typeof(Raycaster), "BeginWebViewSinglePointer"), HarmonyPatch(typeof(Raycaster), "RegisterNativeHover")]
+        [HarmonyPrefix]
+        public static void SwapTargetHand(Raycaster __instance)
+        {
+            activeRayacster = __instance;
         }
 
         [HarmonyPatch(typeof(XSettingsManager), nameof(XSettingsManager.SetSetting))]
@@ -257,6 +267,11 @@ namespace xsoverlay_tweak.Utils
         public static bool IsHoverAnyWindowCapture()
         {
             return isHoverAnyWindowCapture && !PhysicalMouseDetector.IsPhysicalMovement;
+        }
+
+        public static Raycaster GetActiveRaycaster()
+        {
+            return activeRayacster;
         }
 
         private static IEnumerator ClearCurrentHoveringOverlayTimer()
