@@ -1,28 +1,22 @@
 ﻿using HarmonyLib;
-using System.Collections;
-using UnityEngine;
+using Newtonsoft.Json;
+using XSOverlay.Websockets.API;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Haptic
 {
     internal class StickyKeyHaptic
     {
-        [HarmonyPatch(typeof(KeyboardKey), "VirtualKeyboardEvent")]
+        [HarmonyPatch(typeof(ApiHandler), "OnSendKeyboardEvent")]
         [HarmonyPostfix]
-        public static void VirtualKeyboardEvent(KeyboardKey __instance, bool ___WaitingForDoubleTap)
+        public static void PlayHapticOnStickyKey(string jsonData)
         {
             if (!IsEnable()) return;
 
-            if (__instance.IsDoubleTappable)
-                if (!___WaitingForDoubleTap && __instance.KeyIsCurrentlyHoldLocked)
-                    Plugin.Instance.StartCoroutine(StickyHaptic());
-        }
+            Objects.KeyboardEvent keyboardEvent = JsonConvert.DeserializeObject<Objects.KeyboardEvent>(jsonData);
 
-        private static IEnumerator StickyHaptic()
-        {
-            yield return new WaitForSecondsRealtime(0.1f);
-
-            AdvancedHaptics.Rumble((DesktopCursorManager.Instance.GetCurrentInputDevice().HapticDeviceName == Raycaster.HapticDevice.Left), 0.1f, 320f, 0.5f);
+            if (keyboardEvent.keyPressStyle == Enums.KeyPressStyle.Toggle)
+                AdvancedHaptics.Rumble(EventBridge.GetActiveRaycaster()?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.1f, 320f, 0.5f);
         }
 
         private static bool IsEnable()
