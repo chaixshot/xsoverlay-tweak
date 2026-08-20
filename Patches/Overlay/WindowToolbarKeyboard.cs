@@ -4,13 +4,13 @@ using Vuplex.WebView;
 using XSOverlay;
 using XSOverlay.WebApp;
 using XSOverlay.Websockets.API;
-using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Overlay
 {
     internal class WindowToolbarKeyboard
     {
         private static bool WasEnable = false;
+        private static bool toolbarKeyboardClicked = false;
 
         [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
         [HarmonyPostfix]
@@ -53,13 +53,23 @@ namespace xsoverlay_tweak.Patches.Overlay
             }
         }
 
-        [HarmonyPatch(typeof(Overlay_Manager), nameof(Overlay_Manager.EnableKeyboard))]
-        [HarmonyPostfix]
-        public static void SpawnKeyboardPostionFix(Overlay_Manager __instance, KeyboardGlobalManager ___keyboardManager)
+        [HarmonyPatch(typeof(Raycaster), "BeginWebViewTouch")]
+        [HarmonyPrefix]
+        public static void ClickToolbarKeyboard(Raycaster __instance)
         {
             if (!IsEnable()) return;
 
-            if (EventBridge.CurrentHoveringOverlay?.overlayName == "window.toolbar" && ___keyboardManager?.HasKeyboardBeenOpened == true)
+            if (__instance.HoveringOverlay?.overlayName == "window.toolbar")
+                toolbarKeyboardClicked = true;
+        }
+
+        [HarmonyPatch(typeof(Overlay_Manager), nameof(Overlay_Manager.EnableKeyboard))]
+        [HarmonyPostfix]
+        public static void SpawnKeyboardPostionFix(Overlay_Manager __instance, bool ___KeyboardShouldBeVisible)
+        {
+            if (!IsEnable()) return;
+
+            if (toolbarKeyboardClicked && ___KeyboardShouldBeVisible)
             {
                 if (!Overlay_Manager.Instance.WindowSettingsMenuParentOverlay.IsAttachedToDevice || !(Overlay_Manager.Instance.WindowSettingsMenuParentOverlay.WorldSpaceSceneImpostor == null))
                 {
@@ -72,6 +82,8 @@ namespace xsoverlay_tweak.Patches.Overlay
                     __instance.Keyboard_Overlay.transform.rotation = __instance.head.transform.rotation;
                 }
             }
+
+            toolbarKeyboardClicked = false;
         }
 
         private static void ChangeWidth(OverlayWebView toolbarWebView)
