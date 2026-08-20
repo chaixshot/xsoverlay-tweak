@@ -1,121 +1,85 @@
-﻿using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using HarmonyLib;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using UnityEngine;
+﻿using HarmonyLib;
+using System.Threading.Tasks;
+using Vuplex.WebView;
 using XSOverlay;
+using XSOverlay.WebApp;
 
 namespace xsoverlay_tweak.Patches.Keyboard
 {
     internal class KeyboardHoldingIndicator
     {
-        private class ButtonData
-        {
-            public int State = 0;
-        }
-        private static readonly ConditionalWeakTable<KeyboardKey, ButtonData> ButtonDictionary = new();
+        private const string styleId = "KeyboardHoldingIndicator";
+        private static IWebView _keyboardWebView;
 
-        private const float animationDuration = 0.05f;
-        private static readonly FieldInfo seqField = AccessTools.Field(typeof(ButtonAnimator), "Seq");
+        private const string cssJS = @"
+            (function() {
+                if (!document.head) return;
+                const id = '" + styleId + @"';
+                let style = document.getElementById(id);
+                if (!style) {
+                    style = document.createElement('style');
+                    style.id = id;
+                    document.head.appendChild(style);
+                }
+                style.textContent = `
+                    /* Key Active (Separated) */
+                    #keyboard-container .key.active {
+                        box-shadow: 0 0 0 2px var(--theme-accent) !important;
+                        scale: 0.9 !important;
+                        z-index: 105 !important;
+                    }
+                `;
+            })();";
 
-        [HarmonyPatch(typeof(KeyboardKey), "VirtualKeyboardEvent")]
+        private const string undoJS = @"
+            (function() {
+                const style = document.getElementById('" + styleId + @"');
+                if (style) {
+                    style.remove();
+                }
+            })();";
+
+        [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
         [HarmonyPostfix]
-        public static void VirtualKeyboardEvent(KeyboardKey __instance, bool ___IsKeyDown)
+        public static void ListenConfigChange()
         {
-            if (IsEnable())
+            XConfig.KeyboardHoldingIndicator.SettingChanged += (sender, args) =>
             {
-                if (__instance.IsKeyToggle) // Caps Lock
-                    __instance.IsKeyHeld = !___IsKeyDown;
-
-                DoKeyDownAnimation(__instance);
-            }
+                UpdateStyleState();
+            };
         }
 
-        [HarmonyPatch(typeof(KeyboardKey), nameof(KeyboardKey.ReleaseStickyKeyEvent))]
+        [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void ReleaseStickyKeyEvent(KeyboardKey __instance)
+        public static void WebviewOverlay(OverlayWebView wv)
         {
-            if (IsEnable())
-                DoKeyDownAnimation(__instance);
-        }
-
-        [HarmonyPatch(typeof(KeyboardKey), nameof(KeyboardKey.LockKeyDown))]
-        [HarmonyPostfix]
-        public static void LockKeyDown(KeyboardKey __instance)
-        {
-            if (IsEnable() && __instance.IsDoubleTappable)
-                DoKeyDownAnimation(__instance);
-        }
-
-        [HarmonyPatch(typeof(KeyboardKey), nameof(KeyboardKey.HoldKeyDown))]
-        [HarmonyPostfix]
-        public static void HoldKeyDown(KeyboardKey __instance)
-        {
-            if (IsEnable())
-                DoKeyDownAnimation(__instance);
-        }
-
-        private static void DoKeyDownAnimation(KeyboardKey key)
-        {
-            ButtonData Data = ButtonDictionary.GetOrCreateValue(key);
-            Transform transform = key.transform;
-
-            bool isDown = key.IsKeyHeld;
-            bool isSticky = key.KeyIsCurrentlyHoldLocked;
-            bool isHolding = key.HoldingKeyButtonDown;
-
-            if (isDown || isSticky || isHolding)
+            if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Keyboard)
             {
-                if (isSticky)
+                IWebView webView = wv._webView.WebView;
+
+                webView.LoadProgressChanged += (s, e) =>
                 {
-                    if (Data.State != 2) // Sticky
+                    if (e.Type == ProgressChangeType.Finished)
                     {
-                        Data.State = 2;
-                        XSTools.ExecuteOnMainThread(async () =>
+                        _keyboardWebView = webView;
+                        Task.Run(async () =>
                         {
-                            await UniTask.DelayFrame(2); // Wait for ButtonAnimator.OnClickAnimateButton() to play
-                            StopOriginalAnimation(key.GetComponentInChildren<ButtonAnimator>(true));
-
-                            transform.DOKill();
-                            transform.DOScale(new Vector3(0.75f, 0.75f, 1f), animationDuration).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Normal, true);
+                            await Task.Delay(1000);
+                            UpdateStyleState();
                         });
                     }
-                }
-                else if (Data.State != 1) // Hold
-                {
-                    Data.State = 1;
-                    XSTools.ExecuteOnMainThread(async () =>
-                    {
-                        await UniTask.DelayFrame(2);
-                        StopOriginalAnimation(key.GetComponentInChildren<ButtonAnimator>(true));
-
-                        transform.DOKill();
-                        transform.DOScale(new Vector3(0.9f, 0.9f, 1f), animationDuration).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Normal, true);
-                    });
-                }
-            }
-            else if (Data.State == 1 || Data.State == 2) // Normal
-            {
-                Data.State = 0;
-                XSTools.ExecuteOnMainThread(async delegate
-                {
-                    await UniTask.DelayFrame(2);
-                    StopOriginalAnimation(key.GetComponentInChildren<ButtonAnimator>(true));
-
-                    transform.DOKill();
-                    transform.DOScale(Vector3.one, animationDuration).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Normal, true);
-                });
+                };
             }
         }
 
-        private static void StopOriginalAnimation(ButtonAnimator animator)
+        public static void UpdateStyleState()
         {
-            if (animator != null && seqField != null)
-            {
-                Sequence Seq = (Sequence)seqField.GetValue(animator);
-                Seq?.Pause();
-            }
+            if (_keyboardWebView == null) return;
+
+            if (IsEnable())
+                _keyboardWebView.ExecuteJavaScript(cssJS, null);
+            else
+                _keyboardWebView.ExecuteJavaScript(undoJS, null);
         }
 
         private static bool IsEnable()
