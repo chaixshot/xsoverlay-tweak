@@ -86,7 +86,21 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
         // Change lasers position, rotation and length
         [HarmonyPatch("UpdateRaycaster")]
         [HarmonyPostfix]
-        public static void HandleLaserMovement(Raycaster __instance, ref MouseInputDevice ___InputDevice, ref GameObject ___VisualCursorElement, ref Unity_Overlay ___VisualCursorElementOverlay, ref Vector3 ___RawRayPosition, ref Vector3 ___RayHitPoint, ref Vector3 ___RawRayDirection)
+        public static void HandleLaserMovement(
+            Raycaster __instance,
+
+            MouseInputDevice ___InputDevice,
+            GameObject ___VisualCursorElement,
+
+            Vector3 ___RawRayPosition,
+            Vector3 ___RawRayDirection,
+            Vector3 ___RayHitPoint,
+
+            bool ___HasFilteredSteamVRRay,
+
+            Vector3 ___FilteredSteamVRRayPosition,
+            Vector3 ___FinalIntersectionRayDirection
+            )
         {
             if (!IsEnable()) return;
             if (!ShouldBeActive) return;
@@ -97,33 +111,33 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                 {
                     PullTriggerPointerLock.InstanceState.TryGetValue(__instance, out PullTriggerPointerLock.RaycasterState ClickState);
 
-                    Vector3 CurrentRayPosition = ___RawRayPosition;
-                    Vector3 CurrentRayDirection = ___RawRayDirection;
-                    Vector3 RayHitPoint = ___RayHitPoint;
+                    Vector3 position = ___RawRayPosition;
+                    Vector3 direction = ___RawRayDirection;
+                    Vector3 hitPoint = ___RayHitPoint;
 
-                    // Capture overlay UseCursorSmoothing
-                    if (!IsEnableMouseSmooth() && __instance?.HoveringOverlay?.UseCursorSmoothing == true)
+                    // UseCursorSmoothing for laser
+                    if (IsEnableMouseSmooth() && ___HasFilteredSteamVRRay)
                     {
-                        CurrentRayPosition = __instance.transform.position;
-                        CurrentRayDirection = Quaternion.AngleAxis(__instance.RayRotationOffset, __instance.transform.right) * __instance.transform.forward;
+                        position = ___FilteredSteamVRRayPosition;
+                        direction = ___FinalIntersectionRayDirection;
                     }
 
                     // Capture overlay backward hit point
                     if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
-                        RayHitPoint = (CurrentRayPosition + CurrentRayDirection * __instance.FinalSteamVRRaycastResults.fDistance) - (CurrentRayDirection * 0.05f);
+                        hitPoint = (position + direction * __instance.FinalSteamVRRaycastResults.fDistance) - (direction * 0.05f);
 
                     if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || ClickState?.IsBlock == true)) // PointerDoubleClickDelay lock RayHitPoint in place
                     {
-                        RayHitPoint = Data.RayHitPoint_last;
-                        CurrentRayDirection = -(CurrentRayPosition - RayHitPoint).normalized;
+                        hitPoint = Data.RayHitPoint_last;
+                        direction = -(position - hitPoint).normalized;
                     }
                     else
-                        Data.RayHitPoint_last = RayHitPoint;
+                        Data.RayHitPoint_last = hitPoint;
 
-                    Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(CurrentRayPosition, RayHitPoint) : 0.5f;
+                    Data.Distance = ___VisualCursorElement.activeSelf ? Vector3.Distance(position, hitPoint) : 0.5f;
 
-                    Data.LaserA.transform.position = CurrentRayPosition + (CurrentRayDirection * (Data.Distance / 2));
-                    Data.LaserA.transform.up = CurrentRayDirection;
+                    Data.LaserA.transform.position = position + (direction * (Data.Distance / 2));
+                    Data.LaserA.transform.up = direction;
                     Data.LaserA.transform.Rotate(0, 180 * (__instance.transform.rotation.y - (__instance.transform.rotation.y - Overlay_Manager.Instance.head.rotation.y)), 0, Space.Self);
 
                     Data.LaserB.transform.position = Data.LaserA.transform.position;
