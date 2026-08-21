@@ -21,7 +21,6 @@
   
   <ItemGroup>
     <Compile Remove="Patches\Cursor\AlwaysUpdateCursor.cs" />
-    <Compile Remove="Patches\Cursor\MouseSmoothSpeed.cs" />
     <Compile Remove="Patches\Fix\SteamVRCompositorTextureFormatFix.cs" />
     <Compile Remove="Patches\Fix\WebViewFrozenFix.cs" />
     <Compile Remove="Patches\Keyboard\KeyboardControlButtonStateFix.cs" />

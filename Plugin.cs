@@ -38,7 +38,6 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Cursor.CursorMovingInteractionFix));
         harmony.PatchAll(typeof(Patches.Cursor.DoubleClickConfirm));
         harmony.PatchAll(typeof(Patches.Cursor.HandleScrolling));
-        //harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed)); //## Offical Feature, broken
         harmony.PatchAll(typeof(Patches.Cursor.WindowsCursorPointer));
         harmony.PatchAll(typeof(Patches.Cursor.PullTriggerClickThreshold));
 
@@ -112,6 +111,7 @@ public class Plugin : BaseUnityPlugin
 
         // Fix
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
+        harmony.PatchAll(typeof(Patches.Fix.MouseSmoothSpeed)); //## Offical Feature, broken
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
         //harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix)); //## Offical Fixed
         //harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix)); //## Offical Fixed

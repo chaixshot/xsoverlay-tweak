@@ -40,7 +40,6 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.CursorMovingInteractionFix"] = XConfig.CursorMovingInteractionFix.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
                 ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
-                ["XSOverlayTweak.MouseSmoothSpeed"] = XConfig.MouseSmoothSpeed.Value,
                 ["XSOverlayTweak.WindowsCursorPointer"] = XConfig.WindowsCursorPointer.Value,
                 ["XSOverlayTweak.PullTriggerClickThreshold"] = XConfig.PullTriggerClickThreshold.Value,
 
@@ -121,6 +120,7 @@ namespace xsoverlay_tweak.Patches.Setting
 
                 // Fix
                 ["XSOverlayTweak.LoadLayoutScaleFix"] = XConfig.LoadLayoutScaleFix.Value,
+                ["XSOverlayTweak.MouseSmoothSpeed"] = XConfig.MouseSmoothSpeed.Value,
                 ["XSOverlayTweak.SteamVRCompositorTextureFormatFix"] = XConfig.SteamVRCompositorTextureFormatFix.Value,
                 ["XSOverlayTweak.WebViewFrozenFix"] = XConfig.WebViewFrozenFix.Value,
 
@@ -164,9 +164,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.HandleScrolling":
                     XConfig.HandleScrolling.Value = bool.Parse(value);
-                    break;
-                case "XSOverlayTweak.MouseSmoothSpeed":
-                    XConfig.MouseSmoothSpeed.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.WindowsCursorPointer":
                     XConfig.WindowsCursorPointer.Value = int.Parse(value);
@@ -363,6 +360,9 @@ namespace xsoverlay_tweak.Patches.Setting
                 // Fix
                 case "XSOverlayTweak.LoadLayoutScaleFix":
                     XConfig.LoadLayoutScaleFix.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.MouseSmoothSpeed":
+                    XConfig.MouseSmoothSpeed.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.SteamVRCompositorTextureFormatFix":
                     XConfig.SteamVRCompositorTextureFormatFix.Value = bool.Parse(value);
