@@ -13,8 +13,7 @@ namespace xsoverlay_tweak.Utils
         public static readonly float OneCentimetre = 0.01f;
         public static readonly float OneDegree = 1.0f;
 
-        public static bool IsKeyboardSpawning = false;
-
+        protected static bool isKeyboardSpawning = false;
 
         public static event Action InputMethodChanged;
         public static event Action<Raycaster, Unity_Overlay> OnSwitchHoveringOverlay;
@@ -86,7 +85,7 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPrefix]
         public static bool BlockKeyboardSpawnAboveWrist(Unity_Overlay Overlay)
         {
-            if (IsKeyboardSpawning && Overlay.overlayName == "keyboard")
+            if (isKeyboardSpawning && Overlay.overlayName == "keyboard")
                 return false;
 
             return true;
@@ -119,7 +118,7 @@ namespace xsoverlay_tweak.Utils
             Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
             bool isActive = overlay_Manager.Keyboard.gameObject.activeSelf;
 
-            IsKeyboardSpawning = true;
+            isKeyboardSpawning = true;
 
             if (isShow)
             {
@@ -140,7 +139,7 @@ namespace xsoverlay_tweak.Utils
             Task.Run(async () =>
             {
                 await Task.Delay(200);
-                IsKeyboardSpawning = false;
+                isKeyboardSpawning = false;
             });
         }
 
