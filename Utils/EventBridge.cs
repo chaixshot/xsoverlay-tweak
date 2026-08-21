@@ -15,8 +15,6 @@ namespace xsoverlay_tweak.Utils
 
         public static bool IsKeyboardSpawning = false;
 
-        protected static Coroutine CurrentHoveringOverlayCoroutine;
-        public static Unity_Overlay CurrentHoveringOverlay;
 
         public static event Action InputMethodChanged;
         public static event Action<Raycaster, Unity_Overlay> OnSwitchHoveringOverlay;
@@ -50,9 +48,6 @@ namespace xsoverlay_tweak.Utils
             // Listen to hovering overlay change
             XSOEventSystem.OnSwitchHoveringOverlay += async (raycaster, overlay) =>
             {
-                if (IsActiveHand(raycaster))
-                    CurrentHoveringOverlay = overlay;
-
                 await Task.Delay(1);
                 OnSwitchHoveringOverlay?.Invoke(raycaster, overlay);
             };
@@ -62,12 +57,6 @@ namespace xsoverlay_tweak.Utils
             {
                 EventBridge_Raycaster.ActiveRaycaster = raycaster;
 
-                if (IsActiveHand(raycaster))
-                    CurrentHoveringOverlay = raycaster.HoveringOverlay;
-
-                if (CurrentHoveringOverlayCoroutine != null)
-                    Plugin.Instance.StopCoroutine(CurrentHoveringOverlayCoroutine);
-
                 await Task.Delay(1);
                 OnTakeControlOfDesktopCursor?.Invoke(raycaster);
             };
@@ -75,8 +64,6 @@ namespace xsoverlay_tweak.Utils
             // Listen to active raycaster change
             XSOEventSystem.OnReleaseControlOfDesktopCursor += async (raycaster) =>
             {
-                CurrentHoveringOverlayCoroutine = Plugin.Instance.StartCoroutine(ClearCurrentHoveringOverlayTimer());
-
                 await Task.Delay(1);
                 OnReleaseControlOfDesktopCursor?.Invoke(raycaster);
             };
@@ -119,10 +106,7 @@ namespace xsoverlay_tweak.Utils
             return overlay?.overlayName == "keyboard";
         }
 
-        public static void HandleScrolling(Vector2 ScrollAxis, Vector2 normalizedPoint)
-        {
-            OnHandleScrolling?.Invoke(ScrollAxis, normalizedPoint);
-        }
+        protected static void HandleScrolling(Vector2 ScrollAxis, Vector2 normalizedPoint) => OnHandleScrolling?.Invoke(ScrollAxis, normalizedPoint);
         protected static void ShowNotification(CustomAPI.XSONotificationObject notify) => OnShowNotification?.Invoke(notify);
 
         /// <summary>
@@ -173,5 +157,6 @@ namespace xsoverlay_tweak.Utils
         public static bool IsRaycasterHand(Raycaster raycaster) => EventBridge_Raycaster.IsRaycasterHand(raycaster);
         public static Raycaster GetActiveRaycaster() => EventBridge_Raycaster.GetActiveRaycaster();
 
+        public static Unity_Overlay GetCurrentHoveringOverlay() => EventBridge_Raycaster.CurrentHoveringOverlay;
     }
 }

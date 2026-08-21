@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Mouse;
@@ -10,6 +11,7 @@ namespace xsoverlay_tweak.Utils
     [HarmonyPatch(typeof(Raycaster))]
     internal class EventBridge_Raycaster : EventBridge
     {
+        public static Unity_Overlay CurrentHoveringOverlay;
         public static Raycaster ActiveRaycaster;
         public static readonly List<Raycaster> Raycaster_List = [];
         public static new bool IsHoverAnyOverlay = false;
@@ -22,14 +24,16 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPostfix]
         public static void ListenHoveringOverlaySwap()
         {
-            XSOEventSystem.OnSwitchHoveringOverlay += (_raycaster, _overlay) =>
+            XSOEventSystem.OnSwitchHoveringOverlay += async (_raycaster, overlay) =>
             {
+                // Reset all hover states before checking the current raycaster's state
                 IsHoverAnyOverlay = false;
                 IsHoverAnyDesktopOrWindowCapture = false;
                 IsHoverAnyDesktopCapture = false;
                 IsHoverAnyWindowCapture = false;
                 IsHoverAnyWebView = false;
 
+                // Check all raycasters to determine if any are hovering over an overlay
                 foreach (Raycaster raycaster in Raycaster_List)
                 {
                     IsHoverAnyOverlay = raycaster.HoveringOverlay != null;
@@ -37,10 +41,20 @@ namespace xsoverlay_tweak.Utils
                     IsHoverAnyDesktopCapture = raycaster.HoveringOverlay?.IsDesktopCapture == true;
                     IsHoverAnyWindowCapture = raycaster.HoveringOverlay?.IsWindowCapture == true;
                     IsHoverAnyWebView = raycaster.HoveringOverlay?.OverlayWebView != null;
+
                 }
+
+                // Update the current hovering overlay based on the active hand and hover state
+                if (IsHoverAnyOverlay)
+                {
+                    await Task.Delay(1); // Wait for 1 millisecond to ensure the hover state is updated
+                    if (IsActiveHand(_raycaster))
+                        CurrentHoveringOverlay = overlay;
+                }
+                else
+                    CurrentHoveringOverlay = null;
             };
         }
-
 
         [HarmonyPatch("HandleClicksForDesktopWindows")]
         [HarmonyPatch("HandleTouchInputForDesktopWindows")]

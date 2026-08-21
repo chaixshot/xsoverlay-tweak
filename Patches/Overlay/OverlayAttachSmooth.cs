@@ -135,7 +135,7 @@ namespace xsoverlay_tweak.Patches.Overlay
 
                         if (__instance.IsHeld || (parentOverlay != null && parentOverlay.IsHeld))
                             Data.IsMoving = true;
-                        else if (Data.LockHover && EventBridge.CurrentHoveringOverlay == __instance)
+                        else if (Data.LockHover && EventBridge.GetCurrentHoveringOverlay() == __instance)
                             Data.IsMoving = false;
                         else if (dist > (EventBridge.OneCentimetre * Data.DistThreshold) || angle > (EventBridge.OneDegree * Data.AngleThreshold))
                             Data.IsMoving = true;
