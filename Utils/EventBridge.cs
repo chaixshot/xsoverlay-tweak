@@ -15,9 +15,6 @@ namespace xsoverlay_tweak.Utils
 
         public static bool IsKeyboardSpawning = false;
 
-        protected static Coroutine NotificationCoroutine;
-        protected static bool isNotificationVisible = false;
-
         protected static Coroutine CurrentHoveringOverlayCoroutine;
         public static Unity_Overlay CurrentHoveringOverlay;
 
@@ -50,19 +47,6 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPostfix]
         public static void InitializeEvents(DeviceManager __instance)
         {
-            // Listen to notification push
-            CustomAPI.OnShowNotification += async (notify) =>
-            {
-                isNotificationVisible = true;
-
-                if (NotificationCoroutine != null)
-                    Plugin.Instance.StopCoroutine(NotificationCoroutine);
-                NotificationCoroutine = Plugin.Instance.StartCoroutine(NotificationTimer(notify.timeout));
-
-                await Task.Delay(1);
-                OnShowNotification?.Invoke(notify);
-            };
-
             // Listen to hovering overlay change
             XSOEventSystem.OnSwitchHoveringOverlay += async (raycaster, overlay) =>
             {
@@ -121,13 +105,6 @@ namespace xsoverlay_tweak.Utils
             return true;
         }
 
-        public static IEnumerator NotificationTimer(float timeout)
-        {
-            yield return new WaitForSecondsRealtime(timeout);
-            isNotificationVisible = false;
-            NotificationCoroutine = null;
-        }
-
         public static bool IsOverlayWebView(Unity_Overlay overlay)
         {
             if (overlay == null)
@@ -146,6 +123,7 @@ namespace xsoverlay_tweak.Utils
         {
             OnHandleScrolling?.Invoke(ScrollAxis, normalizedPoint);
         }
+        protected static void ShowNotification(CustomAPI.XSONotificationObject notify) => OnShowNotification?.Invoke(notify);
 
         /// <summary>
         /// Toogle keyboard by using API command to support OSC Keyboard mod
@@ -182,7 +160,7 @@ namespace xsoverlay_tweak.Utils
             });
         }
 
-        public static bool IsNotificationVisible() => isNotificationVisible;
+        public static bool IsNotificationVisible() => EventBridge_Notification.IsVisible;
 
         //## Raycaster
         public static bool IsHoverAnyOverlay() => EventBridge_Raycaster.IsHoverAnyOverlay;
@@ -195,11 +173,5 @@ namespace xsoverlay_tweak.Utils
         public static bool IsRaycasterHand(Raycaster raycaster) => EventBridge_Raycaster.IsRaycasterHand(raycaster);
         public static Raycaster GetActiveRaycaster() => EventBridge_Raycaster.GetActiveRaycaster();
 
-        protected static IEnumerator ClearCurrentHoveringOverlayTimer()
-        {
-            yield return new WaitForSecondsRealtime(1);
-
-            CurrentHoveringOverlay = null;
-        }
     }
 }

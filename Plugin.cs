@@ -27,6 +27,7 @@ public class Plugin : BaseUnityPlugin
 
         harmony.PatchAll(typeof(EventBridge));
         harmony.PatchAll(typeof(EventBridge_Raycaster));
+        harmony.PatchAll(typeof(EventBridge_Notification));
 
         // RefreshRate
         harmony.PatchAll(typeof(Patches.RefreshRate));
