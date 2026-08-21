@@ -54,8 +54,6 @@ namespace xsoverlay_tweak.Utils
             // Listen to active raycaster change
             XSOEventSystem.OnTakeControlOfDesktopCursor += async (raycaster) =>
             {
-                EventBridge_Raycaster.ActiveRaycaster = raycaster;
-
                 await Task.Delay(1);
                 OnTakeControlOfDesktopCursor?.Invoke(raycaster);
             };
@@ -72,13 +70,8 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPostfix]
         public static void SetSetting(string name, string value, string value1, bool sendAnalytics = true)
         {
-            switch (name)
-            {
-                case "InputMethod":
-                    InputMethodChanged?.Invoke();
-
-                    break;
-            }
+            if (name.Equals("InputMethod"))
+                InputMethodChanged?.Invoke();
         }
 
         [HarmonyPatch(typeof(WindowMovementManager), nameof(WindowMovementManager.MoveToEdgeOfWindowAndInheritRotation))]
@@ -154,7 +147,7 @@ namespace xsoverlay_tweak.Utils
         public static bool IsActiveHand(Raycaster raycaster, bool skipTwoHanded = false) => EventBridge_Raycaster.IsActiveHand(raycaster, skipTwoHanded);
         public static bool IsActiveHandForWebView(Raycaster raycaster) => EventBridge_Raycaster.IsActiveHandForWebView(raycaster);
         public static bool IsRaycasterHand(Raycaster raycaster) => EventBridge_Raycaster.IsRaycasterHand(raycaster);
-        public static Raycaster GetActiveRaycaster() => EventBridge_Raycaster.GetActiveRaycaster();
+        public static Raycaster GetActiveRaycaster() => EventBridge_Raycaster.ActiveRaycaster;
 
         public static Unity_Overlay GetCurrentHoveringOverlay() => EventBridge_Raycaster.CurrentHoveringOverlay;
     }

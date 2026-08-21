@@ -118,10 +118,5 @@ namespace xsoverlay_tweak.Utils
         {
             return raycaster.HapticDeviceName != Raycaster.HapticDevice.None;
         }
-
-        public static new Raycaster GetActiveRaycaster()
-        {
-            return ActiveRaycaster;
-        }
     }
 }
