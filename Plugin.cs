@@ -24,18 +24,20 @@ public class Plugin : BaseUnityPlugin
 
         harmony.PatchAll(typeof(CustomAPI));
         harmony.PatchAll(typeof(CustomSettings));
+
         harmony.PatchAll(typeof(EventBridge));
+        harmony.PatchAll(typeof(EventBridge_Raycaster));
 
         // RefreshRate
         harmony.PatchAll(typeof(Patches.RefreshRate));
 
         // Cursor
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysHideCursor));
-        //harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor))); //?? Offical Fixed
+        //harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor))); //## Offical Fixed
         harmony.PatchAll(typeof(Patches.Cursor.CursorMovingInteractionFix));
         harmony.PatchAll(typeof(Patches.Cursor.DoubleClickConfirm));
         harmony.PatchAll(typeof(Patches.Cursor.HandleScrolling));
-        //harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed)); //?? Offical Feature, broken
+        //harmony.PatchAll(typeof(Patches.Cursor.MouseSmoothSpeed)); //## Offical Feature, broken
         harmony.PatchAll(typeof(Patches.Cursor.WindowsCursorPointer));
         harmony.PatchAll(typeof(Patches.Cursor.PullTriggerClickThreshold));
 
@@ -59,9 +61,9 @@ public class Plugin : BaseUnityPlugin
 
         // Keyboard
         harmony.PatchAll(typeof(Patches.Keyboard.CtrlKeySticky));
-        //harmony.PatchAll(typeof(Patches.Keyboard.KeyboardControlButtonStateFix)); //?? Keboard Changed
+        //harmony.PatchAll(typeof(Patches.Keyboard.KeyboardControlButtonStateFix)); //## Keboard Changed
         harmony.PatchAll(typeof(Patches.Keyboard.KeyboardHoldingIndicator));
-        harmony.PatchAll(typeof(Patches.Keyboard.LoadLayoutKeyboard)); //?? Offical Feature, only position and rotation
+        harmony.PatchAll(typeof(Patches.Keyboard.LoadLayoutKeyboard)); //## Offical Feature, only position and rotation
 
         // Mouse
         harmony.PatchAll(typeof(Patches.Mouse.MouseButtonSwap));
@@ -95,8 +97,8 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Overlay.OverlayAttachSmooth));
         harmony.PatchAll(typeof(Patches.Overlay.OverlayConfirmClose));
         harmony.PatchAll(typeof(Patches.Overlay.OverlayCurveAutoRefresh));
-        //harmony.PatchAll(typeof(Patches.Overlay.OverlayGripAntiSlip)); //?? Offical Fixed
-        harmony.PatchAll(typeof(Patches.Overlay.OverlayRollCurveFix)); //?? Offical Fix not applied for spawning
+        //harmony.PatchAll(typeof(Patches.Overlay.OverlayGripAntiSlip)); //## Offical Fixed
+        harmony.PatchAll(typeof(Patches.Overlay.OverlayRollCurveFix)); //## Offical Fix not applied for spawning
         harmony.PatchAll(typeof(Patches.Overlay.PinBlockInputNonEditMode));
         harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarGesture));
         harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarKeyboard));
@@ -110,8 +112,8 @@ public class Plugin : BaseUnityPlugin
         // Fix
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
-        //harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix)); //?? Offical Fixed
-        //harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix)); //?? Offical Fixed
+        //harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix)); //## Offical Fixed
+        //harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix)); //## Offical Fixed
         harmony.PatchAll(typeof(Patches.Fix.WebViewTexturePixelFormatFix));
 
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));

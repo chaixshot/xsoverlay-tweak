@@ -44,8 +44,6 @@ namespace xsoverlay_tweak.Patches.Cursor
                 }
             }
 
-            EventBridge.HandleScrolling(___InputDevice.Scroll.axis, ___CursorUVNormalized);
-
             return true;
         }
 

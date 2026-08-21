@@ -44,6 +44,11 @@ namespace xsoverlay_tweak.Patches
                     if (!EfficiencyMode.IsEfficiencyModeEnable()) // Smooth overlay fadeout
                         EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
             };
+
+            EventBridge.OnShowNotification += (notify) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
+            EventBridge.OnSwitchHoveringOverlay += (raycaster, overlay) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
+            EventBridge.OnTakeControlOfDesktopCursor += (raycaster) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
+            EventBridge.OnReleaseControlOfDesktopCursor += (raycaster) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
         }
 
         [HarmonyPatch(typeof(DeviceManager), "RegisterDevice")]

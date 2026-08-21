@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using XSOverlay;
 using XSOverlay.WebApp;
-using xsoverlay_tweak.Patches.Mouse;
-using xsoverlay_tweak.Patches.Pointer;
 
 namespace xsoverlay_tweak.Utils
 {
@@ -15,26 +13,20 @@ namespace xsoverlay_tweak.Utils
         public static readonly float OneCentimetre = 0.01f;
         public static readonly float OneDegree = 1.0f;
 
-        private static bool isHoverAnyOverlay = false;
-        private static bool isHoverAnyDesktopOrWindowCapture = false;
-        private static bool isHoverAnyDesktopCapture = false;
-        private static bool isHoverAnyWindowCapture = false;
+        public static bool IsKeyboardSpawning = false;
 
-        public static bool IsKeyboardSpawing = false;
+        protected static Coroutine NotificationCoroutine;
+        protected static bool isNotificationVisible = false;
 
-        private static Coroutine NotificationCoroutine;
-        public static bool IsNotificationVisible = false;
-
-        private static Coroutine CurrentHoveringOverlayCoroutine;
+        protected static Coroutine CurrentHoveringOverlayCoroutine;
         public static Unity_Overlay CurrentHoveringOverlay;
 
         public static event Action InputMethodChanged;
         public static event Action<Raycaster, Unity_Overlay> OnSwitchHoveringOverlay;
+        public static event Action<CustomAPI.XSONotificationObject> OnShowNotification;
         public static event Action<Raycaster> OnTakeControlOfDesktopCursor;
         public static event Action<Raycaster> OnReleaseControlOfDesktopCursor;
         public static event Action<Vector2, Vector2> OnHandleScrolling;
-
-        private static Raycaster activeRayacster;
 
         internal class Ref_DeviceManager
         {
@@ -49,7 +41,7 @@ namespace xsoverlay_tweak.Utils
             public static readonly TryGetDesktopCoordinateDelegate TryGetDesktopCoordinate = (TryGetDesktopCoordinateDelegate)AccessTools.Method(typeof(Raycaster), "TryGetDesktopCoordinate").CreateDelegate(typeof(TryGetDesktopCoordinateDelegate));
 
             // NativeHoverState
-            private static readonly Type NativeHoverState = typeof(Raycaster).GetNestedType("NativeHoverState", AccessTools.all);
+            protected static readonly Type NativeHoverState = typeof(Raycaster).GetNestedType("NativeHoverState", AccessTools.all);
             public static readonly IDictionary NativeHoverStates = (IDictionary)AccessTools.Field(typeof(Raycaster), "NativeHoverStates").GetValue(null);
             public static readonly AccessTools.FieldRef<object, Raycaster> NativeHoverState_Owner = AccessTools.FieldRefAccess<Raycaster>(NativeHoverState, "Owner");
         }
@@ -59,72 +51,51 @@ namespace xsoverlay_tweak.Utils
         public static void InitializeEvents(DeviceManager __instance)
         {
             // Listen to notification push
-            CustomAPI.OnShowNotification += (notify) =>
+            CustomAPI.OnShowNotification += async (notify) =>
             {
-                IsNotificationVisible = true;
+                isNotificationVisible = true;
 
                 if (NotificationCoroutine != null)
                     Plugin.Instance.StopCoroutine(NotificationCoroutine);
                 NotificationCoroutine = Plugin.Instance.StartCoroutine(NotificationTimer(notify.timeout));
 
-                Ref_DeviceManager.GetHMDRefreshRate(__instance);
+                await Task.Delay(1);
+                OnShowNotification?.Invoke(notify);
             };
 
             // Listen to hovering overlay change
+            XSOEventSystem.OnSwitchHoveringOverlay += async (raycaster, overlay) =>
             {
-                XSOEventSystem.OnSwitchHoveringOverlay += (raycaster, overlay) =>
-                {
-                    isHoverAnyOverlay = true;
-                    if (overlay?.IsDesktopOrWindowCapture == true)
-                        isHoverAnyDesktopOrWindowCapture = true;
-                    if (overlay?.IsDesktopCapture == true)
-                        isHoverAnyDesktopCapture = true;
-                    if (overlay?.IsWindowCapture == true)
-                        isHoverAnyWindowCapture = true;
+                if (IsActiveHand(raycaster))
+                    CurrentHoveringOverlay = overlay;
 
-                    if (IsActiveHand(raycaster))
-                        CurrentHoveringOverlay = overlay;
+                await Task.Delay(1);
+                OnSwitchHoveringOverlay?.Invoke(raycaster, overlay);
+            };
 
-                    Ref_DeviceManager.GetHMDRefreshRate(__instance);
+            // Listen to active raycaster change
+            XSOEventSystem.OnTakeControlOfDesktopCursor += async (raycaster) =>
+            {
+                EventBridge_Raycaster.ActiveRaycaster = raycaster;
 
-                    OnSwitchHoveringOverlay?.Invoke(raycaster, overlay);
-                };
+                if (IsActiveHand(raycaster))
+                    CurrentHoveringOverlay = raycaster.HoveringOverlay;
 
-                XSOEventSystem.OnTakeControlOfDesktopCursor += (raycaster) =>
-                {
-                    activeRayacster = raycaster;
-                    isHoverAnyOverlay = true;
-                    Ref_DeviceManager.GetHMDRefreshRate(__instance);
+                if (CurrentHoveringOverlayCoroutine != null)
+                    Plugin.Instance.StopCoroutine(CurrentHoveringOverlayCoroutine);
 
-                    if (IsActiveHand(raycaster))
-                        CurrentHoveringOverlay = raycaster.HoveringOverlay;
+                await Task.Delay(1);
+                OnTakeControlOfDesktopCursor?.Invoke(raycaster);
+            };
 
-                    if (CurrentHoveringOverlayCoroutine != null)
-                        Plugin.Instance.StopCoroutine(CurrentHoveringOverlayCoroutine);
+            // Listen to active raycaster change
+            XSOEventSystem.OnReleaseControlOfDesktopCursor += async (raycaster) =>
+            {
+                CurrentHoveringOverlayCoroutine = Plugin.Instance.StartCoroutine(ClearCurrentHoveringOverlayTimer());
 
-                    OnTakeControlOfDesktopCursor?.Invoke(raycaster);
-                };
-
-                XSOEventSystem.OnReleaseControlOfDesktopCursor += (raycaster) =>
-                {
-                    isHoverAnyOverlay = false;
-                    isHoverAnyDesktopOrWindowCapture = false;
-                    isHoverAnyDesktopCapture = false;
-                    isHoverAnyWindowCapture = false;
-                    Ref_DeviceManager.GetHMDRefreshRate(__instance);
-
-                    CurrentHoveringOverlayCoroutine = Plugin.Instance.StartCoroutine(ClearCurrentHoveringOverlayTimer());
-
-                    OnReleaseControlOfDesktopCursor?.Invoke(raycaster);
-                };
-            }
-        }
-
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleHeadWebAppInput"), HarmonyPatch(typeof(Raycaster), "BeginWebViewTouch"), HarmonyPatch(typeof(Raycaster), "BeginWebViewSinglePointer"), HarmonyPatch(typeof(Raycaster), "RegisterNativeHover")]
-        [HarmonyPrefix]
-        public static void SwapTargetHand(Raycaster __instance)
-        {
-            activeRayacster = __instance;
+                await Task.Delay(1);
+                OnReleaseControlOfDesktopCursor?.Invoke(raycaster);
+            };
         }
 
         [HarmonyPatch(typeof(XSettingsManager), nameof(XSettingsManager.SetSetting))]
@@ -144,7 +115,7 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPrefix]
         public static bool BlockKeyboardSpawnAboveWrist(Unity_Overlay Overlay)
         {
-            if (IsKeyboardSpawing && Overlay.overlayName == "keyboard")
+            if (IsKeyboardSpawning && Overlay.overlayName == "keyboard")
                 return false;
 
             return true;
@@ -153,38 +124,8 @@ namespace xsoverlay_tweak.Utils
         public static IEnumerator NotificationTimer(float timeout)
         {
             yield return new WaitForSecondsRealtime(timeout);
-            IsNotificationVisible = false;
+            isNotificationVisible = false;
             NotificationCoroutine = null;
-        }
-
-        public static bool IsWebViewActiveHand(Raycaster raycaster)
-        {
-            Unity_Overlay overlay = raycaster.HoveringOverlay;
-
-            if (overlay != null)
-                if (overlay.OverlayWebView != null && Ref_Raycaster.NativeHoverStates.Contains(overlay))
-                {
-                    object nativeHoverState = Ref_Raycaster.NativeHoverStates[overlay];
-
-                    if (nativeHoverState != null && Ref_Raycaster.NativeHoverState_Owner(nativeHoverState) == raycaster)
-                        return true;
-                }
-
-            return false;
-        }
-
-        public static bool IsActiveHand(Raycaster raycaster, bool skipTwoHanded = false)
-        {
-            if (PhysicalMouseDetector.IsPhysicalMovement)
-                return false;
-            else if (TwoHandedMode.IsEnable() && !skipTwoHanded)
-                return true;
-            else if (DesktopCursorManager.Instance.GetCurrentInputDevice() == raycaster)
-                return true;
-            else if (IsWebViewActiveHand(raycaster))
-                return true;
-
-            return false;
         }
 
         public static bool IsOverlayWebView(Unity_Overlay overlay)
@@ -210,13 +151,13 @@ namespace xsoverlay_tweak.Utils
         /// Toogle keyboard by using API command to support OSC Keyboard mod
         /// </summary>
         /// <param name="isShow"></param>
-        public static void ExecuteApiToggleKeyboard(bool isShow)
+        public static void ToggleKeyboardExecuteAPI(bool isShow)
         {
             Overlay_Manager overlay_Manager = Overlay_Manager.Instance;
             Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
             bool isActive = overlay_Manager.Keyboard.gameObject.activeSelf;
 
-            IsKeyboardSpawing = true;
+            IsKeyboardSpawning = true;
 
             if (isShow)
             {
@@ -237,41 +178,24 @@ namespace xsoverlay_tweak.Utils
             Task.Run(async () =>
             {
                 await Task.Delay(200);
-                IsKeyboardSpawing = false;
+                IsKeyboardSpawning = false;
             });
         }
 
-        public static bool IsRaycasterHand(Raycaster raycaster)
-        {
-            return raycaster.HapticDeviceName != Raycaster.HapticDevice.None;
-        }
+        public static bool IsNotificationVisible() => isNotificationVisible;
 
-        public static bool IsHoverAnyOverlay()
-        {
-            return isHoverAnyOverlay;
-        }
+        //## Raycaster
+        public static bool IsHoverAnyOverlay() => EventBridge_Raycaster.IsHoverAnyOverlay;
+        public static bool IsHoverAnyDesktopOrWindowCapture() => EventBridge_Raycaster.IsHoverAnyDesktopOrWindowCapture;
+        public static bool IsHoverAnyDesktopCapture() => EventBridge_Raycaster.IsHoverAnyDesktopCapture;
+        public static bool IsHoverAnyWindowCapture() => EventBridge_Raycaster.IsHoverAnyWindowCapture;
+        public static bool IsHoverAnyWebView() => EventBridge_Raycaster.IsHoverAnyWebView;
+        public static bool IsActiveHand(Raycaster raycaster, bool skipTwoHanded = false) => EventBridge_Raycaster.IsActiveHand(raycaster, skipTwoHanded);
+        public static bool IsActiveHandForWebView(Raycaster raycaster) => EventBridge_Raycaster.IsActiveHandForWebView(raycaster);
+        public static bool IsRaycasterHand(Raycaster raycaster) => EventBridge_Raycaster.IsRaycasterHand(raycaster);
+        public static Raycaster GetActiveRaycaster() => EventBridge_Raycaster.GetActiveRaycaster();
 
-        public static bool IsHoverAnyDesktopOrWindowCapture()
-        {
-            return isHoverAnyDesktopOrWindowCapture && !PhysicalMouseDetector.IsPhysicalMovement;
-        }
-
-        public static bool IsHoverAnyDesktopCapture()
-        {
-            return isHoverAnyDesktopCapture && !PhysicalMouseDetector.IsPhysicalMovement;
-        }
-
-        public static bool IsHoverAnyWindowCapture()
-        {
-            return isHoverAnyWindowCapture && !PhysicalMouseDetector.IsPhysicalMovement;
-        }
-
-        public static Raycaster GetActiveRaycaster()
-        {
-            return activeRayacster;
-        }
-
-        private static IEnumerator ClearCurrentHoveringOverlayTimer()
+        protected static IEnumerator ClearCurrentHoveringOverlayTimer()
         {
             yield return new WaitForSecondsRealtime(1);
 

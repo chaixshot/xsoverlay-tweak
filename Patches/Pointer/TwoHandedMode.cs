@@ -19,7 +19,7 @@ namespace xsoverlay_tweak.Patches.Pointer
         [HarmonyPostfix]
         public static void FixHoveringReleaseControlEvent(Raycaster __instance)
         {
-            XSOEventSystem.OnReleaseControlOfDesktopCursor += (raycaster) =>
+            EventBridge.OnReleaseControlOfDesktopCursor += (raycaster) =>
             {
                 if (!IsEnable()) return;
                 if (raycaster == __instance) return;

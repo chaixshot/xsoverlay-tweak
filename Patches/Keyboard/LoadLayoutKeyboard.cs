@@ -73,10 +73,10 @@ namespace xsoverlay_tweak.Patches.Keyboard
             Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
 
             if (keyboardData == null) // No keyboard save in Layout
-                EventBridge.ExecuteApiToggleKeyboard(false);
+                EventBridge.ToggleKeyboardExecuteAPI(false);
             else
             {
-                EventBridge.ExecuteApiToggleKeyboard(true);
+                EventBridge.ToggleKeyboardExecuteAPI(true);
 
                 Task.Run(async () =>
                 {

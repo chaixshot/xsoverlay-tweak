@@ -112,7 +112,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
             svr = (Unity_SteamVR_Handler)UnityEngine.Object.FindObjectOfType(typeof(Unity_SteamVR_Handler));
 
-            CustomAPI.OnShowNotification += (notify) =>
+            EventBridge.OnShowNotification += (notify) =>
             {
                 forceUpdate = true;
                 lockHeight = true;
