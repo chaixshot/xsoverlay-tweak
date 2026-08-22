@@ -210,26 +210,38 @@ const addSetting = (sectionObj, type, id, name, desc, defaultValue, opts, opts1)
 
 // --- Build Sections ---
 SECTIONS.forEach(s => {
+    const sectionName = s.name ? s.name.trim() : '';
     const section = new Ui.Section(s.name, s.priority, pageRoot);
     const bg = section.Background;
-    const header = bg.querySelector('.page-section-text');
 
+    bg.style.marginTop = '45px';
+
+    // Create dedicated custom header element
+    const header = document.createElement('div');
+    header.className = 'page-section-text custom-tweak-header';
+    header.style.cssText = 'cursor:pointer; display:flex; justify-content:space-between; align-items:center; user-select:none; transition:font-weight 0.1s ease, transform 0.1s ease; transform-origin:left center;';
+    
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = sectionName;
+    header.appendChild(titleSpan);
+
+    const indicator = document.createElement('i');
+    indicator.className = 'bi bi-chevron-down theme-font-contrast';
+    indicator.style.cssText = 'transition:transform 0.2s ease; margin-left:5px; transform:rotate(-90deg);';
+    
+    const isCollapsible = sectionName && !sectionName.includes('hidden') && sectionName !== '_' && sectionName !== 'About';
+    if (isCollapsible) {
+        header.appendChild(indicator);
+    }
+
+    bg.appendChild(header);
+
+    // Build setting elements
     s.settings.forEach(set => {
         addSetting(section, set.type, set.id, set.name, set.description, set.default, set.options, set.unit);
     });
 
-    bg.style.marginTop = '45px';
-
-    // Make section collapsible by clicking its header
-    if (header && s.name && !s.name.includes('hidden') && s.name !== '_' && s.name !== 'About') {
-        header.style.cursor = 'pointer';
-        header.style.display = 'flex';
-        header.style.justifyContent = 'space-between';
-        header.style.alignItems = 'center';
-        header.style.userSelect = 'none';
-        header.style.transition = 'font-weight 0.1s ease, transform 0.1s ease';
-        header.style.transformOrigin = 'left center';
-
+    if (isCollapsible) {
         header.addEventListener('mouseenter', () => {
             window.vuplex.postMessage('XSOverlayTweak-Haptic-Hover');
             header.style.fontWeight = 'bold';
@@ -241,37 +253,42 @@ SECTIONS.forEach(s => {
             header.style.transform = 'scale(1)';
         });
 
-        const indicator = document.createElement('i');
-        indicator.className = 'bi bi-chevron-down theme-font-contrast';
-        indicator.style.transition = 'transform 0.2s ease';
-        indicator.style.marginLeft = '5px';
+        // Toggle visibility for all elements in bg except the custom header
+        const setSectionVisibility = (isCollapsed) => {
+            bg.classList.toggle('section-collapsed', isCollapsed);
+            indicator.style.transform = isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)';
+            
+            // Remove framework duplicate headers
+            bg.querySelectorAll('.page-section-text:not(.custom-tweak-header)').forEach(el => el.remove());
 
-        // Collapse all sections by default
-        bg.classList.add('section-collapsed');
-        indicator.style.transform = 'rotate(-90deg)';
-        Array.from(bg.children).forEach(child => {
-            if (child !== header) {
-                child.style.display = 'none';
-            }
-        });
-
-        header.appendChild(indicator);
+            // Target all children of bg directly
+            Array.from(bg.children).forEach(child => {
+                if (child !== header && !header.contains(child)) {
+                    if (isCollapsed) {
+                        child.style.setProperty('display', 'none', 'important');
+                    } else {
+                        child.style.removeProperty('display');
+                    }
+                }
+            });
+        };
 
         header.addEventListener('click', () => {
             const rectBefore = header.getBoundingClientRect().top;
+            const isCurrentlyCollapsed = bg.classList.contains('section-collapsed');
 
-            const isCollapsed = bg.classList.toggle('section-collapsed');
-            indicator.style.transform = isCollapsed ? 'rotate(-90deg)' : '';
-            Array.from(bg.children).forEach(child => {
-                if (child !== header) {
-                    child.style.display = isCollapsed ? 'none' : '';
-                }
-            });
+            setSectionVisibility(!isCurrentlyCollapsed);
 
-            // Anti-expansion jump: maintain header position relative to viewpoint
             const rectAfter = header.getBoundingClientRect().top;
             pageRoot.scrollTop += (rectAfter - rectBefore);
         });
+
+        // Run initial collapse across execution cycles
+        const initCollapse = () => setSectionVisibility(true);
+        initCollapse();
+        requestAnimationFrame(initCollapse);
+        setTimeout(initCollapse, 50);
+        setTimeout(initCollapse, 200);
     }
 });
 
