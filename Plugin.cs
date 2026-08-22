@@ -14,7 +14,7 @@ public class Plugin : BaseUnityPlugin
 
     private static readonly Harmony harmony = new(MyPluginInfo.PLUGIN_GUID);
 
-    private void Awake()
+    public void Awake()
     {
         // Plugin startup logic
         Logger = base.Logger;
@@ -34,7 +34,7 @@ public class Plugin : BaseUnityPlugin
 
         // Cursor
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysHideCursor));
-        //harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor))); //## Offical Fixed
+        //harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor))); //## Official Fixed
         harmony.PatchAll(typeof(Patches.Cursor.CursorMovingInteractionFix));
         harmony.PatchAll(typeof(Patches.Cursor.DoubleClickConfirm));
         harmony.PatchAll(typeof(Patches.Cursor.HandleScrolling));
@@ -61,9 +61,9 @@ public class Plugin : BaseUnityPlugin
 
         // Keyboard
         harmony.PatchAll(typeof(Patches.Keyboard.CtrlKeySticky));
-        //harmony.PatchAll(typeof(Patches.Keyboard.KeyboardControlButtonStateFix)); //## Keboard Changed
+        //harmony.PatchAll(typeof(Patches.Keyboard.KeyboardControlButtonStateFix)); //## Official change to WebView keyboard fixed this issue
         harmony.PatchAll(typeof(Patches.Keyboard.KeyboardHoldingIndicator));
-        harmony.PatchAll(typeof(Patches.Keyboard.LoadLayoutKeyboard)); //## Offical Feature, only position and rotation
+        harmony.PatchAll(typeof(Patches.Keyboard.LoadLayoutKeyboard)); //## Official Feature, missing buttons state
 
         // Mouse
         harmony.PatchAll(typeof(Patches.Mouse.MouseButtonSwap));
@@ -97,8 +97,8 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Overlay.OverlayAttachSmooth));
         harmony.PatchAll(typeof(Patches.Overlay.OverlayConfirmClose));
         harmony.PatchAll(typeof(Patches.Overlay.OverlayCurveAutoRefresh));
-        //harmony.PatchAll(typeof(Patches.Overlay.OverlayGripAntiSlip)); //## Offical Fixed
-        harmony.PatchAll(typeof(Patches.Overlay.OverlayRollCurveFix)); //## Offical Fix not applied for spawning
+        //harmony.PatchAll(typeof(Patches.Overlay.OverlayGripAntiSlip)); //## Official Fixed
+        harmony.PatchAll(typeof(Patches.Overlay.OverlayRollCurveFix)); //## Official fix does't take effect when spawning
         harmony.PatchAll(typeof(Patches.Overlay.PinBlockInputNonEditMode));
         harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarGesture));
         harmony.PatchAll(typeof(Patches.Overlay.WindowToolbarKeyboard));
@@ -111,10 +111,10 @@ public class Plugin : BaseUnityPlugin
 
         // Fix
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
-        harmony.PatchAll(typeof(Patches.Fix.MouseSmoothSpeed)); //## Offical Feature, broken
+        harmony.PatchAll(typeof(Patches.Fix.MouseSmoothSpeed)); //## Official Feature, broken
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
-        //harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix)); //## Offical Fixed
-        //harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix)); //## Offical Fixed
+        //harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix)); //## Official Fixed
+        //harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix)); //## Official Fixed
         harmony.PatchAll(typeof(Patches.Fix.WebViewTexturePixelFormatFix));
 
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));
@@ -122,7 +122,7 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
     }
 
-    private void Start()
+    public void Start()
     {
         Instance = this;
 
