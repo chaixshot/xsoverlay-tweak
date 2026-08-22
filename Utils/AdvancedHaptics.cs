@@ -7,7 +7,12 @@ namespace xsoverlay_tweak.Utils
 {
     internal class AdvancedHaptics
     {
-        private static readonly ConditionalWeakTable<object, Coroutine> HapticCoroutine = new();
+        private class HapticTracker
+        {
+            public Coroutine Coroutine;
+        }
+
+        private static readonly ConditionalWeakTable<object, HapticTracker> ActiveRumbles = new();
         private static readonly object LeftHandKey = new();
         private static readonly object RightHandKey = new();
 
@@ -23,20 +28,26 @@ namespace xsoverlay_tweak.Utils
             uint deviceIndex = leftHand ? OVR_Pose_Handler.instance.leftIndex : OVR_Pose_Handler.instance.rightIndex;
             object handKey = leftHand ? LeftHandKey : RightHandKey;
 
-            if (deviceIndex != OpenVR.k_unTrackedDeviceIndexInvalid)
-            {
-                if (HapticCoroutine.TryGetValue(handKey, out Coroutine Data))
-                {
-                    Plugin.Instance.StopCoroutine(Data);
-                    HapticCoroutine.Remove(handKey);
-                }
+            if (deviceIndex == OpenVR.k_unTrackedDeviceIndexInvalid) return;
 
-                Coroutine coroutine = Plugin.Instance.StartCoroutine(DoRumble(handKey, deviceIndex, duration, frequency, strength));
-                HapticCoroutine.Add(handKey, coroutine);
+            // Stop existing coroutine for this hand if active
+            if (ActiveRumbles.TryGetValue(handKey, out HapticTracker tracker))
+            {
+                if (tracker.Coroutine != null)
+                {
+                    Plugin.Instance.StopCoroutine(tracker.Coroutine);
+                }
             }
+            else
+            {
+                tracker = new HapticTracker();
+                ActiveRumbles.Add(handKey, tracker);
+            }
+
+            tracker.Coroutine = Plugin.Instance.StartCoroutine(DoRumble(tracker, deviceIndex, duration, frequency, strength));
         }
 
-        private static IEnumerator DoRumble(object handKey, uint deviceIndex, float duration, float frequency, float strength)
+        private static IEnumerator DoRumble(HapticTracker tracker, uint deviceIndex, float duration, float frequency, float strength)
         {
             float elapsed = 0f;
 
@@ -44,23 +55,25 @@ namespace xsoverlay_tweak.Utils
             ushort pulseWidth = (ushort)Mathf.Lerp(0, 3999, Mathf.Clamp01(strength));
 
             // Frequency math: Time (seconds) between each pulse = 1 / Frequency
-            // Clamp frequency to safe hardware limits (typically 10Hz to 500Hz)
             float targetFrequency = Mathf.Clamp(frequency, 10f, 500f);
             float timeBetweenPulses = 1f / targetFrequency;
 
             var wait = new WaitForSecondsRealtime(timeBetweenPulses);
-            while (elapsed < duration)
+
+            try
             {
-                // Trigger a single sharp pulse
-                OpenVR.System.TriggerHapticPulse(deviceIndex, 0U, pulseWidth);
-
-                // Wait for the calculated interval before pulsing again
-                yield return wait;
-
-                elapsed += timeBetweenPulses;
+                while (elapsed < duration)
+                {
+                    OpenVR.System.TriggerHapticPulse(deviceIndex, 0U, pulseWidth);
+                    yield return wait;
+                    elapsed += timeBetweenPulses;
+                }
             }
-
-            HapticCoroutine.Remove(handKey);
+            finally
+            {
+                if (tracker.Coroutine != null)
+                    tracker.Coroutine = null;
+            }
         }
     }
 }
