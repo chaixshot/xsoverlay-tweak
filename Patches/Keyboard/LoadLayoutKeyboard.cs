@@ -45,19 +45,18 @@ namespace xsoverlay_tweak.Patches.Keyboard
 
         [HarmonyPatch(typeof(Overlay_Manager), nameof(Overlay_Manager.EnableKeyboard))]
         [HarmonyPostfix]
-        public static void ListenForFirstKeyboardSpawn()
+        public static async void ListenForFirstKeyboardSpawn()
         {
             if (isFristKeyboardSpawn)
-                Task.Run(async () =>
-                {
-                    await Task.Delay(400);
-                    isFristKeyboardSpawn = false;
-                });
+            {
+                await Task.Delay(400);
+                isFristKeyboardSpawn = false;
+            }
         }
 
         [HarmonyPatch(typeof(LayoutHandler), "LoadLayout", [])]
         [HarmonyPostfix]
-        public static void LoadKeyboardFromLayout(LayoutHandler __instance, string ___LayoutAssetPath)
+        public static async void LoadKeyboardFromLayout(LayoutHandler __instance, string ___LayoutAssetPath)
         {
             if (!IsEnable()) return;
 
@@ -66,6 +65,8 @@ namespace xsoverlay_tweak.Patches.Keyboard
                 text = ___LayoutAssetPath + "/Editor_Layout_" + __instance.SelectedLayout.ToString() + ".json";
 
             if (!File.Exists(text)) return;
+
+            await Task.Delay(300); // Wait for official layout loading to finish
 
             JObject root = JObject.Parse(File.ReadAllText(text));
             JToken keyboardData = root["keyboard"];
@@ -78,42 +79,36 @@ namespace xsoverlay_tweak.Patches.Keyboard
             {
                 EventBridge.ToggleKeyboardExecuteAPI(true);
 
-                Task.Run(async () =>
+                if (isFristKeyboardSpawn)
+                    await Task.Delay(300); // Wait for re-center and keyboard summoning
+
+                if (keyboardData["position"] is JArray pos && pos.Count == 3)
+                    keyboard.transform.localPosition = new Vector3((float)pos[0], (float)pos[1], (float)pos[2]);
+
+                if (keyboardData["rotation"] is JArray rot && rot.Count == 4)
+                    keyboard.transform.localRotation = new Quaternion((float)rot[0], (float)rot[1], (float)rot[2], (float)rot[3]);
+
+                if (keyboardData["widthInMeters"] != null)
+                    keyboard.widthInMeters = (float)keyboardData["widthInMeters"];
+
+                if (keyboardData["isPinned"] != null)
                 {
-                    if (isFristKeyboardSpawn)
-                        await Task.Delay(300); // Wait for re-center and keyboard summoning
+                    bool shouldPin = (bool)keyboardData["isPinned"];
 
-                    if (keyboardData["position"] is JArray pos && pos.Count == 3)
-                        keyboard.transform.localPosition = new Vector3((float)pos[0], (float)pos[1], (float)pos[2]);
+                    if (shouldPin != keyboard.isPinned)
+                        overlay_Manager.PinKeyboard();
+                }
 
-                    if (keyboardData["rotation"] is JArray rot && rot.Count == 4)
-                        keyboard.transform.localRotation = new Quaternion((float)rot[0], (float)rot[1], (float)rot[2], (float)rot[3]);
+                if (keyboardData["isLocked"] != null)
+                {
+                    bool shouldLock = (bool)keyboardData["isLocked"];
 
-                    if (keyboardData["widthInMeters"] != null)
-                        keyboard.widthInMeters = (float)keyboardData["widthInMeters"];
-
-                    if (keyboardData["isPinned"] != null)
-                    {
-                        bool shouldPin = (bool)keyboardData["isPinned"];
-
-                        if (shouldPin != keyboard.isPinned)
-                            overlay_Manager.PinKeyboard();
-                    }
-
-                    if (keyboardData["isLocked"] != null)
-                    {
-                        bool shouldLock = (bool)keyboardData["isLocked"];
-
-                        if (shouldLock != keyboard.IsWindowInteractionLocked)
-                            overlay_Manager.LockKeyboard();
-                    }
-                });
+                    if (shouldLock != keyboard.IsWindowInteractionLocked)
+                        overlay_Manager.LockKeyboard();
+                }
             }
         }
 
-        public static bool IsEnable()
-        {
-            return XConfig.LoadLayoutKeyboard.Value;
-        }
+        public static bool IsEnable() => XConfig.LoadLayoutKeyboard.Value;
     }
 }
