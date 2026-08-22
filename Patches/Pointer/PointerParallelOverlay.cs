@@ -28,7 +28,7 @@ namespace xsoverlay_tweak.Patches.Pointer
                 {
                     PullTriggerPointerLock.InstanceState.TryGetValue(__instance, out PullTriggerPointerLock.RaycasterState ClickState);
 
-                    if (!___InputDevice.ClickFreezeActive && (ClickState == null || !ClickState.IsBlock))
+                    if (!___InputDevice.ClickFreezeActive && (ClickState == null || !ClickState.IsLocking))
                     {
                         Transform transform = targetOverlay.transform;
                         Quaternion rotation = targetOverlay.transform.rotation;

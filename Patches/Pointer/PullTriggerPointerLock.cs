@@ -13,13 +13,14 @@ namespace xsoverlay_tweak.Patches.Pointer
     {
         public class RaycasterState
         {
-            public bool IsBlock = false;
-            public bool IsStopping = false;
+            public bool IsLocking = false;
+            public bool IsLockingOverThreshold = false;
+            public bool IsReleasing = false;
             public bool IsDown = false;
             public bool WasSmooth = false;
             public bool WasClick = false;
-            public Vector2 DesktopCoordinates = new();
-            public Coroutine Coroutine;
+            public Quaternion InitialLockRotation = new();
+            public Coroutine ReleaseingCoroutine;
         }
         public static readonly ConditionalWeakTable<Raycaster, RaycasterState> InstanceState = new();
 
@@ -38,18 +39,19 @@ namespace xsoverlay_tweak.Patches.Pointer
             {
                 if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
                 {
-                    if (Data.Coroutine != null)
-                        __instance.StopCoroutine(Data.Coroutine);
+                    if (Data.ReleaseingCoroutine != null)
+                        __instance.StopCoroutine(Data.ReleaseingCoroutine);
 
-                    Data.IsStopping = true;
-                    Data.Coroutine = __instance.StartCoroutine(UnblockDelay(__instance));
+                    Data.IsReleasing = true;
+                    Data.ReleaseingCoroutine = __instance.StartCoroutine(ReleaseingDelay(__instance));
                 }
             };
         }
 
         [HarmonyPatch(typeof(Raycaster), "PreparePointerFrame")]
         [HarmonyPostfix]
-        public static void ListenTriggerAxis(Raycaster __instance, bool ___HadMouseInputDown, bool ___HoldingTouch, bool ___IsWebViewTouchEventDown)
+        public static void ListenTriggerAxis(
+            Raycaster __instance, bool ___HadMouseInputDown, bool ___HoldingTouch, bool ___IsWebViewTouchEventDown)
         {
             if (!IsEnable()) return;
             if (!EventBridge.IsActiveHand(__instance)) return;
@@ -59,11 +61,11 @@ namespace xsoverlay_tweak.Patches.Pointer
             if (hovering == null || hovering.IsHeld || hovering.IsLocked || __instance.HeldOverlay != null)
             {
                 // Force reset state if hovering state was invalidated mid-pull
-                if (Data.IsBlock || Data.WasSmooth)
+                if (Data.IsLocking || Data.WasSmooth)
                 {
-                    if (Data.Coroutine != null)
-                        __instance.StopCoroutine(Data.Coroutine);
-                    Data.Coroutine = __instance.StartCoroutine(UnblockDelay(__instance));
+                    if (Data.ReleaseingCoroutine != null)
+                        __instance.StopCoroutine(Data.ReleaseingCoroutine);
+                    Data.ReleaseingCoroutine = __instance.StartCoroutine(ReleaseingDelay(__instance));
                 }
                 return;
             }
@@ -85,94 +87,68 @@ namespace xsoverlay_tweak.Patches.Pointer
                     if (isWebViewSmooth)
                         hovering.UseCursorSmoothing = isWebViewSmooth;
 
-                    if (Data.IsStopping && Data.Coroutine != null)
-                        __instance.StopCoroutine(Data.Coroutine);
+                    if (Data.IsReleasing && Data.ReleaseingCoroutine != null)
+                        __instance.StopCoroutine(Data.ReleaseingCoroutine);
 
                     if (defaultSmoothing <= 0.85f) // Do smooth when pulling, less smooth when click holding
                         XSettingsManager.Instance.Settings.PointerSmoothing = Data.IsDown ? 0.85f : 1.0f;
 
                     Data.WasSmooth = true;
-                    Data.IsStopping = false;
+                    Data.IsReleasing = false;
                 }
-                else if (Data.WasSmooth && !Data.IsStopping) // Releasing Pull
+                else if (Data.WasSmooth && !Data.IsReleasing) // Releasing Pull
                 {
-                    Data.IsStopping = true;
-                    Data.Coroutine = __instance.StartCoroutine(UnblockDelay(__instance));
+                    Data.IsReleasing = true;
+                    Data.ReleaseingCoroutine = __instance.StartCoroutine(ReleaseingDelay(__instance));
                 }
             }
             else if (IsLockMode())
             {
                 if (axisValue > 0f && !Data.IsDown) // Start Pull
                 {
-                    if (Data.IsStopping && Data.Coroutine != null)
-                        __instance.StopCoroutine(Data.Coroutine);
+                    if (Data.IsReleasing && Data.ReleaseingCoroutine != null)
+                        __instance.StopCoroutine(Data.ReleaseingCoroutine);
 
-                    if (!Data.IsBlock)
+                    if (!Data.IsLocking)
+                    {
+                        Data.InitialLockRotation = __instance.transform.rotation;
+
                         AdvancedHaptics.Rumble(__instance.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.PullTriggerPointerLockHaptic.Value / 100f);
-
-                    Data.IsStopping = false;
-                    Data.IsBlock = true;
+                    }
+                    Data.IsReleasing = false;
+                    Data.IsLocking = true;
                 }
-                else if (Data.IsBlock && !Data.IsStopping) // Releasing Pull
+                else if (Data.IsLocking && !Data.IsReleasing) // Releasing Pull
                 {
                     if (!Data.IsDown)
                         AdvancedHaptics.Rumble(__instance.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 40f, XConfig.PullTriggerPointerLockHaptic.Value / 100f);
 
                     Data.IsDown = false;
-                    Data.IsStopping = true;
-                    Data.Coroutine = __instance.StartCoroutine(UnblockDelay(__instance));
+                    Data.IsReleasing = true;
+                    Data.ReleaseingCoroutine = __instance.StartCoroutine(ReleaseingDelay(__instance));
                 }
             }
         }
 
-        [HarmonyPatch(typeof(Raycaster), "PointerHoverAndStateManagement")]
-        [HarmonyPrefix]
-        public static void BlockCursorMovement(Raycaster __instance, ref Vector2 ___DesktopCoordinates)
-        {
-            if (!IsLockMode()) return;
-
-            if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
-                if (Data.IsBlock)
-                    ___DesktopCoordinates = Data.DesktopCoordinates;
-                else
-                    Data.DesktopCoordinates = ___DesktopCoordinates;
-        }
-
-        [HarmonyPatch(typeof(Raycaster), "SetVisualCursorTransform")]
-        [HarmonyPrefix]
-        public static bool BlockPointerMovement(Raycaster __instance)
-        {
-            if (!IsLockMode()) return true;
-            if (EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay)) return true;
-
-            if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
-                return !Data.IsBlock;
-
-            return true;
-        }
-
         [HarmonyPatch(typeof(Raycaster), "SearchForOverlays")]
         [HarmonyPrefix]
-        public static bool BlockSearchForOverlays(Raycaster __instance)
+        public static bool FreezeSearchForOverlays(Raycaster __instance)
         {
             if (!IsLockMode()) return true;
             if (EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay)) return true;
 
             if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
-                return !Data.IsBlock;
+                if (Data.IsLocking)
+                {
+                    float angleDelta = Quaternion.Angle(__instance.transform.rotation, Data.InitialLockRotation);
+                    float ANGLE_THRESHOLD = 1f * EventBridge.OneDegree;
+
+                    Data.IsLockingOverThreshold = !Data.WasClick && angleDelta > ANGLE_THRESHOLD;
+
+                    return Data.IsLockingOverThreshold;
+                }
 
             return true;
-        }
-
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows")]
-        [HarmonyPrefix]
-        public static void InputClickLockPosition(Raycaster __instance, ref Vector2 ___DesktopCoordinates)
-        {
-            if (!IsLockMode()) return;
-
-            if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
-                if (Data.IsBlock)
-                    ___DesktopCoordinates = Data.DesktopCoordinates;
         }
 
         [HarmonyPatch(typeof(MouseInputDevice), nameof(MouseInputDevice.StartClickFreezePeriod))]
@@ -182,11 +158,8 @@ namespace xsoverlay_tweak.Patches.Pointer
             return !IsEnable();
         }
 
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows")]
-        [HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows")]
-        [HarmonyPatch(typeof(Raycaster), "HandleHeadWebAppInput")]
-        [HarmonyPatch(typeof(Raycaster), "BeginWebViewTouch")]
-        [HarmonyPatch(typeof(Raycaster), "BeginWebViewSinglePointer")]
+        [HarmonyPatch(typeof(Raycaster), "AnimateCursorClick")]
+        [HarmonyPatch(typeof(Raycaster), "AnimateCursorHold")]
         [HarmonyPrefix]
         public static void ListenClickInput(Raycaster __instance)
         {
@@ -202,7 +175,7 @@ namespace xsoverlay_tweak.Patches.Pointer
                 defaultSmoothing = Mathf.Clamp01(float.Parse(value, CultureInfo.InvariantCulture));
         }
 
-        private static IEnumerator UnblockDelay(Raycaster instance)
+        private static IEnumerator ReleaseingDelay(Raycaster instance)
         {
             if (InstanceState.TryGetValue(instance, out RaycasterState Data))
             {
@@ -211,10 +184,12 @@ namespace xsoverlay_tweak.Patches.Pointer
                 if (Data.WasSmooth) // Restore smoothing when released
                     XSettingsManager.Instance.Settings.PointerSmoothing = defaultSmoothing;
 
-                Data.IsBlock = false;
-                Data.IsStopping = false;
-                Data.WasClick = false;
+                Data.IsLocking = false;
+                Data.IsLockingOverThreshold = false;
+                Data.IsReleasing = false;
+                Data.IsDown = false;
                 Data.WasSmooth = false;
+                Data.WasClick = false;
             }
         }
 
