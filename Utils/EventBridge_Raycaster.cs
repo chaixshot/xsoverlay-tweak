@@ -56,12 +56,8 @@ namespace xsoverlay_tweak.Utils
             };
         }
 
-        [HarmonyPatch("HandleClicksForDesktopWindows")]
-        [HarmonyPatch("HandleTouchInputForDesktopWindows")]
-        [HarmonyPatch("HandleHeadWebAppInput")]
-        [HarmonyPatch("BeginWebViewTouch")]
-        [HarmonyPatch("BeginWebViewSinglePointer")]
-        [HarmonyPatch("RegisterNativeHover")]
+        [HarmonyPatch("PointerHoverAndStateManagement")] // DesktopCursorManager SetCursorPosition
+        [HarmonyPatch("SendNativeHoverPointer")] // WebView MovePointer
         [HarmonyPrefix]
         public static void SwapTargetHand(Raycaster __instance)
         {
