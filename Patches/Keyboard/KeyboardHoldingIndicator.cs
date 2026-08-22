@@ -28,6 +28,20 @@ namespace xsoverlay_tweak.Patches.Keyboard
                         scale: 0.9 !important;
                         z-index: 105 !important;
                     }
+
+                    /* Faster press animation */
+                    #keyboard-container .keyboard-control {
+                        transition: all 0.025s ease-out !important;
+                    }
+
+                    /* Override framework high specificity on button click/press */
+                    #keyboard-container .keyboard-control:active,
+                    #keyboard-container .keyboard-control.active,
+                    #keyboard-container .keyboard-control.pressed {
+                        transform: scale(0.9) !important;
+                        scale: 0.9 !important;
+                        background-color: color-mix(in srgb, var(--theme-hi) 60%, var(--theme-dark)) !important;
+                    }
                 `;
             })();";
 
