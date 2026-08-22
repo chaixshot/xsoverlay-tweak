@@ -292,8 +292,8 @@ SECTIONS.forEach(s => {
     }
 });
 
-// --- Navigation Logic ---
-const switchPage = () => {
+// --- Navigation Helpers ---
+const openCustomPage = () => {
     wrapper.querySelectorAll('.page-container, .page-container-no-overflow').forEach(p => {
         if (p !== pageRoot) {
             p.style.animation = '0.3s ease fade-out forwards';
@@ -303,30 +303,60 @@ const switchPage = () => {
 
     pageRoot.style.animation = '0.3s ease fade-in forwards';
     pageRoot.style.pointerEvents = 'auto';
+
+    // Highlight only custom sidebar button
+    sidebar.querySelectorAll('.side-bar-button').forEach(b => {
+        const isTarget = b === navBtn;
+        b.classList.toggle('side-bar-button-selected', isTarget);
+        if (b.firstElementChild) b.firstElementChild.classList.toggle('selected-icon', isTarget);
+    });
 };
 
+const hideCustomPage = () => {
+    pageRoot.style.animation = '0.3s ease fade-out forwards';
+    pageRoot.style.pointerEvents = 'none';
+
+    wrapper.querySelectorAll('.page-container, .page-container-no-overflow').forEach(p => {
+        if (p !== pageRoot) {
+            p.style.pointerEvents = 'auto';
+        }
+    });
+
+    // Remove active highlight from custom sidebar button
+    navBtn.classList.remove('side-bar-button-selected');
+    if (navBtn.firstElementChild) {
+        navBtn.firstElementChild.classList.remove('selected-icon');
+    }
+};
+
+// --- Sidebar Event Listener ---
 sidebar.addEventListener('click', (e) => {
     const btn = e.target.closest('.side-bar-button');
     if (!btn) return;
 
     if (btn === navBtn) {
-        switchPage();
+        openCustomPage();
     } else {
-        pageRoot.style.animation = '0.3s ease fade-out forwards';
-        pageRoot.style.pointerEvents = 'none';
-
-        wrapper.querySelectorAll('.page-container, .page-container-no-overflow').forEach(p => {
-            if (p !== pageRoot) {
-                p.style.pointerEvents = 'auto';
-            }
+        hideCustomPage();
+        
+        // Highlight active native button
+        sidebar.querySelectorAll('.side-bar-button').forEach(b => {
+            const isTarget = b === btn;
+            b.classList.toggle('side-bar-button-selected', isTarget);
+            if (b.firstElementChild) b.firstElementChild.classList.toggle('selected-icon', isTarget);
         });
     }
+});
 
-    sidebar.querySelectorAll('.side-bar-button').forEach(b => {
-        const isTarget = b === btn;
-        b.classList.toggle('side-bar-button-selected', isTarget);
-        if (b.firstElementChild) b.firstElementChild.classList.toggle('selected-icon', isTarget);
-    });
+// --- Switch Tab Listener ---
+Api.Client.Socket.addEventListener('message', function message(msg) {
+    var decoded = Api.Parse(msg);
+    switch (decoded.Command) {
+        case 'ShowSettingsPage': {
+            hideCustomPage();
+            break;
+        }
+    }
 });
 
 return 'XSOverlayTweak_Setting injected';
