@@ -94,7 +94,7 @@ public class Plugin : BaseUnityPlugin
 
         // Overaly
         harmony.PatchAll(typeof(Patches.Overlay.DefaultCaptureOverlayTexture));
-        harmony.PatchAll(typeof(Patches.Overlay.OverlayAttachSmooth));
+        harmony.PatchAll(typeof(Patches.Overlay.OverlayAttachSmooth)); //# Broken when attach to controller
         harmony.PatchAll(typeof(Patches.Overlay.OverlayConfirmClose));
         harmony.PatchAll(typeof(Patches.Overlay.OverlayCurveAutoRefresh));
         //harmony.PatchAll(typeof(Patches.Overlay.OverlayGripAntiSlip)); //## Official Fixed

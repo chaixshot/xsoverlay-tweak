@@ -65,7 +65,7 @@ namespace xsoverlay_tweak.Patches.Overlay
         public static void UpdateSmoothMovement(Unity_Overlay __instance)
         {
             if (!IsEnable()) return;
-            if (__instance.deviceToTrack == Unity_Overlay.OverlayTrackedDevice.None || !__instance.isVisible || __instance.IsHidden || __instance.IsPaused) return;
+            if (__instance.deviceToTrack != Unity_Overlay.OverlayTrackedDevice.HMD || !__instance.isVisible || __instance.IsHidden || __instance.IsPaused) return;
 
             if (!OverlayStatus.TryGetValue(__instance, out var Data)) return;
 
