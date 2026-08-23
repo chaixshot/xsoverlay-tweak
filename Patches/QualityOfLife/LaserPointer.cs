@@ -126,7 +126,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
                         hitPoint = (position + direction * __instance.FinalSteamVRRaycastResults.fDistance) - (direction * 0.05f);
 
-                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || (ClickState?.IsLocking == true && ClickState?.IsLockingOverThreshold == false))) // PointerDoubleClickDelay lock RayHitPoint in place
+                    if (PointerDoubleClickDelay.IsEnable() && (___InputDevice.ClickFreezeActive || PullTriggerPointerLock.ShouldLockPointer(__instance))) // PointerDoubleClickDelay lock RayHitPoint in place
                     {
                         hitPoint = Data.RayHitPoint_last;
                         direction = -(position - hitPoint).normalized;

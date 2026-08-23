@@ -27,6 +27,8 @@ namespace xsoverlay_tweak.Patches.Pointer
         private static readonly Func<Raycaster, float> GetTriggerAxis = AccessTools.MethodDelegate<Func<Raycaster, float>>(AccessTools.Method(typeof(Raycaster), "GetTriggerAxis"));
         private static float defaultSmoothing = XSettingsManager.Instance.Settings.PointerSmoothing;
 
+        private const float ANGLE_THRESHOLD = 1f;
+
         [HarmonyPatch(typeof(Raycaster), "Start")]
         [HarmonyPostfix]
         public static void Initiation(Raycaster __instance)
@@ -141,11 +143,8 @@ namespace xsoverlay_tweak.Patches.Pointer
                 if (Data.IsLocking)
                 {
                     float angleDelta = Quaternion.Angle(__instance.transform.rotation, Data.InitialLockRotation);
-                    float ANGLE_THRESHOLD = 1f * EventBridge.OneDegree;
 
-                    Data.IsLockingOverThreshold = !Data.WasClick && angleDelta > ANGLE_THRESHOLD;
-
-                    return Data.IsLockingOverThreshold;
+                    return Data.IsLockingOverThreshold = !Data.WasClick && angleDelta > ANGLE_THRESHOLD;
                 }
 
             return true;
@@ -191,6 +190,15 @@ namespace xsoverlay_tweak.Patches.Pointer
                 Data.WasSmooth = false;
                 Data.WasClick = false;
             }
+        }
+
+        public static bool ShouldLockPointer(Raycaster instance)
+        {
+            if (InstanceState.TryGetValue(instance, out RaycasterState Data))
+                if (Data.IsLocking == true && Data.IsLockingOverThreshold == false)
+                    return true;
+
+            return false;
         }
 
         private static bool IsSmoothMode() => XConfig.PullTriggerPointerLock.Value is 3 or 4;
