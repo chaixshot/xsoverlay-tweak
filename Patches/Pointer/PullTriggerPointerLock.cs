@@ -1,11 +1,14 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections;
-using System.Globalization;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using XSOverlay;
 using xsoverlay_tweak.Utils;
+
 
 namespace xsoverlay_tweak.Patches.Pointer
 {
@@ -25,7 +28,6 @@ namespace xsoverlay_tweak.Patches.Pointer
         public static readonly ConditionalWeakTable<Raycaster, RaycasterState> InstanceState = new();
 
         private static readonly Func<Raycaster, float> GetTriggerAxis = AccessTools.MethodDelegate<Func<Raycaster, float>>(AccessTools.Method(typeof(Raycaster), "GetTriggerAxis"));
-        private static float defaultSmoothing = XSettingsManager.Instance.Settings.PointerSmoothing;
 
         private const float ANGLE_THRESHOLD = 1f;
 
@@ -92,8 +94,9 @@ namespace xsoverlay_tweak.Patches.Pointer
                     if (Data.IsReleasing && Data.ReleaseingCoroutine != null)
                         __instance.StopCoroutine(Data.ReleaseingCoroutine);
 
-                    if (defaultSmoothing <= 0.85f) // Do smooth when pulling, less smooth when click holding
-                        XSettingsManager.Instance.Settings.PointerSmoothing = Data.IsDown ? 0.85f : 1.0f;
+                    float currentSetting = Mathf.Clamp01(XSettingsManager.Instance.Settings.PointerSmoothing);
+                    if (currentSetting <= 0f)
+                        XSettingsManager.Instance.Settings.PointerSmoothing = 0.1f;
 
                     Data.WasSmooth = true;
                     Data.IsReleasing = false;
@@ -166,12 +169,61 @@ namespace xsoverlay_tweak.Patches.Pointer
                 Data.WasClick = true;
         }
 
-        [HarmonyPatch(typeof(XSettingsManager), nameof(XSettingsManager.SetSetting))]
-        [HarmonyPostfix]
-        public static void ListenSettingChanged(string name, string value, string value1, bool sendAnalytics = true)
+        [HarmonyPatch(typeof(Raycaster), "CheckOverlayIntersection")]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> CustomSmoothValue(IEnumerable<CodeInstruction> instructions)
         {
-            if (name.Equals("PointerSmoothing"))
-                defaultSmoothing = Mathf.Clamp01(float.Parse(value, CultureInfo.InvariantCulture));
+            bool patchedLerp = false;
+            List<CodeInstruction> codes = [.. instructions];
+
+            MethodInfo mathfLerp = AccessTools.Method(typeof(Mathf), nameof(Mathf.Lerp), [typeof(float), typeof(float), typeof(float)]);
+            MethodInfo customSmoothing = AccessTools.Method(typeof(PullTriggerPointerLock), nameof(CalculateSmoothValue), [typeof(float), typeof(float), typeof(float), typeof(Raycaster)]);
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                // Replace Mathf.Lerp with custom dynamic smoothing getter
+                if (codes[i].opcode == OpCodes.Call && (MethodInfo)codes[i].operand == mathfLerp)
+                {
+                    // Insert ldarg.0 to push 'this' (Raycaster instance) onto the stack before the call
+                    codes.Insert(i, new CodeInstruction(OpCodes.Ldarg_0));
+                    codes[i + 1] = new CodeInstruction(OpCodes.Call, customSmoothing);
+
+                    patchedLerp = true;
+                    i++; // Skip the newly inserted instruction
+                }
+            }
+
+            if (!patchedLerp)
+                Plugin.Logger.LogError($"PointerSmoothing patch failed (Lerp: {patchedLerp}). The mod may be outdated.");
+
+            return codes;
+        }
+
+        private static float CalculateSmoothValue(float unusedA, float unusedB, float unusedC, Raycaster instance)
+        {
+            if (!IsSmoothMode()) return Mathf.Lerp(unusedA, unusedB, unusedC);
+
+            if (instance != null && InstanceState.TryGetValue(instance, out RaycasterState Data))
+            {
+                float power = 15f;
+                float smoothing = Mathf.Clamp01(XSettingsManager.Instance.Settings.PointerSmoothing);
+
+                if (Data.WasSmooth)
+                {
+                    power = 1.5f;
+                    smoothing = 1f;
+
+                    if (Data.IsDown)
+                        smoothing = 0.9f;
+                }
+                else
+                    return Mathf.Lerp(unusedA, unusedB, unusedC);
+
+                float maxSmoothWeight = Mathf.Clamp01(Time.deltaTime * power);
+                return Mathf.Lerp(1f, maxSmoothWeight, smoothing);
+            }
+
+            return 1f;
         }
 
         private static IEnumerator ReleaseingDelay(Raycaster instance)
@@ -179,9 +231,6 @@ namespace xsoverlay_tweak.Patches.Pointer
             if (InstanceState.TryGetValue(instance, out RaycasterState Data))
             {
                 yield return new WaitForSecondsRealtime(Data.WasClick ? XSettingsManager.Instance.Settings.DoubleClickDelay : 0f);
-
-                if (Data.WasSmooth) // Restore smoothing when released
-                    XSettingsManager.Instance.Settings.PointerSmoothing = defaultSmoothing;
 
                 Data.IsLocking = false;
                 Data.IsLockingOverThreshold = false;
