@@ -16,7 +16,7 @@ namespace xsoverlay_tweak.Patches.Haptic
             Objects.KeyboardEvent keyboardEvent = JsonConvert.DeserializeObject<Objects.KeyboardEvent>(jsonData);
 
             if (keyboardEvent.keyPressStyle == Enums.KeyPressStyle.Toggle)
-                AdvancedHaptics.Rumble(EventBridge.GetActiveRaycaster()?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.1f, 320f, 0.5f);
+                AdvancedHaptics.Rumble(EventBridge.GetActiveWebViewRaycaster()?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.1f, 320f, 0.5f);
         }
 
         private static bool IsEnable()

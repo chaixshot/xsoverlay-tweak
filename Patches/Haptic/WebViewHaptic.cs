@@ -61,7 +61,7 @@ namespace xsoverlay_tweak.Patches.Haptic
             {
                 if (!IsEnable() || args.Value != "XSOverlayTweak-Haptic-Hover") return;
 
-                AdvancedHaptics.Rumble(EventBridge.GetActiveRaycaster()?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.WebViewHaptic.Value / 100f);
+                AdvancedHaptics.Rumble(EventBridge.GetActiveWebViewRaycaster()?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.WebViewHaptic.Value / 100f);
             };
 
             // Inject the script when loading completes

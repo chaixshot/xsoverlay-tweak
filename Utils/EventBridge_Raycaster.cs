@@ -13,6 +13,8 @@ namespace xsoverlay_tweak.Utils
     {
         public static Unity_Overlay CurrentHoveringOverlay;
         public static Raycaster ActiveRaycaster;
+        public static Raycaster ActiveWebViewRaycaster;
+        public static Raycaster ActiveDesktopRaycaster;
         public static readonly List<Raycaster> Raycaster_List = [];
         public static new bool IsHoverAnyOverlay = false;
         public static new bool IsHoverAnyDesktopOrWindowCapture = false;
@@ -61,6 +63,17 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPrefix]
         public static void SwapTargetHand(Raycaster __instance)
         {
+            if (__instance?.HoveringOverlay?.OverlayWebView != null)
+            {
+                if (IsActiveHandForWebView(__instance))
+                    ActiveWebViewRaycaster = __instance;
+            }
+            else if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
+            {
+                if (IsActiveHand(__instance))
+                    ActiveDesktopRaycaster = __instance;
+            }
+
             ActiveRaycaster = __instance;
         }
 

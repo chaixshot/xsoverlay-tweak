@@ -148,6 +148,8 @@ namespace xsoverlay_tweak.Utils
         public static bool IsActiveHandForWebView(Raycaster raycaster) => EventBridge_Raycaster.IsActiveHandForWebView(raycaster);
         public static bool IsRaycasterHand(Raycaster raycaster) => EventBridge_Raycaster.IsRaycasterHand(raycaster);
         public static Raycaster GetActiveRaycaster() => EventBridge_Raycaster.ActiveRaycaster;
+        public static Raycaster GetActiveWebViewRaycaster() => EventBridge_Raycaster.ActiveWebViewRaycaster;
+        public static Raycaster GetActiveDesktopRaycaster() => EventBridge_Raycaster.ActiveDesktopRaycaster;
 
         public static Unity_Overlay GetCurrentHoveringOverlay() => EventBridge_Raycaster.CurrentHoveringOverlay;
     }
