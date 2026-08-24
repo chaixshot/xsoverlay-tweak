@@ -65,7 +65,7 @@ namespace xsoverlay_tweak.Patches.Overlay
         public static void UpdateSmoothMovement(Unity_Overlay __instance)
         {
             if (!IsEnable()) return;
-            if (__instance.deviceToTrack != Unity_Overlay.OverlayTrackedDevice.HMD || !__instance.isVisible || __instance.IsHidden || __instance.IsPaused) return;
+            if (!ShouldDoSmooth(__instance)) return;
 
             if (!OverlayStatus.TryGetValue(__instance, out var Data)) return;
 
@@ -510,6 +510,23 @@ namespace xsoverlay_tweak.Patches.Overlay
             IsRecenter = false;
             RecenterCoroutine = null;
         }
+
+        private static bool ShouldDoSmooth(Unity_Overlay __instance) => __instance.deviceToTrack == Unity_Overlay.OverlayTrackedDevice.HMD && __instance.isVisible && !__instance.IsHidden && !__instance.IsPaused;
+
+        public static bool IsLockRoll(Unity_Overlay overlay, ref Quaternion rotation)
+        {
+            if (ShouldDoSmooth(overlay))
+                if (OverlayStatus.TryGetValue(overlay, out var SmoothData))
+                    if (SmoothData.LockRoll)
+                    {
+                        rotation = SmoothData.Rotation;
+                        return true;
+                    }
+
+            return false;
+        }
+
+
 
         private static bool IsEnable()
         {

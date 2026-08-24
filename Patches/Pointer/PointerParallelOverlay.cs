@@ -24,29 +24,33 @@ namespace xsoverlay_tweak.Patches.Pointer
 
             Unity_Overlay targetOverlay = __instance.HoveringOverlay;
             if (targetOverlay != null)
-                if (IsEnable() || WindowsCursorPointer.CursorDictionary.TryGetValue(__instance, out WindowsCursorPointer.CursorData Data) && Data.IsCursor)
+                if (IsEnable() || WindowsCursorPointer.IsCursorMode(__instance))
                 {
                     PullTriggerPointerLock.InstanceState.TryGetValue(__instance, out PullTriggerPointerLock.RaycasterState ClickState);
 
                     if (!___InputDevice.ClickFreezeActive && (ClickState == null || !ClickState.IsLocking))
                     {
+                        // Toolbar and WindowSettings overlay using parent as target
+                        if (targetOverlay.overlayName.Equals("window.settings") || targetOverlay.overlayName.Equals("window.toolbar"))
+                            targetOverlay = Overlay_Manager.Instance.WindowToolbarMover.ParentOverlay;
+
                         Transform transform = targetOverlay.transform;
                         Quaternion rotation = targetOverlay.transform.rotation;
+                        bool isAttachedToDevice = targetOverlay?.WorldSpaceSceneImpostor != null || targetOverlay.IsAttachedToDevice;
 
-                        if (targetOverlay?.WorldSpaceSceneImpostor != null) // Overlay attached to device
+                        // Overlay attached to device
+                        if (isAttachedToDevice)
                         {
                             transform = targetOverlay.WorldSpaceSceneImpostor.transform;
                             rotation = targetOverlay.WorldSpaceSceneImpostor.transform.rotation;
 
-                            if (OverlayAttachSmooth.OverlayStatus.TryGetValue(targetOverlay, out var SmoothData)) // Attached device rolling lock
-                                if (SmoothData.LockRoll)
-                                    rotation = SmoothData.Rotation;
+                            OverlayAttachSmooth.IsLockRoll(targetOverlay, ref rotation);
                         }
 
-                        if (targetOverlay.overlayCurveRadius.Equals(0)) // Overlay not curve
-                        {
+                        if (isAttachedToDevice) // Overlay attached to device
                             ___VisualCursorElement.transform.rotation = rotation;
-                        }
+                        else if (targetOverlay.overlayCurveRadius.Equals(0)) // Overlay not curve
+                            ___VisualCursorElement.transform.rotation = rotation;
                         else // Cursor faces up to the targetOverlay curved surface
                         {
                             Vector3 localNormal = new(ovrIntersectionResults.vNormal.v0, ovrIntersectionResults.vNormal.v1, ovrIntersectionResults.vNormal.v2);
@@ -60,7 +64,6 @@ namespace xsoverlay_tweak.Patches.Pointer
                             // Apply the surface tilt to the targetOverlay's base world rotation.
                             ___VisualCursorElement.transform.rotation = rotation * surfaceTilt;
                         }
-
                     }
 
                     if (___VisualCursorElementClickAnimationOverlay.gameObject.activeSelf)

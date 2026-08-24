@@ -228,12 +228,10 @@ namespace xsoverlay_tweak.Patches.Cursor
                     }
         }
 
-        public static bool IsEnable()
-        {
-            return XConfig.WindowsCursorPointer.Value != 0 && XSettingsManager.Instance.Settings.InputMethod == InputMethods.EmulateMouse;
-        }
+        public static bool IsCursorMode(Raycaster raycaster) => CursorDictionary.TryGetValue(raycaster, out WindowsCursorPointer.CursorData Data) && Data.IsCursor;
+        public static bool IsEnable() => XConfig.WindowsCursorPointer.Value != 0 && XSettingsManager.Instance.Settings.InputMethod == InputMethods.EmulateMouse;
 
-        //?? --- Win32 API Interop ---
+        //## --- Win32 API Interop ---
         [StructLayout(LayoutKind.Sequential)]
         struct CURSORINFO
         {
