@@ -77,7 +77,9 @@ namespace xsoverlay_tweak.Patches.Pointer
             bool isDesktopOrCapture = hovering.IsDesktopOrWindowCapture;
             bool isWebViewLock = XConfig.PullTriggerPointerLock.Value == 2 && hovering.IsPluginApplication;
             bool isWebViewSmooth = XConfig.PullTriggerPointerLock.Value == 4 && hovering.IsPluginApplication;
+
             if (!isDesktopOrCapture && !isWebViewLock && !isWebViewSmooth) return;
+            if (EventBridge.IsOverlayKeyboard(hovering)) return;
 
             float axisValue = GetTriggerAxis(__instance);
             Data.IsDown = ___HadMouseInputDown || ___HoldingTouch || ___IsWebViewTouchEventDown;
@@ -201,26 +203,25 @@ namespace xsoverlay_tweak.Patches.Pointer
 
         private static float CalculateSmoothValue(float unusedA, float unusedB, float unusedC, Raycaster instance)
         {
-            if (!IsSmoothMode()) return Mathf.Lerp(unusedA, unusedB, unusedC);
+            if (!IsSmoothMode() || EventBridge.IsOverlayKeyboard(instance.HoveringOverlay))
+                return Mathf.Lerp(unusedA, unusedB, unusedC);
 
             if (instance != null && InstanceState.TryGetValue(instance, out RaycasterState Data))
             {
-                float power = 15f;
-                float smoothing = Mathf.Clamp01(XSettingsManager.Instance.Settings.PointerSmoothing);
-
                 if (Data.WasSmooth)
                 {
-                    power = 1.5f;
-                    smoothing = 1f;
+                    float power = 1.5f;
+                    float smoothing = 1f;
 
                     if (Data.IsDown)
                         smoothing = 0.9f;
+
+                    float maxSmoothWeight = Mathf.Clamp01(Time.deltaTime * power);
+                    return Mathf.Lerp(1f, maxSmoothWeight, smoothing);
                 }
                 else
                     return Mathf.Lerp(unusedA, unusedB, unusedC);
 
-                float maxSmoothWeight = Mathf.Clamp01(Time.deltaTime * power);
-                return Mathf.Lerp(1f, maxSmoothWeight, smoothing);
             }
 
             return 1f;
