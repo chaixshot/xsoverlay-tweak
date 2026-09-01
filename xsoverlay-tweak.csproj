@@ -47,11 +47,17 @@
     <Reference Include="BepInEx">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="BlackSharp.Core">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\BlackSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="com.lachee.discordrpc.runtime">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\com.lachee.discordrpc.runtime.dll</HintPath>
     </Reference>
     <Reference Include="DiscordRPC">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\DiscordRPC.dll</HintPath>
+    </Reference>
+    <Reference Include="DiskInfoToolkit">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\DiskInfoToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\DOTween.dll</HintPath>
@@ -65,8 +71,14 @@
     <Reference Include="LibreHardwareMonitorLib">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\LibreHardwareMonitorLib.dll</HintPath>
     </Reference>
+    <Reference Include="MeaMod.DNS">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\MeaMod.DNS.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\Microsoft.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Registry">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\Microsoft.Win32.Registry.dll</HintPath>
@@ -92,6 +104,9 @@
     <Reference Include="SteamVR_Actions">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\SteamVR_Actions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.Composition">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
@@ -114,8 +129,14 @@
     <Reference Include="System.Management">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\System.Management.dll</HintPath>
     </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\System.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization.Formatters.Soap">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\System.Runtime.Serialization.Formatters.Soap.dll</HintPath>
     </Reference>
@@ -397,6 +418,15 @@
     </Reference>
     <Reference Include="Valve.Newtonsoft.Json">
       <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\Valve.Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="vrc-oscquery-lib">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\vrc-oscquery-lib.dll</HintPath>
+    </Reference>
+    <Reference Include="Vuplex.WebView">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\Vuplex.WebView.dll</HintPath>
+    </Reference>
+    <Reference Include="Vuplex.WebViewDemos">
+      <HintPath>D:\Steam\steamapps\common\XSOverlay_Beta\XSOverlay_Data\Managed\Vuplex.WebViewDemos.dll</HintPath>
     </Reference>
   </ItemGroup>
   
