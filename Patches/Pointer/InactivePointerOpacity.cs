@@ -6,7 +6,7 @@ namespace xsoverlay_tweak.Patches.Pointer
     [HarmonyPatch(typeof(Raycaster))]
     internal class InactivePointerOpacity
     {
-        [HarmonyPatch("DetermineCursorVisibility")]
+        [HarmonyPatch("UpdateRaycaster")]
         [HarmonyPostfix]
         public static void DetermineInactiveHandOpacity(Raycaster __instance, ref Unity_Overlay ___VisualCursorElementOverlay)
         {
