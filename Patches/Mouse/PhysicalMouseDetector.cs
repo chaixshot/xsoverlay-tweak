@@ -32,10 +32,12 @@ namespace xsoverlay_tweak.Patches.Mouse
             };
         }
 
-        [HarmonyPatch(typeof(Raycaster), "HandleClicksForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleTouchInputForDesktopWindows"), HarmonyPatch(typeof(Raycaster), "HandleHeadWebAppInput")]
+        [HarmonyPatch(typeof(Raycaster), "OnPointerPress")]
         [HarmonyPrefix]
-        public static bool ClickToRegainControl(Raycaster __instance)
+        public static bool ClickToRegainControl(Raycaster __instance, MouseInputDevice ___InputDevice, PointerPressEvent pointerPressEvent)
         {
+            if (pointerPressEvent.InputSource != ___InputDevice.InputSource) return true;
+
             if (IsPhysicalMovement)
             {
                 IsPhysicalMovement = false;
