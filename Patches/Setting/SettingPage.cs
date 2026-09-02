@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Valve.Newtonsoft.Json;
-using Vuplex.WebView;
 using XSOverlay;
 using XSOverlay.WebApp;
 using XSOverlay.Websockets.API;
@@ -15,10 +14,30 @@ namespace xsoverlay_tweak.Patches.Setting
     {
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void WebviewOverlay(OverlayWebView wv)
+        public static void InjectSettingsModule(OverlayWebView wv)
         {
             if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Settings)
-                InjectSettingsModule(wv);
+            {
+                wv.WebViewReady += (IWebView) =>
+                {
+                    // JS for inserting the actual settings page
+                    Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("xsoverlay_tweak.Patches.Setting.setting.js");
+                    using StreamReader reader = new(stream);
+                    string jsContent = reader.ReadToEnd();
+
+                    jsContent = jsContent.Replace("<<Version>>", MyPluginInfo.PLUGIN_VERSION);
+                    jsContent = jsContent.Replace("<<HMDRefreshRate>>", DeviceManager.Instance.HMDRefreshRate.ToString());
+                    jsContent = jsContent.Replace("<<RefreshRate>>", XConfig.RefreshRate.Value);
+                    jsContent = jsContent.Replace("<<RefreshRateList>>", string.Join(", ", RefreshRate.RefreshRateList));
+
+                    string jsCode = $"(function() {{ {jsContent} }})();";
+
+                    wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
+                    {
+                        //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
+                    });
+                };
+            }
         }
 
         [HarmonyPatch(typeof(ApiHandler), "OnRequestCurrentSettings")]
@@ -385,37 +404,6 @@ namespace xsoverlay_tweak.Patches.Setting
                     XConfig.UpdateNotification.Value = bool.Parse(value);
                     break;
             }
-        }
-
-        public static void InjectSettingsModule(OverlayWebView wv)
-        {
-
-            // JS for inserting the actual settings page
-            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("xsoverlay_tweak.Patches.Setting.setting.js");
-            using StreamReader reader = new(stream);
-            string jsContent = reader.ReadToEnd();
-
-            jsContent = jsContent.Replace("<<Version>>", MyPluginInfo.PLUGIN_VERSION);
-            jsContent = jsContent.Replace("<<HMDRefreshRate>>", DeviceManager.Instance.HMDRefreshRate.ToString());
-            jsContent = jsContent.Replace("<<RefreshRate>>", XConfig.RefreshRate.Value);
-            jsContent = jsContent.Replace("<<RefreshRateList>>", string.Join(", ", RefreshRate.RefreshRateList));
-
-            string jsCode = $"(function() {{ {jsContent} }})();";
-
-            // Lisen for WebView loaded
-            wv._webView.WebView.LoadProgressChanged += (sender, args) =>
-            {
-                if (args.Type == ProgressChangeType.Finished)
-                {
-                    Task.Run(async () =>
-                    {
-                        wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
-                        {
-                            //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
-                        });
-                    });
-                }
-            };
         }
     }
 }
