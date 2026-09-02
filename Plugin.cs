@@ -113,6 +113,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
         harmony.PatchAll(typeof(Patches.Fix.MouseSmoothSpeed)); //## Official Feature, broken
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
+        harmony.PatchAll(typeof(Patches.Fix.Additional)); //# XSoverlay Beta bug
         //harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix)); //## Official Fixed
         //harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix)); //## Official Fixed
         harmony.PatchAll(typeof(Patches.Fix.WebViewTexturePixelFormatFix));
