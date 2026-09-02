@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System.Threading.Tasks;
-using Vuplex.WebView;
 using XSOverlay;
 using XSOverlay.WebApp;
 using XSOverlay.Websockets.API;
@@ -32,35 +31,35 @@ namespace xsoverlay_tweak.Patches.Overlay
 
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void WindowToolbarLoaded(OverlayWebView wv)
+        public static void WebviewWindowToolbarLoaded(OverlayWebView wv)
         {
             if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.WindowToolbar)
             {
                 ChangeWidth(wv);
 
-                wv._webView.WebView.LoadProgressChanged += (sender, args) =>
+                wv.WebViewReady += (IWebView) =>
                 {
-                    if (args.Type == ProgressChangeType.Finished)
+                    Task.Run(async () =>
                     {
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(1000);
+                        await Task.Delay(1000);
 
-                            ChangeUI(wv);
-                        });
-                    }
+                        ChangeUI(wv);
+                    });
                 };
             }
         }
 
-        [HarmonyPatch(typeof(Raycaster), "BeginWebViewTouch")]
-        [HarmonyPrefix]
-        public static void ClickToolbarKeyboard(Raycaster __instance)
+        [HarmonyPatch(typeof(Raycaster), "CompleteCapturedWebViewPress")]
+        [HarmonyPostfix]
+        public static void ClickToolbarKeyboard(Raycaster __instance, bool __result)
         {
             if (!IsEnable()) return;
 
-            if (__instance.HoveringOverlay?.overlayName == "window.toolbar")
+            // Check if the click/press actually succeeded and targeted the toolbar
+            if (__result && __instance.HoveringOverlay?.overlayName == "window.toolbar")
+            {
                 toolbarKeyboardClicked = true;
+            }
         }
 
         [HarmonyPatch(typeof(Overlay_Manager), nameof(Overlay_Manager.EnableKeyboard))]
@@ -74,7 +73,7 @@ namespace xsoverlay_tweak.Patches.Overlay
                 if (!Overlay_Manager.Instance.WindowSettingsMenuParentOverlay.IsAttachedToDevice || !(Overlay_Manager.Instance.WindowSettingsMenuParentOverlay.WorldSpaceSceneImpostor == null))
                 {
                     Unity_Overlay windowToolbarOverlay = Overlay_Manager.Instance.WindowToolbar.GetComponentInChildren<Unity_Overlay>(true);
-                    WindowMovementManager.MoveToEdgeOfWindowAndInheritRotation(__instance.Keyboard_Overlay, windowToolbarOverlay, 0.1f, 0.1f, 0);
+                    WindowMovementManager.MoveToEdgeOfWindowAndInheritRotation(__instance.Keyboard_Overlay, windowToolbarOverlay, 0.6f, 0f, 0);
                 }
                 else
                 {
@@ -120,27 +119,88 @@ namespace xsoverlay_tweak.Patches.Overlay
             string jsCode;
 
             if (IsEnable())
+            {
                 jsCode = @"(function() {
-                    if (window.windowToolbarLookup && !window.windowToolbarLookup.Keyboard) {
-                        window.windowToolbarLookup = { ""Keyboard"": ""keyboard-fill"", ...window.windowToolbarLookup };
-                        var container = document.getElementById('ToolbarButtons') || document.querySelector('.toolbar');
-                        if (container && typeof window.InitializeUI === 'function') {
-                            container.innerHTML = '';
-                            window.InitializeUI();
-                        }
+                    // Locate the main toolbar container
+                    var toolbar = document.querySelector('.toolbar');
+                    if (!toolbar || document.getElementById('Keyboard')) return;
+
+                    // Store reference to the current leftmost button to update its styling
+                    var firstButton = toolbar.querySelector('.button');
+
+                    // Create the Keyboard button element and apply left-side rounded corners
+                    var button = document.createElement('button');
+                    button.id = 'Keyboard';
+                    button.className = 'button buttonL';
+
+                    // Create the wrapper container for the button icon
+                    var imgContainer = document.createElement('div');
+                    imgContainer.className = 'button-image-container';
+
+                    // Create the Bootstrap Icon element using a div
+                    var icon = document.createElement('div');
+                    icon.className = 'bi-keyboard-fill';
+
+                    imgContainer.appendChild(icon);
+                    button.appendChild(imgContainer);
+
+                    // Create a vertical divider to separate the Keyboard button from adjacent items
+                    var divider = document.createElement('div');
+                    divider.className = 'toolbar-divider';
+                    divider.id = 'Keyboard-divider';
+
+                    // Prepend the button and divider to make them the first item on the left
+                    toolbar.prepend(divider);
+                    toolbar.prepend(button);
+
+                    // Strip the left rounded corner class from the previous first button
+                    if (firstButton) {
+                        firstButton.classList.remove('buttonL');
                     }
+
+                    // Bind click listener to dispatch the 'Keyboard' command to the XSOverlay API
+                    button.addEventListener('click', function (e) {
+                        setTimeout(function () { button.blur(); }, 150);
+                        if (window.toolbarContext?.api) {
+                            window.toolbarContext.api.Send('Keyboard', null, null);
+                        }
+                        e.preventDefault();
+                    });
+
+                    // Show tooltip on hover
+                    button.addEventListener('mouseenter', function () {
+                        if (window.toolbarContext?.api) {
+                            window.toolbarContext.api.Send(window.toolbarContext.api.Commands.ShowTooltip, 'Keyboard', true);
+                        }
+                    });
+
+                    // Hide tooltip on mouse leave
+                    button.addEventListener('mouseleave', function () {
+                        if (window.toolbarContext?.api) {
+                            window.toolbarContext.api.Send(window.toolbarContext.api.Commands.ShowTooltip, null, false);
+                        }
+                    });
                 })();";
+            }
             else
+            {
                 jsCode = @"(function() {
-                    if (window.windowToolbarLookup && window.windowToolbarLookup.Keyboard) {
-                        delete window.windowToolbarLookup.Keyboard;
-                        var container = document.getElementById('ToolbarButtons') || document.querySelector('.toolbar');
-                        if (container && typeof window.InitializeUI === 'function') {
-                            container.innerHTML = '';
-                            window.InitializeUI();
+                    // Remove the injected Keyboard button and divider elements
+                    var btn = document.getElementById('Keyboard');
+                    var div = document.getElementById('Keyboard-divider');
+                    if (btn) btn.remove();
+                    if (div) div.remove();
+
+                    // Re-apply left-side rounded corners to the new first button in the toolbar
+                    var toolbar = document.querySelector('.toolbar');
+                    if (toolbar) {
+                        var firstButton = toolbar.querySelector('.button');
+                        if (firstButton) {
+                            firstButton.classList.add('buttonL');
                         }
                     }
                 })();";
+            }
 
             toolbarWebView._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
             {
