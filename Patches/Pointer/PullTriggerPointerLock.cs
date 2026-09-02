@@ -54,8 +54,7 @@ namespace xsoverlay_tweak.Patches.Pointer
 
         [HarmonyPatch(typeof(Raycaster), "PreparePointerFrame")]
         [HarmonyPostfix]
-        public static void ListenTriggerAxis(
-            Raycaster __instance, bool ___HadMouseInputDown, bool ___HoldingTouch, bool ___IsWebViewTouchEventDown)
+        public static void ListenTriggerAxis(Raycaster __instance, bool ___PressTargetDownSent, int ___PressedMouseButton, bool ___IsWebViewTouchEventDown)
         {
             if (!IsEnable()) return;
             if (!EventBridge.IsActiveHand(__instance)) return;
@@ -75,14 +74,15 @@ namespace xsoverlay_tweak.Patches.Pointer
             }
 
             bool isDesktopOrCapture = hovering.IsDesktopOrWindowCapture;
-            bool isWebViewLock = XConfig.PullTriggerPointerLock.Value == 2 && hovering.IsPluginApplication;
-            bool isWebViewSmooth = XConfig.PullTriggerPointerLock.Value == 4 && hovering.IsPluginApplication;
+            bool isWebViewLock = XConfig.PullTriggerPointerLock.Value == 2 && hovering.IsWebApplication;
+            bool isWebViewSmooth = XConfig.PullTriggerPointerLock.Value == 4 && hovering.IsWebApplication;
+            bool holdingTouch = ___PressedMouseButton != -1;
 
             if (!isDesktopOrCapture && !isWebViewLock && !isWebViewSmooth) return;
             if (EventBridge.IsOverlayKeyboard(hovering)) return;
 
             float axisValue = GetTriggerAxis(__instance);
-            Data.IsDown = ___HadMouseInputDown || ___HoldingTouch || ___IsWebViewTouchEventDown;
+            Data.IsDown = ___PressTargetDownSent || holdingTouch || ___IsWebViewTouchEventDown;
 
             if (IsSmoothMode())
             {
@@ -90,9 +90,6 @@ namespace xsoverlay_tweak.Patches.Pointer
 
                 if (axisValue > 0f) // Start Pull
                 {
-                    if (isWebViewSmooth)
-                        hovering.UseCursorSmoothing = isWebViewSmooth;
-
                     if (Data.IsReleasing && Data.ReleaseingCoroutine != null)
                         __instance.StopCoroutine(Data.ReleaseingCoroutine);
 
@@ -148,8 +145,8 @@ namespace xsoverlay_tweak.Patches.Pointer
                 if (Data.IsLocking)
                 {
                     float angleDelta = Quaternion.Angle(__instance.transform.rotation, Data.InitialLockRotation);
-
-                    return Data.IsLockingOverThreshold = !Data.WasClick && angleDelta > ANGLE_THRESHOLD;
+                    if (Data.IsLockingOverThreshold = !Data.WasClick && angleDelta > ANGLE_THRESHOLD)
+                        return false;
                 }
 
             return true;
@@ -162,11 +159,12 @@ namespace xsoverlay_tweak.Patches.Pointer
             return !IsEnable();
         }
 
-        [HarmonyPatch(typeof(Raycaster), "AnimateCursorClick")]
-        [HarmonyPatch(typeof(Raycaster), "AnimateCursorHold")]
+        [HarmonyPatch(typeof(Raycaster), "SendCapturedPressClick"), HarmonyPatch(typeof(Raycaster), "SendCapturedPressDown")]
         [HarmonyPrefix]
-        public static void ListenClickInput(Raycaster __instance)
+        public static void ListenClickInput(Raycaster __instance, bool __result)
         {
+            if (!__result) return;
+
             if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
                 Data.WasClick = true;
         }
@@ -175,56 +173,47 @@ namespace xsoverlay_tweak.Patches.Pointer
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> CustomSmoothValue(IEnumerable<CodeInstruction> instructions)
         {
-            bool patchedLerp = false;
             List<CodeInstruction> codes = [.. instructions];
+            bool patched = false;
 
-            MethodInfo mathfLerp = AccessTools.Method(typeof(Mathf), nameof(Mathf.Lerp), [typeof(float), typeof(float), typeof(float)]);
-            MethodInfo customSmoothing = AccessTools.Method(typeof(PullTriggerPointerLock), nameof(CalculateSmoothValue), [typeof(float), typeof(float), typeof(float), typeof(Raycaster)]);
+            MethodInfo customGetSmoothing = AccessTools.Method(typeof(PullTriggerPointerLock), nameof(GetCustomPointerSmoothing), [typeof(float), typeof(Raycaster)]);
 
-            for (int i = 0; i < codes.Count; i++)
+            // Look for the assignment to local variable 'pointerSmoothing' right before the zero check: if (pointerSmoothing == 0f)
+            for (int i = 0; i < codes.Count - 3; i++)
             {
-                // Replace Mathf.Lerp with custom dynamic smoothing getter
-                if (codes[i].opcode == OpCodes.Call && (MethodInfo)codes[i].operand == mathfLerp)
+                if (codes[i + 3].opcode == OpCodes.Ldc_R4 && (float)codes[i + 3].operand == 0f
+                    && (codes[i + 1].opcode == OpCodes.Stloc || codes[i + 1].opcode == OpCodes.Stloc_S
+                        || codes[i + 1].opcode == OpCodes.Stloc_1 || codes[i + 1].opcode == OpCodes.Stloc_2 || codes[i + 1].opcode == OpCodes.Stloc_3))
                 {
-                    // Insert ldarg.0 to push 'this' (Raycaster instance) onto the stack before the call
-                    codes.Insert(i, new CodeInstruction(OpCodes.Ldarg_0));
-                    codes[i + 1] = new CodeInstruction(OpCodes.Call, customSmoothing);
+                    // Insert before stloc: Stack currently has original float on top
+                    // Push 'this' (Raycaster instance)
+                    codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldarg_0));
+                    // Call custom smoothing modifier
+                    codes.Insert(i + 2, new CodeInstruction(OpCodes.Call, customGetSmoothing));
 
-                    patchedLerp = true;
-                    i++; // Skip the newly inserted instruction
+                    patched = true;
+                    break;
                 }
             }
 
-            if (!patchedLerp)
-                Plugin.Logger.LogError($"PointerSmoothing patch failed (Lerp: {patchedLerp}). The mod may be outdated.");
+            if (!patched)
+                Plugin.Logger.LogError("[XSOverlay Tweak] PointerSmoothing transpiler patch failed! Target IL sequence not found.");
 
             return codes;
         }
 
-        private static float CalculateSmoothValue(float unusedA, float unusedB, float unusedC, Raycaster instance)
+        private static float GetCustomPointerSmoothing(float originalSmoothing, Raycaster instance)
         {
-            if (!IsSmoothMode() || EventBridge.IsOverlayKeyboard(instance.HoveringOverlay))
-                return Mathf.Lerp(unusedA, unusedB, unusedC);
-
-            if (instance != null && InstanceState.TryGetValue(instance, out RaycasterState Data))
+            if (!IsSmoothMode() || instance == null || EventBridge.IsOverlayKeyboard(instance.HoveringOverlay))
             {
-                if (Data.WasSmooth)
-                {
-                    float power = 1.5f;
-                    float smoothing = 1f;
-
-                    if (Data.IsDown)
-                        smoothing = 0.9f;
-
-                    float maxSmoothWeight = Mathf.Clamp01(Time.deltaTime * power);
-                    return Mathf.Lerp(1f, maxSmoothWeight, smoothing);
-                }
-                else
-                    return Mathf.Lerp(unusedA, unusedB, unusedC);
-
+                return originalSmoothing;
             }
 
-            return 1f;
+            if (InstanceState.TryGetValue(instance, out RaycasterState data))
+                if (data.WasSmooth)
+                    return data.IsDown ? 5.0f : 20.0f;
+
+            return originalSmoothing;
         }
 
         private static IEnumerator ReleaseingDelay(Raycaster instance)
