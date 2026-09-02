@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using XSOverlay;
 using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Pointer
@@ -7,23 +8,24 @@ namespace xsoverlay_tweak.Patches.Pointer
     [HarmonyPatch(typeof(Raycaster))]
     internal class ActivePointerWebView
     {
-        private static readonly Func<Raycaster, Unity_Overlay, bool> CanInteractWithWebView = AccessTools.MethodDelegate<Func<Raycaster, Unity_Overlay, bool>>(AccessTools.Method(typeof(Raycaster), "CanInteractWithWebView"));
-        public static readonly Action<Raycaster> ClearHoverState = AccessTools.MethodDelegate<Action<Raycaster>>(AccessTools.Method(typeof(Raycaster), "ClearHoverState"));
+        private static readonly Action<Raycaster, Unity_Overlay> UpdateWebViewHoverSession = AccessTools.MethodDelegate<Action<Raycaster, Unity_Overlay>>(AccessTools.Method(typeof(Raycaster), "UpdateWebViewHoverSession"));
+        private static readonly Action<Raycaster, bool> EndWebViewHoverSession = AccessTools.MethodDelegate<Action<Raycaster, bool>>(AccessTools.Method(typeof(Raycaster), "EndWebViewHoverSession"));
+
 
         // Listen for Pointer click WebView to become active hand
-        [HarmonyPatch("BeginWebViewTouch")]
+        [HarmonyPatch("OnPointerPress")]
         [HarmonyPrefix]
-        public static bool HandlePressOnWebViewTriggerToBecomeActive(Raycaster __instance)
+        public static bool HandlePressOnWebViewTriggerToBecomeActive(Raycaster __instance, PointerPressEvent pointerPressEvent, MouseInputDevice ___InputDevice)
         {
             if (!IsEnable()) return true;
             if (!EventBridge.IsRaycasterHand(__instance)) return true;
-            if (EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay)) return true;
+            if (pointerPressEvent.InputSource != ___InputDevice.InputSource) return true;
 
             // Become active hand and skip sending touch event to webview
-            if (!EventBridge.IsActiveHand(__instance) && EventBridge.IsOverlayWebView(__instance.HoveringOverlay))
+            if (!EventBridge.IsActiveHand(__instance) && EventBridge.IsOverlayWebView(__instance.HoveringOverlay, "wrist, notification, keyboard"))
             {
-                ClearHoverState(__instance);
-                EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
+                EndWebViewHoverSession(__instance, true);
+                UpdateWebViewHoverSession(__instance, __instance.HoveringOverlay);
 
                 if (!XConfig.TwoHandedMode.Value)
                     return false;
