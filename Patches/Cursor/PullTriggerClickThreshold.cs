@@ -9,12 +9,12 @@ namespace xsoverlay_tweak.Patches.Cursor
     [HarmonyPatch(typeof(MouseInputDevice))]
     internal class PullTriggerClickThreshold
     {
-        [HarmonyPatch("DesktopClickHandler")]
+        [HarmonyPatch("UpdateTriggerState")]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> ChangeDesktopClickHandlerThreshold(IEnumerable<CodeInstruction> instructions)
         {
             bool patched = false;
-            List<CodeInstruction> codes = new(instructions);
+            List<CodeInstruction> codes = [.. instructions];
             FieldInfo pullTriggerClickThreshold = AccessTools.Field(typeof(XConfig), nameof(XConfig.PullTriggerClickThreshold));
 
             for (int i = 0; i < codes.Count; i++)
@@ -27,7 +27,7 @@ namespace xsoverlay_tweak.Patches.Cursor
                     break;
                 }
             }
-            
+
             if (!patched)
                 Plugin.Logger.LogError("PullTriggerClickThreshold patch failed: Could not find target instruction in MouseInputDevice.DesktopClickHandler. The mod may be outdated.");
 
