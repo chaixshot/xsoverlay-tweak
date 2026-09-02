@@ -10,28 +10,35 @@ namespace xsoverlay_tweak.Utils
     {
         [HarmonyPatch(typeof(ApiHandler), "InitializeAPI")]
         [HarmonyPostfix]
-        public static void PatchCoreJavaScriptFiles(ApiHandler __instance)
+        public static void PatchCoreJavaScriptFiles()
         {
-            string baseDir = @".\XSOverlay_Data\StreamingAssets\Plugins\Applications\_UI\Default\_Shared\js\";
+            string baseDir = @".\XSOverlay_Data\StreamingAssets\Plugins\Applications\UserInterface\Default\";
             if (!Directory.Exists(baseDir)) return;
 
-            // Gather all target JavaScript files inside the folder
-            string[] jsFilesToPatch = {
-                "notification.js",
-                "settings-chatbox.js",
-                "settings.js",
-                "tooltip.js",
-                "windowSettings.js",
-                "toolbar.js",
-                "keyboard.js",
-                "chatbox-keyboard.js",
-                "chatbox-settings.js",
+            // Relative directory paths to target
+            string[] targetDirectories = {
+                @"BrowserAddressBar\js",
+                @"Keyboard\js",
+                @"Notification\js",
+                @"Settings\js",
+                @"Tooltip\js",
+                @"Toolbars\js",
+                @"WindowSettings\js",
             };
 
-            // Loop through each file path to globalize elements and imports
-            for (int i = 0; i < jsFilesToPatch.Length; i++)
+            foreach (string relativePath in targetDirectories)
             {
-                GlobalizeAllJsElements(Path.Combine(baseDir, jsFilesToPatch[i]));
+                string dirPath = Path.Combine(baseDir, relativePath);
+
+                if (Directory.Exists(dirPath))
+                {
+                    string[] jsFiles = Directory.GetFiles(dirPath, "*.js", SearchOption.TopDirectoryOnly); // Search for all *.js files inside the directory
+
+                    foreach (string filePath in jsFiles)
+                    {
+                        GlobalizeAllJsElements(filePath);
+                    }
+                }
             }
         }
 
