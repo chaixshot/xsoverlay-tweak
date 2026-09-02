@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using XSOverlay;
-using System.Runtime.CompilerServices;
-using xsoverlay_tweak.Utils;
 using xsoverlay_tweak.Patches.Mouse;
+using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Cursor
 {
@@ -84,8 +84,11 @@ namespace xsoverlay_tweak.Patches.Cursor
             {
                 // Avoid overlapping coroutines for the same instance
                 if (ActiveHideCoroutines.TryGetValue(__instance, out _)) return;
-                
-                var routine = Plugin.Instance.StartCoroutine(HideDelay(__instance));
+
+                Coroutine routine = Plugin.Instance != null
+                    ? Plugin.Instance.StartCoroutine(HideDelay(__instance))
+                    : __instance.StartCoroutine(HideDelay(__instance));
+
                 ActiveHideCoroutines.Add(__instance, routine);
             }
         }
