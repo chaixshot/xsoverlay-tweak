@@ -63,7 +63,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Keyboard.CtrlKeySticky));
         //harmony.PatchAll(typeof(Patches.Keyboard.KeyboardControlButtonStateFix)); //## Official change to WebView keyboard fixed this issue
         harmony.PatchAll(typeof(Patches.Keyboard.KeyboardHoldingIndicator));
-        harmony.PatchAll(typeof(Patches.Keyboard.LoadLayoutKeyboard)); //## Official Feature, missing buttons state
+        harmony.PatchAll(typeof(Patches.Keyboard.LoadLayoutKeyboard)); //# Official Feature, missing buttons state
 
         // Mouse
         harmony.PatchAll(typeof(Patches.Mouse.MouseButtonSwap));
@@ -111,12 +111,12 @@ public class Plugin : BaseUnityPlugin
 
         // Fix
         harmony.PatchAll(typeof(Patches.Fix.LoadLayoutScaleFix));
-        harmony.PatchAll(typeof(Patches.Fix.MouseSmoothSpeed)); //## Official Feature, broken
+        //harmony.PatchAll(typeof(Patches.Fix.MouseSmoothSpeed)); //## Official Feature
         harmony.PatchAll(typeof(Patches.Fix.SteamVR_BetaFix));
         harmony.PatchAll(typeof(Patches.Fix.Additional)); //# XSoverlay Beta bug
         //harmony.PatchAll(typeof(Patches.Fix.SteamVRCompositorTextureFormatFix)); //## Official Fixed
         //harmony.PatchAll(typeof(Patches.Fix.WebViewFrozenFix)); //## Official Fixed
-        harmony.PatchAll(typeof(Patches.Fix.WebViewTexturePixelFormatFix));
+        //harmony.PatchAll(typeof(Patches.Fix.WebViewTexturePixelFormatFix)); //## Official Fixed
 
         harmony.PatchAll(typeof(Patches.Setting.SettingPage));
 
