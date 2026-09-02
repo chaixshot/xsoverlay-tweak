@@ -1,12 +1,15 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using Valve.VR;
 using XSOverlay;
 using XSOverlay.PointerInput;
 using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Utils;
+using Object = UnityEngine.Object;
 
 namespace xsoverlay_tweak.Patches.QualityOfLife
 {
@@ -32,6 +35,8 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
         private static readonly AccessTools.FieldRef<AngularPointerSmoothingFilter, bool> isSmoothing = AccessTools.FieldRefAccess<AngularPointerSmoothingFilter, bool>("_hasState");
         private static readonly AccessTools.FieldRef<AngularPointerSmoothingFilter, Vector3> getSmoothPosition = AccessTools.FieldRefAccess<AngularPointerSmoothingFilter, Vector3>("_filteredPosition");
         private static readonly AccessTools.FieldRef<AngularPointerSmoothingFilter, Vector3> getSmoothDirection = AccessTools.FieldRefAccess<AngularPointerSmoothingFilter, Vector3>("_filteredDirection");
+
+        private static readonly Func<VROverlayIntersectionResults_t, Vector3> GetIntersectionWorldPoint = AccessTools.MethodDelegate<Func<VROverlayIntersectionResults_t, Vector3>>(AccessTools.Method(typeof(Raycaster), "GetIntersectionWorldPoint"));
 
         // Create Laser_A overlay
         [HarmonyPatch("Start")]
@@ -103,7 +108,12 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             Vector3 ___RawRayDirection,
             Vector3 ___RayHitPoint,
 
-            AngularPointerSmoothingFilter ___PointerSmoothingFilter
+            VROverlayIntersectionResults_t ___FinalSteamVRRaycastResults,
+            Vector3 ___CapturedPressVisualCursorPosition,
+            Vector3 ___CapturedPressFilteredWorldBaseline,
+
+            AngularPointerSmoothingFilter ___PointerSmoothingFilter,
+            AngularPressSession ___PointerPressSession
             )
         {
             if (!IsEnable()) return;
@@ -128,6 +138,24 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                     {
                         hitPoint = Data.RayHitPoint_last;
                         direction = -(position - hitPoint).normalized;
+                    }
+                    else if (___PointerPressSession.IsActive) // Replicate Raycaster.ApplyCapturedPressVisualCursorTransform for click lock drag
+                    {
+                        if (___PointerPressSession.IsDragging)
+                        {
+                            Vector3 capturedWorldPoint = GetIntersectionWorldPoint(___FinalSteamVRRaycastResults);
+                            Vector3 deltaWorldPosition = capturedWorldPoint - ___CapturedPressFilteredWorldBaseline;
+                            Vector3 currentVisualPos = ___CapturedPressVisualCursorPosition + deltaWorldPosition;
+
+                            hitPoint = currentVisualPos;
+                            direction = -(position - hitPoint).normalized;
+                        }
+                        else
+                        {
+                            // Lock hitPoint to the initial captured press position
+                            hitPoint = ___CapturedPressVisualCursorPosition;
+                            direction = -(position - hitPoint).normalized;
+                        }
                     }
                     else
                         Data.RayHitPoint_last = hitPoint;
