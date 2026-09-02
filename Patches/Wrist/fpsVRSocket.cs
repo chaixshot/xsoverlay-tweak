@@ -41,17 +41,7 @@ namespace xsoverlay_tweak.Patches.Wrist
                     RefreshWristState(enable, 0.1f);
             };
 
-            CustomAPI.OnToggleMediaPlayer += (enable) =>
-            {
-                if (!IsEnable()) return;
-
-                IsMediaPlayer = enable;
-
-                if (XConfig.fpsVRSocket.Value == 2) // Bottom
-                    RefreshWristState(enable, 0.1f);
-            };
-
-            CustomAPI.OnClickToggleMediaPlayer += (enable) =>
+            CustomAPI.OnToggleMediaPlayer += (enable, byClick) =>
             {
                 if (!IsEnable()) return;
 
