@@ -30,20 +30,19 @@ namespace xsoverlay_tweak.Patches.Pointer
             };
         }
 
-        [HarmonyPatch("HandleClicksForDesktopWindows"), HarmonyPatch("HandleTouchInputForDesktopWindows"), HarmonyPatch("HandleHeadWebAppInput")]
+        [HarmonyPatch("OnPointerPress")]
         [HarmonyPrefix]
-        public static void ClickToBecomeActiveHandAndDoClick(Raycaster __instance)
+        public static void ClickToBecomeActiveHandAndDoClick(Raycaster __instance, MouseInputDevice ___InputDevice, PointerPressEvent pointerPressEvent)
         {
             if (!IsEnable()) return;
+            if (pointerPressEvent.InputSource != ___InputDevice.InputSource) return;
 
             if (!EventBridge.IsActiveHand(__instance, true))
             {
-                EventBridge.Ref_Raycaster.TakeControlOverCursorIfNotInControl(__instance);
+                XSOEventSystem.Current.EventTakeControlOfDesktopCursor(__instance);
 
                 if (EventBridge.Ref_Raycaster.TryGetDesktopCoordinate(__instance, out Vector2 desktopCoordinate))
                     MouseOperations.SetCursorPosition((int)desktopCoordinate.x, (int)desktopCoordinate.y);
-
-                __instance.CanClickDesktopCursor = true;
             }
         }
 
