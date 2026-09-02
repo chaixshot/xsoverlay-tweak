@@ -8,7 +8,6 @@ using UnityEngine;
 using Valve.Newtonsoft.Json;
 using Valve.Newtonsoft.Json.Linq;
 using Valve.VR;
-using Vuplex.WebView;
 using XSOverlay;
 using XSOverlay.WebApp;
 using XSOverlay.Websockets.API;
@@ -211,153 +210,150 @@ namespace xsoverlay_tweak.Patches.Overlay
         {
             if (!IsEnable()) return;
 
-            string jsCode = @"(function() {
-                try {
-                // Check if Ui components are fully loaded
-                    if (!window.Ui || !window.Ui.OverlaySetting || !window.Ui.Toggle || !window.Ui.Divider || !window.Ui.Description) {
-                        return 'ERROR: Ui components not fully loaded';
-                    }
-
-                    var pageContainer = document.querySelector('.page-container-static');
-                    var existingSettingsSection = document.getElementById('hidden_Settings');
-                // Find the existing 'Settings' section to insert our new section after it
-                    if (!existingSettingsSection) {
-                        return 'ERROR: Existing #hidden_Settings section not found';
-                    }
-
-                    if (document.getElementById('Smooth')) {
-                        return 'INFO: Smooth toggle already injected';
-                    }
-
-                // Create a new themed section for the tweak settings
-                    var tweakSection = Ui.CreateElement(pageContainer, Ui.HtmlType.div, ['page-section', 'theme-semi-transparent-dark']);
-                    tweakSection.id = 'TrackSpaceSmooth_Section';
-                    existingSettingsSection.parentNode.insertBefore(tweakSection, existingSettingsSection.nextSibling);
-                    tweakSection.style.marginTop = '12px';
-                    tweakSection.style.marginBottom = '12px';
-
-                    function UpdateSectionVisibility() {
-                        var trackingSpaceEl = document.getElementById('TrackingSpace');
-                        if (!tweakSection || !trackingSpaceEl) return;
-                        var checked = trackingSpaceEl.querySelector('input:checked');
-                        var isWorld = checked && checked.getAttribute('internalName') === 'World';
-                        tweakSection.style.display = isWorld ? 'none' : 'block';
-
-                // Ensure the page container has a vertical scrollbar if content overflows
-                        if (pageContainer) pageContainer.style.overflowY = isWorld ? 'hidden' : 'auto';
-                    }
-
-                    var trackingSpaceEl = document.getElementById('TrackingSpace');
-                    if (trackingSpaceEl) trackingSpaceEl.addEventListener('change', UpdateSectionVisibility);
-
-                    var smoothSettingDef = new Ui.OverlaySetting(Ui.ComponentType.Toggle, 'Smooth', '', false);
-                    smoothSettingDef.internalName = 'Smooth';
-
-                    var lockRollSettingDef = new Ui.OverlaySetting(Ui.ComponentType.Toggle, 'Lock Roll', '', true);
-                    lockRollSettingDef.internalName = 'LockRoll';
-
-                    var lockHoverSettingDef = new Ui.OverlaySetting(Ui.ComponentType.Toggle, 'Lock Hover', '', false);
-                    lockHoverSettingDef.internalName = 'LockHover';
-
-                    var distThresholdDef = new Ui.OverlaySetting(Ui.ComponentType.Slider, 'Distance', '', 20, [0, 150, 5], 'Centimetre');
-                    distThresholdDef.internalName = 'DistThreshold';
-
-                    var angleThresholdDef = new Ui.OverlaySetting(Ui.ComponentType.Slider, 'Angle', '', 50, [0, 120, 5], 'Degree');
-                    angleThresholdDef.internalName = 'AngleThreshold';
-
-                    var stopThresholdDef = new Ui.OverlaySetting(Ui.ComponentType.Slider, 'Stop', '', 5, [0, 100, 1], 'Degree/Centimetre');
-                    stopThresholdDef.internalName = 'StopThreshold';
-
-                    if (window.SettingsLayout && window.SettingsLayout.Settings) {
-                        window.SettingsLayout.Settings.Smooth = smoothSettingDef;
-                        window.SettingsLayout.Settings.LockRoll = lockRollSettingDef;
-                        window.SettingsLayout.Settings.LockHover = lockHoverSettingDef;
-                        window.SettingsLayout.Settings.DistThreshold = distThresholdDef;
-                        window.SettingsLayout.Settings.AngleThreshold = angleThresholdDef;
-                        window.SettingsLayout.Settings.StopThreshold = stopThresholdDef;
-                    }
-
-                // Manually inject the UI components
-                    Ui.Toggle(smoothSettingDef, 'Smooth', false, null, tweakSection);
-                    Ui.Description(tweakSection, 'Smooths movement of HMD Overlay.', 'Smooth_Desc');
-
-                    Ui.Divider(tweakSection, 'divider', 'LockRoll_Divider');
-                    Ui.Toggle(lockRollSettingDef, 'Lock Roll', true, null, tweakSection);
-                    Ui.Description(tweakSection, 'Prevents the Overlay from HMD rolling.', 'LockRoll_Desc');
-
-                    Ui.Divider(tweakSection, 'divider', 'LockHover_Divider');
-                    Ui.Toggle(lockHoverSettingDef, 'Lock Hover', false, null, tweakSection);
-                    Ui.Description(tweakSection, 'Stops moving while hovering the Overlay.', 'LockHover_Desc');
-
-                    Ui.Divider(tweakSection, 'divider', 'DistThreshold_Divider');
-                    Ui.Slider(distThresholdDef, 'Distance', 20, [0, 150, 5], 'Centimetre', tweakSection, 300);
-                    if (document.getElementById('DistThreshold')) Ui.UpdateSliderUI(document.getElementById('DistThreshold'), 20);
-                    Ui.Description(tweakSection, 'Distance threshold to start moving Overlay.', 'DistThreshold_Desc');
-
-                    Ui.Divider(tweakSection, 'divider', 'AngleThreshold_Divider');
-                    Ui.Slider(angleThresholdDef, 'Angle', 50, [0, 120, 5], 'Degree', tweakSection, 300);
-                    if (document.getElementById('AngleThreshold')) Ui.UpdateSliderUI(document.getElementById('AngleThreshold'), 50);
-                    Ui.Description(tweakSection, 'Angle threshold to start moving Overlay.', 'AngleThreshold_Desc');
-
-                    Ui.Divider(tweakSection, 'divider', 'StopThreshold_Divider');
-                    Ui.Slider(stopThresholdDef, 'Stop', 5, [0, 100, 1], 'Degree/Centimetre', tweakSection, 300);
-                    if (document.getElementById('StopThreshold')) Ui.UpdateSliderUI(document.getElementById('StopThreshold'), 5);
-                    Ui.Description(tweakSection, 'Threshold below which the Overlay stops moving.', 'StopThreshold_Desc');
-
-                    UpdateSectionVisibility();
-
-                    function HandleMessages(msg) {
-                        var decoded = Api.Parse(msg);
-                        if (decoded.Command === 'UpdateAttachedInformation') {
-                            SetMenuSmoothStates(decoded.JsonData);
-                        }
-                    }
-
-                    function SetMenuSmoothStates(data) {
-                        let el;
-                        if (el = document.getElementById('Smooth')) el.checked = data.isSmooth;
-                        if (el = document.getElementById('LockRoll')) el.checked = data.lockRoll;
-                        if (el = document.getElementById('LockHover')) el.checked = data.lockHover;
-                    
-                        if (el = document.getElementById('DistThreshold')) {
-                            el.value = data.distThreshold;
-                            Ui.UpdateSliderUI(el, data.distThreshold);
-                        }
-                        if (el = document.getElementById('AngleThreshold')) {
-                            el.value = data.angleThreshold;
-                            Ui.UpdateSliderUI(el, data.angleThreshold);
-                        }
-                        if (el = document.getElementById('StopThreshold')) {
-                            el.value = data.stopThreshold;
-                            Ui.UpdateSliderUI(el, data.stopThreshold);
-                        }
-
-                        UpdateSectionVisibility();
-                    }
-
-                    Api.Client.Socket.addEventListener('message', HandleMessages);
-                    return 'SUCCESS: Smooth toggle injected';
-                } catch (e) {
-                    return 'ERROR: ' + e.message;
-                }
-            })()";
-
             if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.WindowSettings)
             {
-                wv._webView.WebView.LoadProgressChanged += (sender, args) =>
+                wv.WebViewReady += (IWebView) =>
                 {
-                    if (args.Type == ProgressChangeType.Finished)
-                    {
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(1000);
+                    string jsCode = @"(function() {
+                        try {
+                        // Check if Ui components are fully loaded
+                            if (!window.Ui || !window.Ui.OverlaySetting || !window.Ui.Toggle || !window.Ui.Divider || !window.Ui.Description) {
+                                return 'ERROR: Ui components not fully loaded';
+                            }
 
-                            wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
-                            {
-                                //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
-                            });
+                            var pageContainer = document.querySelector('.page-container-static');
+                            var existingSettingsSection = document.getElementById('hidden_Settings');
+                        // Find the existing 'Settings' section to insert our new section after it
+                            if (!existingSettingsSection) {
+                                return 'ERROR: Existing #hidden_Settings section not found';
+                            }
+
+                            if (document.getElementById('Smooth')) {
+                                return 'INFO: Smooth toggle already injected';
+                            }
+
+                        // Create a new themed section for the tweak settings
+                            var tweakSection = Ui.CreateElement(pageContainer, Ui.HtmlType.div, ['page-section', 'theme-semi-transparent-dark']);
+                            tweakSection.id = 'TrackSpaceSmooth_Section';
+                            existingSettingsSection.parentNode.insertBefore(tweakSection, existingSettingsSection.nextSibling);
+                            tweakSection.style.marginTop = '12px';
+                            tweakSection.style.marginBottom = '12px';
+
+                            function UpdateSectionVisibility() {
+                                var trackingSpaceEl = document.getElementById('TrackingSpace');
+                                if (!tweakSection || !trackingSpaceEl) return;
+                                var checked = trackingSpaceEl.querySelector('input:checked');
+                                var isWorld = checked && checked.getAttribute('internalName') === 'World';
+                                tweakSection.style.display = isWorld ? 'none' : 'block';
+
+                        // Ensure the page container has a vertical scrollbar if content overflows
+                                if (pageContainer) pageContainer.style.overflowY = isWorld ? 'hidden' : 'auto';
+                            }
+
+                            var trackingSpaceEl = document.getElementById('TrackingSpace');
+                            if (trackingSpaceEl) trackingSpaceEl.addEventListener('change', UpdateSectionVisibility);
+
+                            var smoothSettingDef = new Ui.OverlaySetting(Ui.ComponentType.Toggle, 'Smooth', '', false);
+                            smoothSettingDef.internalName = 'Smooth';
+
+                            var lockRollSettingDef = new Ui.OverlaySetting(Ui.ComponentType.Toggle, 'Lock Roll', '', true);
+                            lockRollSettingDef.internalName = 'LockRoll';
+
+                            var lockHoverSettingDef = new Ui.OverlaySetting(Ui.ComponentType.Toggle, 'Lock Hover', '', false);
+                            lockHoverSettingDef.internalName = 'LockHover';
+
+                            var distThresholdDef = new Ui.OverlaySetting(Ui.ComponentType.Slider, 'Distance', '', 20, [0, 150, 5], 'Centimetre');
+                            distThresholdDef.internalName = 'DistThreshold';
+
+                            var angleThresholdDef = new Ui.OverlaySetting(Ui.ComponentType.Slider, 'Angle', '', 50, [0, 120, 5], 'Degree');
+                            angleThresholdDef.internalName = 'AngleThreshold';
+
+                            var stopThresholdDef = new Ui.OverlaySetting(Ui.ComponentType.Slider, 'Stop', '', 5, [0, 100, 1], 'Degree/Centimetre');
+                            stopThresholdDef.internalName = 'StopThreshold';
+
+                            if (window.SettingsLayout && window.SettingsLayout.Settings) {
+                                window.SettingsLayout.Settings.Smooth = smoothSettingDef;
+                                window.SettingsLayout.Settings.LockRoll = lockRollSettingDef;
+                                window.SettingsLayout.Settings.LockHover = lockHoverSettingDef;
+                                window.SettingsLayout.Settings.DistThreshold = distThresholdDef;
+                                window.SettingsLayout.Settings.AngleThreshold = angleThresholdDef;
+                                window.SettingsLayout.Settings.StopThreshold = stopThresholdDef;
+                            }
+
+                        // Manually inject the UI components
+                            Ui.Toggle(smoothSettingDef, 'Smooth', false, null, tweakSection);
+                            Ui.Description(tweakSection, 'Smooths movement of HMD Overlay.', 'Smooth_Desc');
+
+                            Ui.Divider(tweakSection, 'divider', 'LockRoll_Divider');
+                            Ui.Toggle(lockRollSettingDef, 'Lock Roll', true, null, tweakSection);
+                            Ui.Description(tweakSection, 'Prevents the Overlay from HMD rolling.', 'LockRoll_Desc');
+
+                            Ui.Divider(tweakSection, 'divider', 'LockHover_Divider');
+                            Ui.Toggle(lockHoverSettingDef, 'Lock Hover', false, null, tweakSection);
+                            Ui.Description(tweakSection, 'Stops moving while hovering the Overlay.', 'LockHover_Desc');
+
+                            Ui.Divider(tweakSection, 'divider', 'DistThreshold_Divider');
+                            Ui.Slider(distThresholdDef, 'Distance', 20, [0, 150, 5], 'Centimetre', tweakSection, 300);
+                            if (document.getElementById('DistThreshold')) Ui.UpdateSliderUI(document.getElementById('DistThreshold'), 20);
+                            Ui.Description(tweakSection, 'Distance threshold to start moving Overlay.', 'DistThreshold_Desc');
+
+                            Ui.Divider(tweakSection, 'divider', 'AngleThreshold_Divider');
+                            Ui.Slider(angleThresholdDef, 'Angle', 50, [0, 120, 5], 'Degree', tweakSection, 300);
+                            if (document.getElementById('AngleThreshold')) Ui.UpdateSliderUI(document.getElementById('AngleThreshold'), 50);
+                            Ui.Description(tweakSection, 'Angle threshold to start moving Overlay.', 'AngleThreshold_Desc');
+
+                            Ui.Divider(tweakSection, 'divider', 'StopThreshold_Divider');
+                            Ui.Slider(stopThresholdDef, 'Stop', 5, [0, 100, 1], 'Degree/Centimetre', tweakSection, 300);
+                            if (document.getElementById('StopThreshold')) Ui.UpdateSliderUI(document.getElementById('StopThreshold'), 5);
+                            Ui.Description(tweakSection, 'Threshold below which the Overlay stops moving.', 'StopThreshold_Desc');
+
+                            UpdateSectionVisibility();
+
+                            function HandleMessages(msg) {
+                                var decoded = Api.Parse(msg);
+                                if (decoded.Command === 'UpdateAttachedInformation') {
+                                    SetMenuSmoothStates(decoded.JsonData);
+                                }
+                            }
+
+                            function SetMenuSmoothStates(data) {
+                                let el;
+                                if (el = document.getElementById('Smooth')) el.checked = data.isSmooth;
+                                if (el = document.getElementById('LockRoll')) el.checked = data.lockRoll;
+                                if (el = document.getElementById('LockHover')) el.checked = data.lockHover;
+                    
+                                if (el = document.getElementById('DistThreshold')) {
+                                    el.value = data.distThreshold;
+                                    Ui.UpdateSliderUI(el, data.distThreshold);
+                                }
+                                if (el = document.getElementById('AngleThreshold')) {
+                                    el.value = data.angleThreshold;
+                                    Ui.UpdateSliderUI(el, data.angleThreshold);
+                                }
+                                if (el = document.getElementById('StopThreshold')) {
+                                    el.value = data.stopThreshold;
+                                    Ui.UpdateSliderUI(el, data.stopThreshold);
+                                }
+
+                                UpdateSectionVisibility();
+                            }
+
+                            Api.Client.Socket.addEventListener('message', HandleMessages);
+                            return 'SUCCESS: Smooth toggle injected';
+                        } catch (e) {
+                            return 'ERROR: ' + e.message;
+                        }
+                    })()";
+
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(1000);
+
+                        wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
+                        {
+                            //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
                         });
-                    }
+                    });
                 };
             }
         }
