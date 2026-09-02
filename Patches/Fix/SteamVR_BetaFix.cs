@@ -34,7 +34,11 @@ namespace xsoverlay_tweak.Patches.Fix
         {
             if (!IsEnable() || !IsOverlayClipping) return;
 
-            ___TooltipOverlay.transform.position -= ___TooltipOverlay.transform.forward * 0.01f;
+            string targetName = EventBridge.GetCurrentHoveringOverlay()?.overlayName;
+            if (targetName == "window.settings" || targetName == "window.toolbar")
+                ___TooltipOverlay.transform.position -= ___TooltipOverlay.transform.forward * 0.01f;
+            else
+                ___TooltipOverlay.transform.position -= ___TooltipOverlay.transform.forward * 0.003f;
         }
 
         [HarmonyPatch(typeof(OpenVR), nameof(OpenVR.Init))]
