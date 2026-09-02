@@ -162,7 +162,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             }
         }
 
-        [HarmonyPatch("AnimateCursorClick"), HarmonyPatch("AnimateCursorHold"), HarmonyPatch("AnimateCursorHoldRightClick")]
+        [HarmonyPatch("AnimateCursorClick"), HarmonyPatch("AnimateCursorHold")]
         [HarmonyPostfix]
         public static void FixClickAnimationScale(Raycaster __instance, ref Unity_Overlay ___VisualCursorElementClickAnimationOverlay, Unity_Overlay ___VisualCursorElementOverlay)
         {
@@ -212,20 +212,23 @@ namespace xsoverlay_tweak.Patches.Cursor
             return false;
         }
 
-        [HarmonyPatch("HandleClicksForDesktopWindows")]
+        [HarmonyPatch("SendCapturedPressClick"), HarmonyPatch("SendCapturedPressDown")]
         [HarmonyPrefix]
-        public static void SetCursorPositionBeforeClick(Raycaster __instance, ref ClickActions clickActions, ref MouseInputDevice ___InputDevice)
+        public static void SetCursorPositionBeforeClick(Raycaster __instance, ref Vector2 ___CapturedPressDesktopCoordinate)
         {
             if (!IsEnable()) return;
             if (!EventBridge.IsRaycasterHand(__instance)) return;
+            if (EventBridge.IsOverlayWebView(__instance.HoveringOverlay)) return;
 
-            if (___InputDevice.InputSource == clickActions.InputSource && __instance.CanClickDesktopCursor)
-                if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
-                    if (Data.IsCursor)
+            if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
+                if (Data.IsCursor)
+                {
+                    if (EventBridge.Ref_Raycaster.TryGetDesktopCoordinate(__instance, out Vector2 desktopCoordinate))
                     {
-                        if (EventBridge.Ref_Raycaster.TryGetDesktopCoordinate(__instance, out Vector2 desktopCoordinate))
-                            MouseOperations.SetCursorPosition((int)desktopCoordinate.x, (int)desktopCoordinate.y);
+                        MouseOperations.SetCursorPosition((int)desktopCoordinate.x, (int)desktopCoordinate.y);
+                        ___CapturedPressDesktopCoordinate = desktopCoordinate;
                     }
+                }
         }
 
         public static bool IsCursorMode(Raycaster raycaster) => CursorDictionary.TryGetValue(raycaster, out WindowsCursorPointer.CursorData Data) && Data.IsCursor;
