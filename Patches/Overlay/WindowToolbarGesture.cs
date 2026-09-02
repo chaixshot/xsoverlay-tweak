@@ -76,26 +76,26 @@ namespace xsoverlay_tweak.Patches.Overlay
             };
         }
 
-        [HarmonyPatch("OnClick")]
+        [HarmonyPatch("SendCapturedPressClick")]
         [HarmonyPrefix]
-        public static bool RightClickWindowToolbar(Raycaster __instance, ClickActions clickActions, MouseInputDevice ___InputDevice)
+        public static bool RightClickWindowToolbar(Raycaster __instance, int ___CapturedPressButton)
         {
             if (!IsEnable()) return true;
+            if (EventBridge.IsOverlayDesktpOrWindowCapture(__instance.HoveringOverlay)) return true;
 
-            if (clickActions.InputSource == ___InputDevice.InputSource)
+            if (___CapturedPressButton == 1) // Right Click
                 if (__instance.HoveringOverlay?.overlayName == "window.toolbar")
-                    if (clickActions.ActionIndex == 1) // Right Click
+                {
+                    Unity_Overlay targetOverlay = Overlay_Manager.Instance.WindowToolbarMover.ParentOverlay;
+
+                    if (LastWindow.TryGetValue(targetOverlay, out WindowData Data))
                     {
-                        Unity_Overlay targetOverlay = Overlay_Manager.Instance.WindowToolbarMover.ParentOverlay;
+                        WindowComponentManager windowComponent = targetOverlay.overlayRootObject.GetComponentInChildren<WindowComponentManager>(true);
+                        windowComponent.SetOverlayCaptureTarget(targetOverlay, Data.LastWindow);
 
-                        if (LastWindow.TryGetValue(targetOverlay, out WindowData Data))
-                        {
-                            WindowComponentManager windowComponent = targetOverlay.overlayRootObject.GetComponentInChildren<WindowComponentManager>(true);
-                            windowComponent.SetOverlayCaptureTarget(targetOverlay, Data.LastWindow);
-
-                            return false;
-                        }
+                        return false;
                     }
+                }
 
             return true;
         }
