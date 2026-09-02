@@ -65,23 +65,19 @@ namespace xsoverlay_tweak.Patches.Keyboard
 
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void WebviewOverlay(OverlayWebView wv)
+        public static void WebviewKeyboardLoaded(OverlayWebView wv)
         {
             if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Keyboard)
             {
-                IWebView webView = wv._webView.WebView;
-
-                webView.LoadProgressChanged += (s, e) =>
+                wv.WebViewReady += (IWebView) =>
                 {
-                    if (e.Type == ProgressChangeType.Finished)
+                    _keyboardWebView = wv._webView.WebView;
+
+                    Task.Run(async () =>
                     {
-                        _keyboardWebView = webView;
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(1000);
-                            UpdateStyleState();
-                        });
-                    }
+                        await Task.Delay(1000);
+                        UpdateStyleState();
+                    });
                 };
             }
         }
@@ -91,9 +87,15 @@ namespace xsoverlay_tweak.Patches.Keyboard
             if (_keyboardWebView == null) return;
 
             if (IsEnable())
-                _keyboardWebView.ExecuteJavaScript(cssJS, null);
+                _keyboardWebView.ExecuteJavaScript(cssJS, (result) =>
+                {
+                    //Plugin.Logger.LogError($"[Keyboard] {result}");
+                });
             else
-                _keyboardWebView.ExecuteJavaScript(undoJS, null);
+                _keyboardWebView.ExecuteJavaScript(undoJS, (result) =>
+                {
+                    //Plugin.Logger.LogError($"[Keyboard] {result}");
+                });
         }
 
         private static bool IsEnable()
