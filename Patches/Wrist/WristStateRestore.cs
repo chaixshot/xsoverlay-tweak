@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System.Threading.Tasks;
-using Vuplex.WebView;
 using XSOverlay;
 using XSOverlay.WebApp;
 using xsoverlay_tweak.Utils;
@@ -22,9 +21,9 @@ namespace xsoverlay_tweak.Patches.Wrist
                 CustomSettings.SaveSettings();
             };
 
-            CustomAPI.OnClickToggleMediaPlayer += (enable) =>
+            CustomAPI.OnToggleMediaPlayer += (enable, byClick) =>
             {
-                if (!IsEnable()) return;
+                if (!IsEnable() || !byClick) return;
 
                 CustomSettings.Settings.IsMediaPlayerOpened = enable;
                 CustomSettings.SaveSettings();
@@ -39,30 +38,47 @@ namespace xsoverlay_tweak.Patches.Wrist
 
             if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Wrist)
             {
-                string jsCode = string.Format(@"(function() {{
-                        if ({0}) {{
-                            MiniToolbar.PerformanceStats.click();
-                        }};
-
-                        if ({1} && !ShowMediaPlayer) {{
-                            MiniToolbar.MediaPlayer.click();
-                        }};
-                    }})()", CustomSettings.Settings.IsPerformanceMonitorOpened.ToString().ToLower(), CustomSettings.Settings.IsMediaPlayerOpened.ToString().ToLower());
-
-                wv._webView.WebView.LoadProgressChanged += (sender, args) =>
+                wv.WebViewReady += (IWebView) =>
                 {
-                    if (args.Type == ProgressChangeType.Finished)
-                    {
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(1500); // Wait for CustomAPI execute listener first
+                    string jsCode = string.Format(
+                        @"(function restoreWristToolbarState() {{
+                            if (window.toolbarContext) {{
+                                const ctx = window.toolbarContext;
 
-                            wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
-                            {
-                                //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
-                            });
+                                // Restore Performance Stats state
+                                if ({0} && !ctx.state?.ShowPerformanceMonitor) {{
+                                    if (ctx.state?.MiniToolbar?.PerformanceStats) {{
+                                        ctx.state.MiniToolbar.PerformanceStats.click();
+                                    }} else if (ctx.api?.Send) {{
+                                        ctx.api.Send('TogglePerformanceStats', null, null);
+                                    }}
+                                }}
+
+                                // Restore Media Player state
+                                if ({1} && !ctx.state?.ShowMediaPlayer) {{
+                                    if (typeof ctx.onToggleMediaPlayer === 'function') {{
+                                        ctx.onToggleMediaPlayer();
+                                    }} else if (ctx.state?.MiniToolbar?.MediaPlayer) {{
+                                        ctx.state.MiniToolbar.MediaPlayer.click();
+                                    }}
+                                }}
+                            }} else {{
+                                setTimeout(restoreWristToolbarState, 50);
+                            }}
+                        }})();",
+                        CustomSettings.Settings.IsPerformanceMonitorOpened.ToString().ToLower(),
+                        CustomSettings.Settings.IsMediaPlayerOpened.ToString().ToLower()
+                    );
+
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(1500); // Wait for CustomAPI execute listener first
+
+                        wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
+                        {
+                            //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
                         });
-                    }
+                    });
                 };
             }
         }
