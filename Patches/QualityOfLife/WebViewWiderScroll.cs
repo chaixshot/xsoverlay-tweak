@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Vuplex.WebView;
 using XSOverlay;
 using XSOverlay.WebApp;
 
@@ -30,24 +29,25 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void WebviewOverlay(OverlayWebView wv)
+        public static void WebviewWindowSettingsLoaded(OverlayWebView wv)
         {
-            if (IsEnable())
-                if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Settings || wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.WindowSettings)
-                    wv._webView.WebView.LoadProgressChanged += (sender, args) =>
-                    {
-                        if (args.Type == ProgressChangeType.Finished)
-                        {
-                            Task.Run(async () =>
-                            {
-                                await Task.Delay(1000);
+            if (!IsEnable()) return;
 
-                                if (!WebViews.Contains(wv))
-                                    WebViews.Add(wv);
-                                AddCSS(wv);
-                            });
-                        }
-                    };
+            if (wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.Settings || wv.UserInterfaceSelection == OverlayWebView.UserInterfacePaths.WindowSettings)
+            {
+                wv.WebViewReady += (IWebView) =>
+                {
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(1000);
+
+                        if (!WebViews.Contains(wv))
+                            WebViews.Add(wv);
+
+                        AddCSS(wv);
+                    });
+                };
+            }
         }
 
         public static void AddCSS(OverlayWebView wv)
@@ -73,10 +73,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
             wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
             {
-                if (result.Contains("ERROR"))
-                    Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
-                else
-                    Plugin.Logger.LogInfo($"[{wv.UserInterfaceSelection}] {result}");
+                //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
             });
         }
 
@@ -95,10 +92,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
             wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
             {
-                if (result.Contains("ERROR"))
-                    Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
-                else
-                    Plugin.Logger.LogInfo($"[{wv.UserInterfaceSelection}] {result}");
+                //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
             });
         }
 
