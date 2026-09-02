@@ -13,6 +13,7 @@ namespace xsoverlay_tweak.Utils
     {
         public static Unity_Overlay CurrentHoveringOverlay;
         public static Raycaster ActiveRaycaster;
+        public static Raycaster ActiveKeyboardRaycaster;
         public static Raycaster ActiveWebViewRaycaster;
         public static Raycaster ActiveDesktopRaycaster;
         public static readonly List<Raycaster> Raycaster_List = [];
@@ -42,7 +43,7 @@ namespace xsoverlay_tweak.Utils
                     IsHoverAnyDesktopOrWindowCapture = raycaster.HoveringOverlay?.IsDesktopOrWindowCapture == true;
                     IsHoverAnyDesktopCapture = raycaster.HoveringOverlay?.IsDesktopCapture == true;
                     IsHoverAnyWindowCapture = raycaster.HoveringOverlay?.IsWindowCapture == true;
-                    IsHoverAnyWebView = raycaster.HoveringOverlay?.OverlayWebView != null;
+                    IsHoverAnyWebView = raycaster.HoveringOverlay?.IsWebApplication == true;
 
                 }
 
@@ -63,9 +64,11 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPrefix]
         public static void SwapTargetHand(Raycaster __instance)
         {
-            if (__instance?.HoveringOverlay?.OverlayWebView != null)
+            if (__instance?.HoveringOverlay?.IsWebApplication == true)
             {
-                if (IsActiveHandForWebView(__instance))
+                if (IsOverlayKeyboard(__instance.HoveringOverlay))
+                    ActiveKeyboardRaycaster = __instance;
+                else if (IsActiveHandForWebView(__instance))
                     ActiveWebViewRaycaster = __instance;
             }
             else if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
@@ -112,7 +115,7 @@ namespace xsoverlay_tweak.Utils
             Unity_Overlay overlay = raycaster.HoveringOverlay;
 
             if (overlay != null)
-                if (overlay.OverlayWebView != null && Ref_Raycaster.NativeHoverStates.Contains(overlay))
+                if (overlay.IsWebApplication && Ref_Raycaster.NativeHoverStates.Contains(overlay))
                 {
                     object nativeHoverState = Ref_Raycaster.NativeHoverStates[overlay];
 

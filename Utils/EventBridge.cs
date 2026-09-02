@@ -31,8 +31,7 @@ namespace xsoverlay_tweak.Utils
         {
             public delegate bool TryGetDesktopCoordinateDelegate(Raycaster instance, out Vector2 desktopCoordinate);
 
-            public static readonly Action<Raycaster> TakeControlOverCursorIfNotInControl = AccessTools.MethodDelegate<Action<Raycaster>>(AccessTools.Method(typeof(Raycaster), "TakeControlOverCursorIfNotInControl"));
-            public static readonly TryGetDesktopCoordinateDelegate TryGetDesktopCoordinate = (TryGetDesktopCoordinateDelegate)AccessTools.Method(typeof(Raycaster), "TryGetDesktopCoordinate").CreateDelegate(typeof(TryGetDesktopCoordinateDelegate));
+            public static readonly TryGetDesktopCoordinateDelegate TryGetDesktopCoordinate = AccessTools.MethodDelegate<TryGetDesktopCoordinateDelegate>(AccessTools.Method(typeof(Raycaster), "TryGetDesktopCoordinate", [typeof(Vector2).MakeByRefType()]));
 
             // NativeHoverState
             protected static readonly Type NativeHoverState = typeof(Raycaster).GetNestedType("NativeHoverState", AccessTools.all);
@@ -84,13 +83,28 @@ namespace xsoverlay_tweak.Utils
             return true;
         }
 
-        public static bool IsOverlayWebView(Unity_Overlay overlay)
+        public static bool IsOverlayWebView(Unity_Overlay overlay, string ignor = "")
         {
             if (overlay == null)
                 return false;
 
-            string overlayName = overlay?.overlayName ?? "";
-            return overlay.WebViewHandler != null && overlay.IsPluginApplication && !overlay.IsDesktopOrWindowCapture && !overlayName.Equals("wrist") && !overlayName.Equals("notification");
+            string overlayName = overlay.overlayName ?? "";
+
+            bool isIgnored = !string.IsNullOrEmpty(overlayName)
+                && !string.IsNullOrEmpty(ignor)
+                && ignor.IndexOf(overlayName, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            return overlay.IsWebApplication
+                && !overlay.IsDesktopOrWindowCapture
+                && !isIgnored;
+        }
+
+        public static bool IsOverlayDesktpOrWindowCapture(Unity_Overlay overlay)
+        {
+            if (overlay == null)
+                return false;
+
+            return !overlay.IsWebApplication && overlay.IsDesktopOrWindowCapture;
         }
 
         public static bool IsOverlayKeyboard(Unity_Overlay overlay)
@@ -123,7 +137,6 @@ namespace xsoverlay_tweak.Utils
                 if (keyboard.isPinned) // Pinned keyboard can't unsummon
                 {
                     overlay_Manager.PinKeyboard();
-                    overlay_Manager.PinWindowSpecificWindow(keyboard);
                 }
 
                 ServerClientBridge.Instance.Api.Commands["Keyboard"]("", "", "");
@@ -149,6 +162,7 @@ namespace xsoverlay_tweak.Utils
         public static bool IsRaycasterHand(Raycaster raycaster) => EventBridge_Raycaster.IsRaycasterHand(raycaster);
         public static Raycaster GetActiveRaycaster() => EventBridge_Raycaster.ActiveRaycaster;
         public static Raycaster GetActiveWebViewRaycaster() => EventBridge_Raycaster.ActiveWebViewRaycaster;
+        public static Raycaster GetActiveKeyboardRaycaster() => EventBridge_Raycaster.ActiveKeyboardRaycaster;
         public static Raycaster GetActiveDesktopRaycaster() => EventBridge_Raycaster.ActiveDesktopRaycaster;
 
         public static Unity_Overlay GetCurrentHoveringOverlay() => EventBridge_Raycaster.CurrentHoveringOverlay;
