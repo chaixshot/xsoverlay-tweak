@@ -111,18 +111,18 @@ namespace xsoverlay_tweak.Patches.Cursor
                         if (GetCursorInfo(out ci) && (ci.flags & CURSOR_SHOWING) != 0)
                         {
                             bool isAnimated = IsPossiblyAnimatedCursor(ci.hCursor);
-                            bool shouldUpdate = ci.hCursor != Data.LastCursorHandle || isAnimated || Data.CursorTexture == null || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture;
+                            bool isNewCursorHandle = ci.hCursor != Data.LastCursorHandle;
+                            bool shouldUpdate = isNewCursorHandle || isAnimated || Data.CursorTexture == null || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture;
 
                             if (shouldUpdate)
                             {
-                                if (ci.hCursor != Data.LastCursorHandle)
+                                Texture2D prevCursorTexture = Data.CursorTexture;
+
+                                if (isNewCursorHandle)
                                     Data.AnimationFrame = 0;
+
                                 Data.IsCursor = true;
                                 Data.LastCursorHandle = ci.hCursor;
-
-                                // Prevent GPU memory leak: Destroy the old texture before creating a new one
-                                if (Data.CursorTexture != null)
-                                    UnityEngine.Object.Destroy(Data.CursorTexture);
 
                                 // Force software overrides any custom textures the engine loaded
                                 Data.CursorTexture = ExtractCurrentWindowsCursor(ci.hCursor, Data, out Data.HotSpotOffset);
@@ -151,6 +151,12 @@ namespace xsoverlay_tweak.Patches.Cursor
                                 ___VisualCursorElementOverlay.overlay.overlayTexture = Data.CursorTexture;
                                 ___VisualCursorElementOverlay.widthInMeters = widthInMeters;
                                 ___VisualCursorElementOverlay.overlay.overlayWidthInMeters = widthInMeters;
+
+                                // Immediately destroy the previous texture only if a new texture reference was created
+                                if (prevCursorTexture != null && prevCursorTexture != Data.CursorTexture)
+                                {
+                                    UnityEngine.Object.DestroyImmediate(prevCursorTexture);
+                                }
                             }
                         }
                         else if (Data.IsCursor)
