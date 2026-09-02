@@ -3,6 +3,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using XSOverlay;
+using XSOverlay.PointerInput;
 using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Utils;
@@ -25,6 +26,12 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
         private static readonly ConditionalWeakTable<Raycaster, LaserData> LaserDictionary = new();
         private static bool ShouldBeActive = false;
+
+        private static readonly AccessTools.FieldRef<Raycaster, GameObject> getVisualCursorElementPrefab = AccessTools.FieldRefAccess<Raycaster, GameObject>("VisualCursorElementPrefab");
+
+        private static readonly AccessTools.FieldRef<AngularPointerSmoothingFilter, bool> isSmoothing = AccessTools.FieldRefAccess<AngularPointerSmoothingFilter, bool>("_hasState");
+        private static readonly AccessTools.FieldRef<AngularPointerSmoothingFilter, Vector3> getSmoothPosition = AccessTools.FieldRefAccess<AngularPointerSmoothingFilter, Vector3>("_filteredPosition");
+        private static readonly AccessTools.FieldRef<AngularPointerSmoothingFilter, Vector3> getSmoothDirection = AccessTools.FieldRefAccess<AngularPointerSmoothingFilter, Vector3>("_filteredDirection");
 
         // Create Laser_A overlay
         [HarmonyPatch("Start")]
@@ -96,10 +103,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             Vector3 ___RawRayDirection,
             Vector3 ___RayHitPoint,
 
-            bool ___HasFilteredSteamVRRay,
-
-            Vector3 ___FilteredSteamVRRayPosition,
-            Vector3 ___FinalIntersectionRayDirection
+            AngularPointerSmoothingFilter ___PointerSmoothingFilter
             )
         {
             if (!IsEnable()) return;
@@ -109,17 +113,15 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             {
                 // Handle movement
                 {
-                    PullTriggerPointerLock.InstanceState.TryGetValue(__instance, out PullTriggerPointerLock.RaycasterState ClickState);
-
                     Vector3 position = ___RawRayPosition;
                     Vector3 direction = ___RawRayDirection;
                     Vector3 hitPoint = ___RayHitPoint;
 
                     // UseCursorSmoothing for laser
-                    if (IsEnableMouseSmooth() && ___HasFilteredSteamVRRay)
+                    if (IsEnableMouseSmooth() && isSmoothing(___PointerSmoothingFilter))
                     {
-                        position = ___FilteredSteamVRRayPosition;
-                        direction = ___FinalIntersectionRayDirection;
+                        position = getSmoothPosition(___PointerSmoothingFilter);
+                        direction = getSmoothDirection(___PointerSmoothingFilter);
                     }
 
                     // Capture overlay backward hit point
@@ -187,7 +189,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
         {
             if (LaserDictionary.TryGetValue(instance, out _)) return;
 
-            GameObject VisualCursorElementPrefab = (GameObject)AccessTools.Field(typeof(Raycaster), "VisualCursorElementPrefab").GetValue(instance);
+            GameObject VisualCursorElementPrefab = getVisualCursorElementPrefab(instance);
             Unity_Overlay Laser_A;
             Unity_Overlay Laser_B;
 
