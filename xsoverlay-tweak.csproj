@@ -23,6 +23,7 @@
     <Compile Remove="Patches\Cursor\AlwaysUpdateCursor.cs" />
     <Compile Remove="Patches\Fix\SteamVRCompositorTextureFormatFix.cs" />
     <Compile Remove="Patches\Fix\WebViewFrozenFix.cs" />
+    <Compile Remove="Patches\Fix\WebViewTexturePixelFormatFix.cs" />
     <Compile Remove="Patches\Keyboard\KeyboardControlButtonStateFix.cs" />
     <Compile Remove="Patches\Overlay\OverlayGripAntiSlip.cs" />
   </ItemGroup>
