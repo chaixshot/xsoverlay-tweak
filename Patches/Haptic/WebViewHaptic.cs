@@ -50,31 +50,30 @@ namespace xsoverlay_tweak.Patches.Haptic
 
         [HarmonyPatch(typeof(Overlay_Manager), "OnRegisterWebviewOverlay")]
         [HarmonyPostfix]
-        public static void WebviewOverlay(OverlayWebView wv)
+        public static void WebviewLoaded(OverlayWebView wv)
         {
-            if (wv?._webView?.WebView == null) return;
-
-            IWebView webView = wv._webView.WebView;
-
-            // Listen for messages from the injected JavaScript
-            webView.MessageEmitted += (sender, args) =>
+            wv.WebViewReady += (IWebView) =>
             {
-                if (!IsEnable() || args.Value != "XSOverlayTweak-Haptic-Hover") return;
+                IWebView webView = wv._webView.WebView;
+                string overlayName = wv._overlay.overlayName;
 
-                AdvancedHaptics.Rumble(EventBridge.GetActiveWebViewRaycaster()?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.WebViewHaptic.Value / 100f);
-            };
-
-            // Inject the script when loading completes
-            webView.LoadProgressChanged += (s, e) =>
-            {
-                if (e.Type == ProgressChangeType.Finished)
+                // Listen for messages from the injected JavaScript
+                webView.MessageEmitted += (sender, args) =>
                 {
-                    Task.Run(async () =>
+                    if (!IsEnable() || args.Value != "XSOverlayTweak-Haptic-Hover") return;
+
+                    Raycaster targetRaycaster = overlayName == "keyboard" ? EventBridge.GetActiveKeyboardRaycaster() : EventBridge.GetActiveWebViewRaycaster();
+                    AdvancedHaptics.Rumble(targetRaycaster?.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.WebViewHaptic.Value / 100f);
+                };
+
+                Task.Run(async () =>
+                {
+                    await Task.Delay(1000);
+                    webView.ExecuteJavaScript(HapticJS, (result) =>
                     {
-                        await Task.Delay(1000);
-                        webView.ExecuteJavaScript(HapticJS, null);
+                        //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
                     });
-                }
+                });
             };
         }
 
