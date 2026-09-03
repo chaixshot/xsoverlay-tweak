@@ -73,9 +73,9 @@ namespace xsoverlay_tweak.Patches.Pointer
                 return;
             }
 
-            bool isDesktopOrCapture = hovering.IsDesktopOrWindowCapture;
-            bool isWebViewLock = XConfig.PullTriggerPointerLock.Value == 2 && hovering.IsWebApplication;
-            bool isWebViewSmooth = XConfig.PullTriggerPointerLock.Value == 4 && hovering.IsWebApplication;
+            bool isDesktopOrCapture = EventBridge.IsOverlayDesktpOrWindowCapture(hovering);
+            bool isWebViewLock = XConfig.PullTriggerPointerLock.Value == 2 && EventBridge.IsOverlayWebView(hovering);
+            bool isWebViewSmooth = XConfig.PullTriggerPointerLock.Value == 4 && EventBridge.IsOverlayWebView(hovering);
             bool holdingTouch = ___PressedMouseButton != -1;
 
             if (!isDesktopOrCapture && !isWebViewLock && !isWebViewSmooth) return;

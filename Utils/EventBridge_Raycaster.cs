@@ -40,10 +40,10 @@ namespace xsoverlay_tweak.Utils
                 foreach (Raycaster raycaster in Raycaster_List)
                 {
                     IsHoverAnyOverlay = raycaster.HoveringOverlay != null;
-                    IsHoverAnyDesktopOrWindowCapture = raycaster.HoveringOverlay?.IsDesktopOrWindowCapture == true;
-                    IsHoverAnyDesktopCapture = raycaster.HoveringOverlay?.IsDesktopCapture == true;
-                    IsHoverAnyWindowCapture = raycaster.HoveringOverlay?.IsWindowCapture == true;
-                    IsHoverAnyWebView = raycaster.HoveringOverlay?.IsWebApplication == true;
+                    IsHoverAnyDesktopOrWindowCapture = IsOverlayDesktpOrWindowCapture(raycaster.HoveringOverlay);
+                    IsHoverAnyDesktopCapture = IsOverlayDesktopCapture(raycaster.HoveringOverlay);
+                    IsHoverAnyWindowCapture = IsOverlayWindowCapture(raycaster.HoveringOverlay);
+                    IsHoverAnyWebView = IsOverlayWebView(raycaster.HoveringOverlay);
 
                 }
 
@@ -64,14 +64,14 @@ namespace xsoverlay_tweak.Utils
         [HarmonyPrefix]
         public static void SwapTargetHand(Raycaster __instance)
         {
-            if (__instance?.HoveringOverlay?.IsWebApplication == true)
+            if (IsOverlayWebView(__instance.HoveringOverlay))
             {
                 if (IsOverlayKeyboard(__instance.HoveringOverlay))
                     ActiveKeyboardRaycaster = __instance;
                 else if (IsActiveHandForWebView(__instance))
                     ActiveWebViewRaycaster = __instance;
             }
-            else if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
+            else if (IsOverlayDesktpOrWindowCapture(__instance.HoveringOverlay))
             {
                 if (IsActiveHand(__instance))
                     ActiveDesktopRaycaster = __instance;
@@ -115,7 +115,7 @@ namespace xsoverlay_tweak.Utils
             Unity_Overlay overlay = raycaster.HoveringOverlay;
 
             if (overlay != null)
-                if (overlay.IsWebApplication && Ref_Raycaster.NativeHoverStates.Contains(overlay))
+                if (IsOverlayWebView(overlay) && Ref_Raycaster.NativeHoverStates.Contains(overlay))
                 {
                     object nativeHoverState = Ref_Raycaster.NativeHoverStates[overlay];
 

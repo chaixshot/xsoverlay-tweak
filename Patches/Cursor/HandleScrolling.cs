@@ -32,7 +32,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             float baseScrollSpeed = XSettingsManager.Instance.Settings.ScrollSpeed;
             float scrollFactor = baseScrollSpeed / RefreshRate.HMDRefreshRate;
 
-            if (__instance?.HoveringOverlay?.IsDesktopOrWindowCapture == true)
+            if (EventBridge.IsOverlayDesktpOrWindowCapture(__instance.HoveringOverlay))
             {
                 // Handle Horizontal Scrolling
                 ____horizontalTicks += absX * (float)scrollClicksPerSecond * scrollFactor;

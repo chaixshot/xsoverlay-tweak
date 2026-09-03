@@ -96,6 +96,8 @@ namespace xsoverlay_tweak.Utils
 
             return overlay.IsWebApplication
                 && !overlay.IsDesktopOrWindowCapture
+                //&& !overlay.IsDesktopCapture //# It true even it IsWebApplication
+                && !overlay.IsWindowCapture
                 && !isIgnored;
         }
 
@@ -104,12 +106,31 @@ namespace xsoverlay_tweak.Utils
             if (overlay == null)
                 return false;
 
-            return !overlay.IsWebApplication && overlay.IsDesktopOrWindowCapture;
+            return (overlay.IsDesktopOrWindowCapture || overlay.IsDesktopCapture || overlay.IsWindowCapture) && !overlay.IsWebApplication;
+        }
+
+        public static bool IsOverlayDesktopCapture(Unity_Overlay overlay)
+        {
+            if (overlay == null)
+                return false;
+
+            return overlay.IsDesktopCapture && !overlay.IsWindowCapture && !overlay.IsWebApplication;
+        }
+
+        public static bool IsOverlayWindowCapture(Unity_Overlay overlay)
+        {
+            if (overlay == null)
+                return false;
+
+            return overlay.IsWindowCapture && !overlay.IsDesktopCapture && !overlay.IsWebApplication;
         }
 
         public static bool IsOverlayKeyboard(Unity_Overlay overlay)
         {
-            return overlay?.overlayName == "keyboard";
+            if (overlay == null)
+                return false;
+
+            return overlay.overlayName == "keyboard";
         }
 
         protected static void HandleScrolling(Vector2 ScrollAxis, Vector2 normalizedPoint) => OnHandleScrolling?.Invoke(ScrollAxis, normalizedPoint);

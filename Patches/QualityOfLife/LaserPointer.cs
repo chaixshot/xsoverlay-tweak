@@ -261,7 +261,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                 if (Time.unscaledTime - Data.LastUpdateLengthTime < 0.1f) return; // ~10 FPS
 
                 // Apply endpoint offset (in meters) to adjust laser length before hit point
-                bool hoverDesktop = raycaster?.HoveringOverlay?.IsDesktopOrWindowCapture == true;
+                bool hoverDesktop = EventBridge.IsOverlayDesktpOrWindowCapture(raycaster.HoveringOverlay);
                 float endOffsetInMeters = hoverDesktop ? 0.1f : 0f; // Capture overlay backward hit point
                 float adjustedDistance = Mathf.Max(0.01f, Data.Distance - endOffsetInMeters);
 

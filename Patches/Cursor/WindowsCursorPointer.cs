@@ -93,7 +93,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             {
                 Unity_Overlay targetOverlay = __instance.HoveringOverlay;
 
-                if (EventBridge.IsActiveHand(__instance) && __instance.HeldOverlay == null && targetOverlay?.IsDesktopCapture == true && IsTargetWindow(targetOverlay))
+                if (EventBridge.IsActiveHand(__instance) && __instance.HeldOverlay == null && EventBridge.IsOverlayDesktopCapture(targetOverlay) && IsTargetWindow(targetOverlay))
                 {
                     if (Data.IsCursor)
                     {
