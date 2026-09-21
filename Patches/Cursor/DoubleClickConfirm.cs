@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using UnityEngine;
 using XSOverlay;
 using xsoverlay_tweak.Utils;
@@ -11,24 +11,32 @@ namespace xsoverlay_tweak.Patches.Cursor
     [HarmonyPatch(typeof(Raycaster))]
     internal class DoubleClickConfirm
     {
-        [DllImport("user32.dll")]
-        private static extern uint GetDoubleClickTime();
-
         private class DoubleClickConfirmState
         {
             public float lastClickTime = 0f;
+            public Vector2 lastClickCoordinate = Vector2.zero;
         }
+
         private static readonly ConditionalWeakTable<Raycaster, DoubleClickConfirmState> InstanceState = new();
 
         public static readonly Action<Raycaster, bool> AnimateCursorHold = AccessTools.MethodDelegate<Action<Raycaster, bool>>(AccessTools.Method(typeof(Raycaster), "AnimateCursorHold"));
-        static float wDoubleClickTime;
+
+        static float winDoubleClickTimeSeconds;
+        static Vector2 doubleClickBoxSize;
         static Vector2 lastDesktopCoordinates;
 
         [HarmonyPatch("Start")]
         [HarmonyPostfix]
         public static void GetWindowsDoubleClickDelay()
         {
-            wDoubleClickTime = GetDoubleClickTime() / 1000f;
+            // Fetch timing limit in seconds directly via System.Windows.Forms
+            winDoubleClickTimeSeconds = SystemInformation.DoubleClickTime / 1000f;
+
+            // Fetch spatial bounding box size directly
+            doubleClickBoxSize = new Vector2(
+                SystemInformation.DoubleClickSize.Width,
+                SystemInformation.DoubleClickSize.Height
+            );
         }
 
         [HarmonyPatch("SendCapturedPressClick"), HarmonyPatch("SendCapturedPressDown")]
@@ -41,9 +49,16 @@ namespace xsoverlay_tweak.Patches.Cursor
             DoubleClickConfirmState DoubleClickState = InstanceState.GetOrCreateValue(__instance);
 
             float delay = Time.time - DoubleClickState.lastClickTime;
+            Vector2 currentCoord = ___CapturedPressDesktopCoordinate;
+
+            // Verify both temporal delay and spatial bounding box conditions
+            bool isWithinTime = delay <= winDoubleClickTimeSeconds;
+            bool isWithinBox = Math.Abs(currentCoord.x - DoubleClickState.lastClickCoordinate.x) <= (doubleClickBoxSize.x / 2f)
+                            && Math.Abs(currentCoord.y - DoubleClickState.lastClickCoordinate.y) <= (doubleClickBoxSize.y / 2f);
+
             bool isDoubleClickXSO = false;
             bool isDoubleClickWin = false;
-            bool isWDoubleClick = delay <= wDoubleClickTime;
+            bool isWDoubleClick = isWithinTime && isWithinBox;
             bool holdingTouch = __originalMethod.Name == "SendCapturedPressDown";
 
             if (!isWDoubleClick && delay <= XSettingsManager.Instance.Settings.DoubleClickDelay)
@@ -57,9 +72,12 @@ namespace xsoverlay_tweak.Patches.Cursor
                 DoubleClickState.lastClickTime = 0f;
             }
             else
+            {
                 DoubleClickState.lastClickTime = Time.time;
+                DoubleClickState.lastClickCoordinate = currentCoord;
+            }
 
-            // Cache the cursor position and set it back when double-click to avoid the cursor moving from hand movement between clicks
+            // Cache the cursor position and set it back when double-clicking to avoid hand movement jitter
             if (isDoubleClickXSO || isDoubleClickWin)
             {
                 ___CapturedPressDesktopCoordinate = lastDesktopCoordinates;
@@ -86,7 +104,7 @@ namespace xsoverlay_tweak.Patches.Cursor
                             break;
                     }
                 }
-                else // Handle Click - Relase - Click Hold (SendCapturedPressDown)
+                else // Handle Click - Release - Click Hold (SendCapturedPressDown)
                 {
                     AnimateCursorHold(__instance, true);
 
@@ -106,7 +124,6 @@ namespace xsoverlay_tweak.Patches.Cursor
                             MouseOperations.MMouseUp(InputManager.sim);
                             MouseOperations.MMouseDown(InputManager.sim);
                             break;
-
                     }
                 }
             }
