@@ -52,23 +52,26 @@ namespace xsoverlay_tweak.Patches.Cursor
             Vector2 currentCoord = ___CapturedPressDesktopCoordinate;
 
             // Verify both temporal delay and spatial bounding box conditions
-            bool isWithinTime = delay <= winDoubleClickTimeSeconds;
-            bool isWithinBox = Math.Abs(currentCoord.x - DoubleClickState.lastClickCoordinate.x) <= (doubleClickBoxSize.x / 2f)
+            bool isWinWithinTime = delay <= winDoubleClickTimeSeconds;
+            bool isWinWithinBox = Math.Abs(currentCoord.x - DoubleClickState.lastClickCoordinate.x) <= (doubleClickBoxSize.x / 2f)
                             && Math.Abs(currentCoord.y - DoubleClickState.lastClickCoordinate.y) <= (doubleClickBoxSize.y / 2f);
 
             bool isDoubleClickXSO = false;
-            bool isDoubleClickWin = false;
-            bool isWDoubleClick = isWithinTime && isWithinBox;
+            bool isDoubleClickWin = isWinWithinTime && isWinWithinBox;
             bool holdingTouch = __originalMethod.Name == "SendCapturedPressDown";
+            float doubleClickDelay = XSettingsManager.Instance.Settings.DoubleClickDelay;
 
-            if (!isWDoubleClick && delay <= XSettingsManager.Instance.Settings.DoubleClickDelay)
+            // Double-clicking and hold add more allow time
+            if (holdingTouch && !isDoubleClickWin && delay <= doubleClickDelay + 0.3f)
+                doubleClickDelay += 0.3f;
+
+            if (!isDoubleClickWin && delay <= doubleClickDelay)
             {
                 isDoubleClickXSO = true;
                 DoubleClickState.lastClickTime = 0f;
             }
-            else if (isWDoubleClick)
+            else if (isDoubleClickWin)
             {
-                isDoubleClickWin = true;
                 DoubleClickState.lastClickTime = 0f;
             }
             else
@@ -88,7 +91,7 @@ namespace xsoverlay_tweak.Patches.Cursor
 
             if (!isDoubleClickWin && isDoubleClickXSO)
             {
-                if (!holdingTouch) // Handle standard clicks - double clicks (SendCapturedPressClick)
+                if (!holdingTouch) // Handle standard double-clicking (SendCapturedPressClick)
                 {
                     switch (___CapturedPressButton)
                     {
@@ -104,7 +107,7 @@ namespace xsoverlay_tweak.Patches.Cursor
                             break;
                     }
                 }
-                else // Handle Click - Release - Click Hold (SendCapturedPressDown)
+                else // Handle double-clicking and hold (SendCapturedPressDown)
                 {
                     AnimateCursorHold(__instance, true);
 
