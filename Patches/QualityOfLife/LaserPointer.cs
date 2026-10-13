@@ -260,12 +260,8 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
             {
                 if (Time.unscaledTime - Data.LastUpdateLengthTime < 0.1f) return; // ~10 FPS
 
-                // Apply endpoint offset (in meters) to adjust laser length before hit point
-                bool hoverDesktop = EventBridge.IsOverlayDesktpOrWindowCapture(raycaster.HoveringOverlay);
-                float endOffsetInMeters = hoverDesktop ? 0.1f : 0f; // Capture overlay backward hit point
-                float adjustedDistance = Mathf.Max(0.01f, Data.Distance - endOffsetInMeters);
-
-                int newHeight = Mathf.Max(1, (int)(adjustedDistance * 500));
+                float adjustedDistance = Mathf.Max(0.03f, Data.Distance);
+                int newHeight = Mathf.Max(1, (int)(adjustedDistance * 500f));
 
                 if (Data.Texture.height == newHeight) return;
 
@@ -276,31 +272,32 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
 
                 // Generate the procedural fading color pixels
                 Color32[] colors = new Color32[newHeight];
-
-                // Define how many pixels long the fading transition to be
-                int fadeLengthInPixels = Mathf.Min(100, newHeight);
+                int fadeLengthInPixels = Mathf.Min(100, newHeight); // Define how many pixels long the fading transition to be
+                int startPointOffset = 0; // Define offset at the Start point
+                int endPointOffset = 10; // Define offset at the End point
 
                 for (int y = 0; y < newHeight; y++)
                 {
                     byte alpha = 255; // Default fully opaque
 
-                    // y = 0 is the ending of the beam
-                    if (y < fadeLengthInPixels)
+                    // Start point fade with offset support
+                    if (y < startPointOffset)
+                        alpha = 0; // Fully transparent before the start offset
+                    else if (y < startPointOffset + fadeLengthInPixels)
                     {
-                        float fadeRatio = (float)y / fadeLengthInPixels;
+                        float fadeRatio = (float)(y - startPointOffset) / fadeLengthInPixels;
                         alpha = (byte)(255 * fadeRatio);
                     }
 
-                    // Start point face
-                    /*{
-                        int distanceFromEnd = (newHeight - 1) - y;
-                        if (distanceFromEnd < fadeLengthInPixels)
-                        {
-                            float fadeRatio = (float)distanceFromEnd / fadeLengthInPixels;
-                            alpha = (byte)(255 * fadeRatio);
-                        }
-                    }*/
-
+                    // End point fade with offset support
+                    int distanceFromEnd = (newHeight - 1 - endPointOffset) - y;
+                    if (distanceFromEnd >= 0 && distanceFromEnd < fadeLengthInPixels)
+                    {
+                        float fadeRatio = (float)distanceFromEnd / fadeLengthInPixels;
+                        alpha = (byte)(255 * fadeRatio);
+                    }
+                    else if (distanceFromEnd < 0)
+                        alpha = 0; // Fully transparent past the offset
 
                     // Use solid white for the base channel data because Unity_Overlay.colorTint 
                     // inside HandleLaserMovement will tint it to your preferred AccentColor automatically!
