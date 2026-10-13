@@ -29,12 +29,7 @@ namespace xsoverlay_tweak.Utils
         {
             XSOEventSystem.OnSwitchHoveringOverlay += async (_raycaster, overlay) =>
             {
-                // Reset all hover states before checking the current raycaster's state
-                IsHoverAnyOverlay = false;
-                IsHoverAnyDesktopOrWindowCapture = false;
-                IsHoverAnyDesktopCapture = false;
-                IsHoverAnyWindowCapture = false;
-                IsHoverAnyWebView = false;
+                ResetAll(); // Reset all hover states before checking the current raycaster's state
 
                 // Check all raycasters to determine if any are hovering over an overlay
                 foreach (Raycaster raycaster in Raycaster_List)
@@ -44,7 +39,6 @@ namespace xsoverlay_tweak.Utils
                     IsHoverAnyDesktopCapture = IsOverlayDesktopCapture(raycaster.HoveringOverlay);
                     IsHoverAnyWindowCapture = IsOverlayWindowCapture(raycaster.HoveringOverlay);
                     IsHoverAnyWebView = IsOverlayWebView(raycaster.HoveringOverlay);
-
                 }
 
                 // Update the current hovering overlay based on the active hand and hover state
@@ -56,6 +50,17 @@ namespace xsoverlay_tweak.Utils
                 }
                 else
                     CurrentHoveringOverlay = null;
+            };
+
+            XSOEventSystem.OnToggleLayoutMode += async (IsShow) =>
+            {
+                // Fixed toggle-off layout mode; if still hovering, it will trigger XSOEventSystem.OnSwitchHoveringOverlay after 100ms
+                if (!IsShow)
+                {
+                    ResetAll();
+                    await Task.Delay(200);
+                    ResetAll();
+                }
             };
         }
 
@@ -94,6 +99,15 @@ namespace xsoverlay_tweak.Utils
         public static void ListenScrolling(MouseInputDevice ___InputDevice, Vector2 ___CursorUVNormalized)
         {
             HandleScrolling(___InputDevice.Scroll.axis, ___CursorUVNormalized);
+        }
+
+        private static void ResetAll()
+        {
+            IsHoverAnyOverlay = false;
+            IsHoverAnyDesktopOrWindowCapture = false;
+            IsHoverAnyDesktopCapture = false;
+            IsHoverAnyWindowCapture = false;
+            IsHoverAnyWebView = false;
         }
 
         public static new bool IsActiveHand(Raycaster raycaster, bool skipTwoHanded = false)
