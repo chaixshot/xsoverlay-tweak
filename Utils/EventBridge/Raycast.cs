@@ -6,10 +6,10 @@ using XSOverlay;
 using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Patches.Pointer;
 
-namespace xsoverlay_tweak.Utils
+namespace xsoverlay_tweak.Utils.EventBridge
 {
     [HarmonyPatch(typeof(Raycaster))]
-    internal class EventBridge_Raycaster : EventBridge
+    internal class Raycast : EventBridge
     {
         public static Unity_Overlay CurrentHoveringOverlay;
         public static Raycaster ActiveRaycaster;
@@ -29,12 +29,8 @@ namespace xsoverlay_tweak.Utils
         {
             XSOEventSystem.OnSwitchHoveringOverlay += async (_raycaster, overlay) =>
             {
-                // Reset all hover states before checking the current raycaster's state
-                IsHoverAnyOverlay = false;
-                IsHoverAnyDesktopOrWindowCapture = false;
-                IsHoverAnyDesktopCapture = false;
-                IsHoverAnyWindowCapture = false;
-                IsHoverAnyWebView = false;
+                await Task.Delay(1); // Wait for 1 millisecond to ensure the hover state is updated
+                ResetAll(); // Reset all hover states before checking the current raycaster's state
 
                 // Check all raycasters to determine if any are hovering over an overlay
                 foreach (Raycaster raycaster in Raycaster_List)
@@ -44,13 +40,11 @@ namespace xsoverlay_tweak.Utils
                     IsHoverAnyDesktopCapture = IsOverlayDesktopCapture(raycaster.HoveringOverlay);
                     IsHoverAnyWindowCapture = IsOverlayWindowCapture(raycaster.HoveringOverlay);
                     IsHoverAnyWebView = IsOverlayWebView(raycaster.HoveringOverlay);
-
                 }
 
                 // Update the current hovering overlay based on the active hand and hover state
                 if (IsHoverAnyOverlay)
                 {
-                    await Task.Delay(1); // Wait for 1 millisecond to ensure the hover state is updated
                     if (IsActiveHand(_raycaster))
                         CurrentHoveringOverlay = overlay;
                 }
@@ -94,6 +88,15 @@ namespace xsoverlay_tweak.Utils
         public static void ListenScrolling(MouseInputDevice ___InputDevice, Vector2 ___CursorUVNormalized)
         {
             HandleScrolling(___InputDevice.Scroll.axis, ___CursorUVNormalized);
+        }
+
+        private static void ResetAll()
+        {
+            IsHoverAnyOverlay = false;
+            IsHoverAnyDesktopOrWindowCapture = false;
+            IsHoverAnyDesktopCapture = false;
+            IsHoverAnyWindowCapture = false;
+            IsHoverAnyWebView = false;
         }
 
         public static new bool IsActiveHand(Raycaster raycaster, bool skipTwoHanded = false)

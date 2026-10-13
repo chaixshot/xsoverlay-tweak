@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 using Valve.VR;
-using xsoverlay_tweak.Utils;
+using xsoverlay_tweak.Utils.EventBridge;
 
 namespace xsoverlay_tweak.Patches.Fix
 {
