@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Mouse;
-using xsoverlay_tweak.Utils;
+using xsoverlay_tweak.Utils.EventBridge;
 using static xsoverlay_tweak.Patches.FocusedWindow.Utils;
 
 namespace xsoverlay_tweak.Patches.FocusedWindow

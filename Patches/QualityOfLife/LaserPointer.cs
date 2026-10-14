@@ -8,7 +8,7 @@ using XSOverlay;
 using XSOverlay.PointerInput;
 using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Patches.Pointer;
-using xsoverlay_tweak.Utils;
+using xsoverlay_tweak.Utils.EventBridge;
 using Object = UnityEngine.Object;
 
 namespace xsoverlay_tweak.Patches.QualityOfLife

@@ -6,10 +6,10 @@ using XSOverlay;
 using xsoverlay_tweak.Patches.Mouse;
 using xsoverlay_tweak.Patches.Pointer;
 
-namespace xsoverlay_tweak.Utils
+namespace xsoverlay_tweak.Utils.EventBridge
 {
     [HarmonyPatch(typeof(Raycaster))]
-    internal class EventBridge_Raycaster : EventBridge
+    internal class Raycast : EventBridge
     {
         public static Unity_Overlay CurrentHoveringOverlay;
         public static Raycaster ActiveRaycaster;
@@ -29,6 +29,7 @@ namespace xsoverlay_tweak.Utils
         {
             XSOEventSystem.OnSwitchHoveringOverlay += async (_raycaster, overlay) =>
             {
+                await Task.Delay(1); // Wait for 1 millisecond to ensure the hover state is updated
                 ResetAll(); // Reset all hover states before checking the current raycaster's state
 
                 // Check all raycasters to determine if any are hovering over an overlay
@@ -44,7 +45,6 @@ namespace xsoverlay_tweak.Utils
                 // Update the current hovering overlay based on the active hand and hover state
                 if (IsHoverAnyOverlay)
                 {
-                    await Task.Delay(1); // Wait for 1 millisecond to ensure the hover state is updated
                     if (IsActiveHand(_raycaster))
                         CurrentHoveringOverlay = overlay;
                 }

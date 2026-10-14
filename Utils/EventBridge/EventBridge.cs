@@ -6,7 +6,7 @@ using UnityEngine;
 using XSOverlay;
 using XSOverlay.WebApp;
 
-namespace xsoverlay_tweak.Utils
+namespace xsoverlay_tweak.Utils.EventBridge
 {
     internal class EventBridge
     {
@@ -170,22 +170,22 @@ namespace xsoverlay_tweak.Utils
             });
         }
 
-        public static bool IsNotificationVisible() => EventBridge_Notification.IsVisible;
+        public static bool IsNotificationVisible() => Notify.IsVisible;
 
         //## Raycaster
-        public static bool IsHoverAnyOverlay() => EventBridge_Raycaster.IsHoverAnyOverlay;
-        public static bool IsHoverAnyDesktopOrWindowCapture() => EventBridge_Raycaster.IsHoverAnyDesktopOrWindowCapture;
-        public static bool IsHoverAnyDesktopCapture() => EventBridge_Raycaster.IsHoverAnyDesktopCapture;
-        public static bool IsHoverAnyWindowCapture() => EventBridge_Raycaster.IsHoverAnyWindowCapture;
-        public static bool IsHoverAnyWebView() => EventBridge_Raycaster.IsHoverAnyWebView;
-        public static bool IsActiveHand(Raycaster raycaster, bool skipTwoHanded = false) => EventBridge_Raycaster.IsActiveHand(raycaster, skipTwoHanded);
-        public static bool IsActiveHandForWebView(Raycaster raycaster) => EventBridge_Raycaster.IsActiveHandForWebView(raycaster);
-        public static bool IsRaycasterHand(Raycaster raycaster) => EventBridge_Raycaster.IsRaycasterHand(raycaster);
-        public static Raycaster GetActiveRaycaster() => EventBridge_Raycaster.ActiveRaycaster;
-        public static Raycaster GetActiveWebViewRaycaster() => EventBridge_Raycaster.ActiveWebViewRaycaster;
-        public static Raycaster GetActiveKeyboardRaycaster() => EventBridge_Raycaster.ActiveKeyboardRaycaster;
-        public static Raycaster GetActiveDesktopRaycaster() => EventBridge_Raycaster.ActiveDesktopRaycaster;
+        public static bool IsHoverAnyOverlay() => Raycast.IsHoverAnyOverlay;
+        public static bool IsHoverAnyDesktopOrWindowCapture() => Raycast.IsHoverAnyDesktopOrWindowCapture;
+        public static bool IsHoverAnyDesktopCapture() => Raycast.IsHoverAnyDesktopCapture;
+        public static bool IsHoverAnyWindowCapture() => Raycast.IsHoverAnyWindowCapture;
+        public static bool IsHoverAnyWebView() => Raycast.IsHoverAnyWebView;
+        public static bool IsActiveHand(Raycaster raycaster, bool skipTwoHanded = false) => Raycast.IsActiveHand(raycaster, skipTwoHanded);
+        public static bool IsActiveHandForWebView(Raycaster raycaster) => Raycast.IsActiveHandForWebView(raycaster);
+        public static bool IsRaycasterHand(Raycaster raycaster) => Raycast.IsRaycasterHand(raycaster);
+        public static Raycaster GetActiveRaycaster() => Raycast.ActiveRaycaster;
+        public static Raycaster GetActiveWebViewRaycaster() => Raycast.ActiveWebViewRaycaster;
+        public static Raycaster GetActiveKeyboardRaycaster() => Raycast.ActiveKeyboardRaycaster;
+        public static Raycaster GetActiveDesktopRaycaster() => Raycast.ActiveDesktopRaycaster;
 
-        public static Unity_Overlay GetCurrentHoveringOverlay() => EventBridge_Raycaster.CurrentHoveringOverlay;
+        public static Unity_Overlay GetCurrentHoveringOverlay() => Raycast.CurrentHoveringOverlay;
     }
 }

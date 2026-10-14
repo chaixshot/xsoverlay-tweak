@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System.Runtime.CompilerServices;
 using xsoverlay_tweak.Utils;
+using xsoverlay_tweak.Utils.EventBridge;
 
 namespace xsoverlay_tweak.Patches.Haptic
 {

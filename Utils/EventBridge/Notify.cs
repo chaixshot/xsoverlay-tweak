@@ -3,9 +3,9 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace xsoverlay_tweak.Utils
+namespace xsoverlay_tweak.Utils.EventBridge
 {
-    internal class EventBridge_Notification : EventBridge
+    internal class Notify : EventBridge
     {
         private static Coroutine stopCoroutine;
         public static bool IsVisible = false;

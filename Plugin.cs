@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using System.Threading.Tasks;
 using xsoverlay_tweak.Utils;
+using xsoverlay_tweak.Utils.EventBridge;
 
 namespace xsoverlay_tweak;
 
@@ -26,8 +27,8 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(CustomSettings));
 
         harmony.PatchAll(typeof(EventBridge));
-        harmony.PatchAll(typeof(EventBridge_Raycaster));
-        harmony.PatchAll(typeof(EventBridge_Notification));
+        harmony.PatchAll(typeof(Raycast));
+        harmony.PatchAll(typeof(Notify));
 
         // RefreshRate
         harmony.PatchAll(typeof(Patches.RefreshRate));
