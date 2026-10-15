@@ -57,6 +57,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.AlwaysHideCursor"] = XConfig.AlwaysHideCursor.Value,
                 ["XSOverlayTweak.AlwaysUpdateCursor"] = XConfig.AlwaysUpdateCursor.Value,
                 ["XSOverlayTweak.CursorMovingInteractionFix"] = XConfig.CursorMovingInteractionFix.Value,
+                ["XSOverlayTweak.CursorSingleClickFix"] = XConfig.CursorSingleClickFix.Value,
                 ["XSOverlayTweak.DoubleClickConfirm"] = XConfig.DoubleClickConfirm.Value,
                 ["XSOverlayTweak.HandleScrolling"] = XConfig.HandleScrolling.Value,
                 ["XSOverlayTweak.WindowsCursorPointer"] = XConfig.WindowsCursorPointer.Value,
@@ -177,6 +178,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.CursorMovingInteractionFix":
                     XConfig.CursorMovingInteractionFix.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.CursorSingleClickFix":
+                    XConfig.CursorSingleClickFix.Value = bool.Parse(value);
                     break;
                 case "XSOverlayTweak.DoubleClickConfirm":
                     XConfig.DoubleClickConfirm.Value = bool.Parse(value);

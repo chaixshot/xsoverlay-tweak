@@ -13,6 +13,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> AlwaysUpdateCursor;
         public static ConfigEntry<bool> AlwaysHideCursor;
         public static ConfigEntry<bool> CursorMovingInteractionFix;
+        public static ConfigEntry<bool> CursorSingleClickFix;
         public static ConfigEntry<bool> DoubleClickConfirm;
         public static ConfigEntry<bool> HandleScrolling;
         public static ConfigEntry<int> WindowsCursorPointer;
@@ -113,6 +114,7 @@ namespace xsoverlay_tweak
             AlwaysHideCursor = cfg.Bind("Cursor", "AlwaysHideCursor", false, "Forcefully hides the system Windows Cursor in Desktop and Window Capture Overlay.");
             AlwaysUpdateCursor = cfg.Bind("Cursor", "AlwaysUpdateCursor", false, "Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.\nWithout this, the Windows Cursor often appears to lag one frame behind the Pointer position.");
             CursorMovingInteractionFix = cfg.Bind("Cursor", "CursorMovingInteractionFix", true, "Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.");
+            CursorSingleClickFix = cfg.Bind("Cursor", "CursorSingleClickFix", true, "Fix where Windows cursor can not click game element. For example, ReShade menu, OptiScaler menu.");
             DoubleClickConfirm = cfg.Bind("Cursor", "DoubleClickConfirm", true, "Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.");
             HandleScrolling = cfg.Bind("Cursor", "HandleScrolling", true, "Support horizontal scrolling.");
             WindowsCursorPointer = cfg.Bind("Cursor", "WindowsCursorPointer", 1, "Hides the Capture Overlay Cursor and uses the Windows Cursor image as the Pointer to mimic the SteamVR Dashboard.\n\n- Animated: always updates the cursor texture, which might impact performance.");

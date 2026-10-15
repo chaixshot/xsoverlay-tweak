@@ -37,6 +37,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Cursor.AlwaysHideCursor));
         //harmony.PatchAll(typeof(Patches.Cursor.AlwaysUpdateCursor))); //## Official Fixed
         harmony.PatchAll(typeof(Patches.Cursor.CursorMovingInteractionFix));
+        harmony.PatchAll(typeof(Patches.Cursor.CursorSingleClickFix));
         harmony.PatchAll(typeof(Patches.Cursor.DoubleClickConfirm));
         harmony.PatchAll(typeof(Patches.Cursor.HandleScrolling));
         harmony.PatchAll(typeof(Patches.Cursor.WindowsCursorPointer));
