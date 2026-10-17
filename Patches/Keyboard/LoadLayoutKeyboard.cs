@@ -11,7 +11,7 @@ namespace xsoverlay_tweak.Patches.Keyboard
 {
     internal class LoadLayoutKeyboard
     {
-        private static bool isFristKeyboardSpawn = true;
+        private static bool fristLoad = true;
 
         [HarmonyPatch(typeof(LayoutHandler), "SaveLayout", [])]
         [HarmonyPostfix]
@@ -43,35 +43,28 @@ namespace xsoverlay_tweak.Patches.Keyboard
             }
         }
 
-        [HarmonyPatch(typeof(Overlay_Manager), nameof(Overlay_Manager.EnableKeyboard))]
-        [HarmonyPostfix]
-        public static async void ListenForFirstKeyboardSpawn()
-        {
-            if (isFristKeyboardSpawn)
-            {
-                await Task.Delay(400);
-                isFristKeyboardSpawn = false;
-            }
-        }
-
         [HarmonyPatch(typeof(LayoutHandler), "LoadLayout", [])]
         [HarmonyPostfix]
         public static async void LoadKeyboardFromLayout(LayoutHandler __instance, string ___LayoutAssetPath)
         {
-            if (!IsEnable()) return;
-
             string text = ___LayoutAssetPath + "/Layout_" + __instance.SelectedLayout.ToString() + ".json";
             if (Application.isEditor)
                 text = ___LayoutAssetPath + "/Editor_Layout_" + __instance.SelectedLayout.ToString() + ".json";
 
+            if (!IsEnable()) return;
             if (!File.Exists(text)) return;
-
-            await Task.Delay(300); // Wait for official layout loading to finish
 
             JObject root = JObject.Parse(File.ReadAllText(text));
             JToken keyboardData = root["keyboard"];
-            Overlay_Manager overlay_Manager = Overlay_Manager.Instance;
-            Unity_Overlay keyboard = overlay_Manager.Keyboard_Overlay;
+            Overlay_Manager overlayManager = Overlay_Manager.Instance;
+            Unity_Overlay keyboard = overlayManager.Keyboard_Overlay;
+
+            if (fristLoad)
+            {
+                while (overlayManager.Keyboard.gameObject.activeSelf)
+                    await Task.Delay(1);
+                await Task.Delay(100);
+            }
 
             if (keyboardData == null) // No keyboard save in Layout
                 EventBridge.ToggleKeyboardExecuteAPI(false);
@@ -79,8 +72,8 @@ namespace xsoverlay_tweak.Patches.Keyboard
             {
                 EventBridge.ToggleKeyboardExecuteAPI(true);
 
-                if (isFristKeyboardSpawn)
-                    await Task.Delay(300); // Wait for re-center and keyboard summoning
+                if (fristLoad)
+                    await Task.Delay(200);
 
                 if (keyboardData["position"] is JArray pos && pos.Count == 3)
                     keyboard.transform.localPosition = new Vector3((float)pos[0], (float)pos[1], (float)pos[2]);
@@ -89,14 +82,17 @@ namespace xsoverlay_tweak.Patches.Keyboard
                     keyboard.transform.localRotation = new Quaternion((float)rot[0], (float)rot[1], (float)rot[2], (float)rot[3]);
 
                 if (keyboardData["widthInMeters"] != null)
+                {
                     keyboard.widthInMeters = (float)keyboardData["widthInMeters"];
+                    keyboard.overlay.overlayWidthInMeters = (float)keyboardData["widthInMeters"];
+                }
 
                 if (keyboardData["isPinned"] != null)
                 {
                     bool shouldPin = (bool)keyboardData["isPinned"];
 
                     if (shouldPin != keyboard.isPinned)
-                        overlay_Manager.PinKeyboard();
+                        overlayManager.PinKeyboard();
                 }
 
                 if (keyboardData["isLocked"] != null)
@@ -104,9 +100,11 @@ namespace xsoverlay_tweak.Patches.Keyboard
                     bool shouldLock = (bool)keyboardData["isLocked"];
 
                     if (shouldLock != keyboard.IsWindowInteractionLocked)
-                        overlay_Manager.LockKeyboard();
+                        overlayManager.LockKeyboard();
                 }
             }
+
+            fristLoad = false;
         }
 
         public static bool IsEnable() => XConfig.LoadLayoutKeyboard.Value;
