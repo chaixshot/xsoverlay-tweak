@@ -11,7 +11,7 @@ namespace xsoverlay_tweak.Patches.Keyboard
 {
     internal class LoadLayoutKeyboard
     {
-        private static bool isFristKeyboardSpawn = true;
+        private static bool fristLoad = true;
 
         [HarmonyPatch(typeof(LayoutHandler), "SaveLayout", [])]
         [HarmonyPostfix]
@@ -43,30 +43,24 @@ namespace xsoverlay_tweak.Patches.Keyboard
             }
         }
 
-        [HarmonyPatch(typeof(Overlay_Manager), nameof(Overlay_Manager.EnableKeyboard))]
-        [HarmonyPostfix]
-        public static async void ListenForFirstKeyboardSpawn()
-        {
-            if (isFristKeyboardSpawn)
-            {
-                await Task.Delay(400);
-                isFristKeyboardSpawn = false;
-            }
-        }
-
         [HarmonyPatch(typeof(LayoutHandler), "LoadLayout", [])]
         [HarmonyPostfix]
         public static async void LoadKeyboardFromLayout(LayoutHandler __instance, string ___LayoutAssetPath)
         {
             if (!IsEnable()) return;
 
+            if (fristLoad)
+            {
+                fristLoad = false;
+                while (Overlay_Manager.Instance.Keyboard.gameObject.activeSelf)
+                    await Task.Delay(1);
+            }
+
             string text = ___LayoutAssetPath + "/Layout_" + __instance.SelectedLayout.ToString() + ".json";
             if (Application.isEditor)
                 text = ___LayoutAssetPath + "/Editor_Layout_" + __instance.SelectedLayout.ToString() + ".json";
 
             if (!File.Exists(text)) return;
-
-            await Task.Delay(300); // Wait for official layout loading to finish
 
             JObject root = JObject.Parse(File.ReadAllText(text));
             JToken keyboardData = root["keyboard"];
@@ -78,9 +72,6 @@ namespace xsoverlay_tweak.Patches.Keyboard
             else
             {
                 EventBridge.ToggleKeyboardExecuteAPI(true);
-
-                if (isFristKeyboardSpawn)
-                    await Task.Delay(300); // Wait for re-center and keyboard summoning
 
                 if (keyboardData["position"] is JArray pos && pos.Count == 3)
                     keyboard.transform.localPosition = new Vector3((float)pos[0], (float)pos[1], (float)pos[2]);
