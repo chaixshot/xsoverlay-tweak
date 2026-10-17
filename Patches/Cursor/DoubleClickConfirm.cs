@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using System;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 using UnityEngine;
 using XSOverlay;
+using xsoverlay_tweak.Utils;
 using xsoverlay_tweak.Utils.EventBridge;
 
 namespace xsoverlay_tweak.Patches.Cursor
@@ -11,123 +11,81 @@ namespace xsoverlay_tweak.Patches.Cursor
     [HarmonyPatch(typeof(Raycaster))]
     internal class DoubleClickConfirm
     {
-        private class DoubleClickConfirmState
-        {
-            public float lastClickTime = 0f;
-            public Vector2 lastClickCoordinate = Vector2.zero;
-        }
-
-        private static readonly ConditionalWeakTable<Raycaster, DoubleClickConfirmState> InstanceState = new();
-
         public static readonly Action<Raycaster, bool> AnimateCursorHold = AccessTools.MethodDelegate<Action<Raycaster, bool>>(AccessTools.Method(typeof(Raycaster), "AnimateCursorHold"));
 
-        static float winDoubleClickTimeSeconds;
-        static Vector2 doubleClickBoxSize;
-        static Vector2 lastDesktopCoordinates;
+        private static Vector2 lastDesktopCoordinates = new();
 
-        [HarmonyPatch("Start")]
+        [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
         [HarmonyPostfix]
-        public static void GetWindowsDoubleClickDelay()
+        public static void ListenDoubleClick()
         {
-            // Fetch timing limit in seconds directly via System.Windows.Forms
-            winDoubleClickTimeSeconds = SystemInformation.DoubleClickTime / 1000f;
+            Clicker.OnClick += (instance, ref desktopCoordinate, button, holdingTouch, isDoubleClickWin, isDoubleClickXSO) =>
+            {
+                if (!IsEnable()) return;
 
-            // Fetch spatial bounding box size directly
-            doubleClickBoxSize = new Vector2(
-                SystemInformation.DoubleClickSize.Width,
-                SystemInformation.DoubleClickSize.Height
-            );
+                // Cache the cursor position and set it back when double-clicking to avoid hand movement jitter
+                if (isDoubleClickWin || isDoubleClickXSO)
+                {
+                    desktopCoordinate = lastDesktopCoordinates;
+                    MouseOperations.SetCursorPosition((int)lastDesktopCoordinates.x, (int)lastDesktopCoordinates.y);
+
+                    if (!isDoubleClickWin)
+                        ExtraDoubleClick(instance, button, holdingTouch, lastDesktopCoordinates);
+                }
+                else if (!holdingTouch)
+                    lastDesktopCoordinates = desktopCoordinate;
+            };
         }
 
-        [HarmonyPatch("SendCapturedPressClick"), HarmonyPatch("SendCapturedPressDown")]
-        [HarmonyPostfix]
-        public static void WaitToConfrimDoubleClick(System.Reflection.MethodBase __originalMethod, Raycaster __instance, ref Vector2 ___CapturedPressDesktopCoordinate, int ___CapturedPressButton)
+        // Separate async helper method to handle the delay and execution without ref/out parameters
+        private static async void ExtraDoubleClick(Raycaster instance, int button, bool holdingTouch, Vector2 desktopCoord)
         {
-            if (!IsEnable()) return;
-            if (EventBridge.IsOverlayWebView(__instance.HoveringOverlay)) return;
+            await Task.Delay(Clicker.WinDoubleClickTime);
+            MouseOperations.SetCursorPosition((int)desktopCoord.x, (int)desktopCoord.y);
+            AdvancedHaptics.Rumble((DesktopCursorManager.Instance.GetCurrentInputDevice().HapticDeviceName == Raycaster.HapticDevice.Left), 0.001f, 320f, 0.2f);
 
-            DoubleClickConfirmState DoubleClickState = InstanceState.GetOrCreateValue(__instance);
-
-            float delay = Time.time - DoubleClickState.lastClickTime;
-            Vector2 currentCoord = ___CapturedPressDesktopCoordinate;
-
-            // Verify both temporal delay and spatial bounding box conditions
-            bool isWinWithinTime = delay <= winDoubleClickTimeSeconds;
-            bool isWinWithinBox = Math.Abs(currentCoord.x - DoubleClickState.lastClickCoordinate.x) <= (doubleClickBoxSize.x / 2f)
-                            && Math.Abs(currentCoord.y - DoubleClickState.lastClickCoordinate.y) <= (doubleClickBoxSize.y / 2f);
-
-            bool isDoubleClickXSO = false;
-            bool isDoubleClickWin = isWinWithinTime && isWinWithinBox;
-            bool holdingTouch = __originalMethod.Name == "SendCapturedPressDown";
-            float doubleClickDelay = XSettingsManager.Instance.Settings.DoubleClickDelay;
-
-            // Double-clicking and hold add more allow time
-            if (holdingTouch && !isDoubleClickWin && delay <= doubleClickDelay + 0.3f)
-                doubleClickDelay += 0.3f;
-
-            if (!isDoubleClickWin && delay <= doubleClickDelay)
+            if (!holdingTouch) // Handle standard double-clicking (SendCapturedPressClick)
             {
-                isDoubleClickXSO = true;
-                DoubleClickState.lastClickTime = 0f;
-            }
-            else if (isDoubleClickWin)
-            {
-                DoubleClickState.lastClickTime = 0f;
-            }
-            else
-            {
-                DoubleClickState.lastClickTime = Time.time;
-                DoubleClickState.lastClickCoordinate = currentCoord;
-            }
-
-            // Cache the cursor position and set it back when double-clicking to avoid hand movement jitter
-            if (isDoubleClickXSO || isDoubleClickWin)
-            {
-                ___CapturedPressDesktopCoordinate = lastDesktopCoordinates;
-                MouseOperations.SetCursorPosition((int)___CapturedPressDesktopCoordinate.x, (int)___CapturedPressDesktopCoordinate.y);
-            }
-            else if (!holdingTouch)
-                lastDesktopCoordinates = ___CapturedPressDesktopCoordinate;
-
-            if (!isDoubleClickWin && isDoubleClickXSO)
-            {
-                if (!holdingTouch) // Handle standard double-clicking (SendCapturedPressClick)
+                switch (button)
                 {
-                    switch (___CapturedPressButton)
-                    {
-                        case 0: // Left
-                            InputManager.sim.Mouse.LeftButtonDoubleClick();
-                            break;
-                        case 1: // Right
-                            InputManager.sim.Mouse.RightButtonDoubleClick();
-                            break;
-                        case 2: // Middle
-                            InputManager.sim.Mouse.MiddleButtonClick();
-                            InputManager.sim.Mouse.MiddleButtonClick();
-                            break;
-                    }
+                    case 0: // Left
+                        InputManager.sim.Mouse.LeftButtonDoubleClick();
+                        break;
+                    case 1: // Rig
+                        InputManager.sim.Mouse.RightButtonDoubleClick();
+                        break;
+                    case 2: // Middle
+                        InputManager.sim.Mouse.MiddleButtonClick();
+                        InputManager.sim.Mouse.MiddleButtonClick();
+                        break;
                 }
-                else // Handle double-clicking and hold (SendCapturedPressDown)
+            }
+            else // Handle double-clicking and hold (SendCapturedPressDown)
+            {
+                AnimateCursorHold(instance, false);
+
+                switch (button)
                 {
-                    AnimateCursorHold(__instance, true);
+                    case 0: // Left
+                        MouseOperations.LMouseUp(InputManager.sim);
+                        MouseOperations.LMouseDown(InputManager.sim);
+                        MouseOperations.LMouseUp(InputManager.sim);
+                        MouseOperations.LMouseDown(InputManager.sim);
+                        break;
 
-                    switch (___CapturedPressButton)
-                    {
-                        case 0: // Left
-                            MouseOperations.LMouseUp(InputManager.sim);
-                            MouseOperations.LMouseDown(InputManager.sim);
-                            break;
+                    case 1: // Right
+                        MouseOperations.RMouseUp(InputManager.sim);
+                        MouseOperations.RMouseDown(InputManager.sim);
+                        MouseOperations.RMouseUp(InputManager.sim);
+                        MouseOperations.RMouseDown(InputManager.sim);
+                        break;
 
-                        case 1: // Right
-                            MouseOperations.RMouseUp(InputManager.sim);
-                            MouseOperations.RMouseDown(InputManager.sim);
-                            break;
-
-                        case 2: // Middle
-                            MouseOperations.MMouseUp(InputManager.sim);
-                            MouseOperations.MMouseDown(InputManager.sim);
-                            break;
-                    }
+                    case 2: // Middle
+                        MouseOperations.MMouseUp(InputManager.sim);
+                        MouseOperations.MMouseDown(InputManager.sim);
+                        MouseOperations.MMouseUp(InputManager.sim);
+                        MouseOperations.MMouseDown(InputManager.sim);
+                        break;
                 }
             }
         }
