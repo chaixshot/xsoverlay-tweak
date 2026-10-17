@@ -2,6 +2,8 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Pointer;
@@ -41,6 +43,36 @@ namespace xsoverlay_tweak.Patches.Cursor
 
         private static readonly AccessTools.FieldRef<UI_RelativeTransformManipulator, bool> ScaleByDistance_Ref = AccessTools.FieldRefAccess<UI_RelativeTransformManipulator, bool>("ScaleByDistance");
         private static readonly AccessTools.FieldRef<Raycaster, bool> CursorLocked_Ref = AccessTools.FieldRefAccess<Raycaster, bool>("CursorLocked");
+
+        private static bool isDoubleClick = false;
+        private static CancellationTokenSource doubleClickCts;
+
+        [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
+        [HarmonyPostfix]
+        public static void ListenDoubleClick()
+        {
+            Clicker.OnClick += (instance, ref desktopCoordinate, button, holdingTouch, isDoubleClickWin, isDoubleClickXSO) =>
+            {
+                if (isDoubleClickWin || isDoubleClickXSO)
+                {
+                    isDoubleClick = true;
+
+                    doubleClickCts?.Cancel();
+                    doubleClickCts = new CancellationTokenSource();
+                    CancellationToken token = doubleClickCts.Token;
+
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await Task.Delay(300, token);
+                            isDoubleClick = false;
+                        }
+                        catch (TaskCanceledException) { }
+                    }, token);
+                }
+            };
+        }
 
         [HarmonyPatch("Start")]
         [HarmonyPostfix]
@@ -97,10 +129,11 @@ namespace xsoverlay_tweak.Patches.Cursor
                 {
                     if (Data.IsCursor)
                     {
+                        Color color = isDoubleClick ? Color.green : Color.white;
+                        ___VisualCursorElementOverlay.colorTint = color;
+                        ___VisualCursorElementOverlay.overlay.overlayColor = color;
+                        ___VisualCursorElementOverlay.overlay.overlayRenderModelColor = color;
                         ___VisualCursorElementOverlay.AutoUpdateOverlayTexture = false;
-                        ___VisualCursorElementOverlay.colorTint = Color.white;
-                        ___VisualCursorElementOverlay.overlay.overlayColor = Color.white;
-                        ___VisualCursorElementOverlay.overlay.overlayRenderModelColor = Color.white;
                     }
 
                     if (Time.unscaledTime - Data.LastFrameUpdateTime > 0.066f || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture) // ~15 FPS
