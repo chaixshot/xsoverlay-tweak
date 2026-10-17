@@ -2,6 +2,8 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Pointer;
@@ -33,6 +35,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             public bool IsCursor = false;
             public uint AnimationFrame = 0;
             public float LastFrameUpdateTime = 0;
+            public int LastDoubleClickState = 0;
         }
 
         private class XSWindowResult { public bool IsMatch; }
@@ -41,6 +44,46 @@ namespace xsoverlay_tweak.Patches.Cursor
 
         private static readonly AccessTools.FieldRef<UI_RelativeTransformManipulator, bool> ScaleByDistance_Ref = AccessTools.FieldRefAccess<UI_RelativeTransformManipulator, bool>("ScaleByDistance");
         private static readonly AccessTools.FieldRef<Raycaster, bool> CursorLocked_Ref = AccessTools.FieldRefAccess<Raycaster, bool>("CursorLocked");
+
+        private static int doubleClickState = 0;
+        private static float doubleClickStartTime = 0f;
+        private static CancellationTokenSource doubleClickCts;
+        private const int markAnimationDuration = 400;
+
+        [HarmonyPatch(typeof(UpdateDateTime), "Awake")]
+        [HarmonyPostfix]
+        public static void ListenDoubleClick()
+        {
+            Clicker.OnClick += (instance, ref desktopCoordinate, button, holdingTouch, isDoubleClickWin, isDoubleClickXSO) =>
+            {
+                if (isDoubleClickWin || isDoubleClickXSO)
+                {
+                    doubleClickCts?.Cancel();
+                    doubleClickCts = new CancellationTokenSource();
+                    CancellationToken token = doubleClickCts.Token;
+
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            doubleClickStartTime = Time.unscaledTime;
+                            doubleClickState = 1;
+                            if (isDoubleClickXSO)
+                                await Task.Delay(Clicker.WinDoubleClickTime, token);
+                            doubleClickStartTime = Time.unscaledTime;
+                            doubleClickState = 2;
+
+                            await Task.Delay(markAnimationDuration, token);
+                            doubleClickState = 0;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            doubleClickState = 0;
+                        }
+                    }, token);
+                }
+            };
+        }
 
         [HarmonyPatch("Start")]
         [HarmonyPostfix]
@@ -97,20 +140,20 @@ namespace xsoverlay_tweak.Patches.Cursor
                 {
                     if (Data.IsCursor)
                     {
-                        ___VisualCursorElementOverlay.AutoUpdateOverlayTexture = false;
                         ___VisualCursorElementOverlay.colorTint = Color.white;
                         ___VisualCursorElementOverlay.overlay.overlayColor = Color.white;
                         ___VisualCursorElementOverlay.overlay.overlayRenderModelColor = Color.white;
+                        ___VisualCursorElementOverlay.AutoUpdateOverlayTexture = false;
                     }
 
-                    if (Time.unscaledTime - Data.LastFrameUpdateTime > 0.066f || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture) // ~15 FPS
+                    if (doubleClickState != Data.LastDoubleClickState || Time.unscaledTime - Data.LastFrameUpdateTime > 0.066f || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture) // ~15 FPS
                     {
                         Data.LastFrameUpdateTime = Time.unscaledTime;
                         CURSORINFO ci = new() { cbSize = CURSORINFO_SIZE };
 
                         if (GetCursorInfo(out ci) && (ci.flags & CURSOR_SHOWING) != 0)
                         {
-                            bool isAnimated = IsPossiblyAnimatedCursor(ci.hCursor);
+                            bool isAnimated = IsPossiblyAnimatedCursor(ci.hCursor) || doubleClickState != 0 || Data.LastDoubleClickState != 0;
                             bool isNewCursorHandle = ci.hCursor != Data.LastCursorHandle;
                             bool shouldUpdate = isNewCursorHandle || isAnimated || Data.CursorTexture == null || ___VisualCursorElementOverlay.overlayTexture != Data.CursorTexture;
 
@@ -126,6 +169,7 @@ namespace xsoverlay_tweak.Patches.Cursor
 
                                 // Force software overrides any custom textures the engine loaded
                                 Data.CursorTexture = ExtractCurrentWindowsCursor(ci.hCursor, Data, out Data.HotSpotOffset);
+                                Data.LastDoubleClickState = doubleClickState;
 
                                 // Disable pointer scale by distance
                                 if (Data.RelativeTransform == null)
@@ -405,84 +449,89 @@ namespace xsoverlay_tweak.Patches.Cursor
 
             Array.Clear(data.ColorBuffer, 0, data.ColorBuffer.Length);
 
-            int offsetX = (W / 2) - hx;
-            int offsetY = (H / 2) - hy;
-            int targetYBase = H - 1 - offsetY;
-
-            if (!isMonochrome)
+            if (doubleClickState == 0)
             {
-                GetObject(iconInfo.hbmColor, BITMAP_SIZE, out BITMAP bm);
-                int stride = bm.bmWidthBytes;
+                int offsetX = (W / 2) - hx;
+                int offsetY = (H / 2) - hy;
+                int targetYBase = H - 1 - offsetY;
 
-                fixed (Color32* pColors = data.ColorBuffer)
-                fixed (byte* pPixels = _rawPixelBuffer)
+                if (!isMonochrome)
                 {
-                    for (int y = 0; y < h; y++)
+                    GetObject(iconInfo.hbmColor, BITMAP_SIZE, out BITMAP bm);
+                    int stride = bm.bmWidthBytes;
+
+                    fixed (Color32* pColors = data.ColorBuffer)
+                    fixed (byte* pPixels = _rawPixelBuffer)
                     {
-                        int targetY = targetYBase - y;
-                        // Safety boundaries check to avoid array corruption since texture size is fixed 64x64
-                        if (targetY < 0 || targetY >= H) continue;
-
-                        byte* srcRowPtr = pPixels + (y * stride);
-                        Color32* targetRowPtr = pColors + (targetY * W + offsetX);
-
-                        for (int x = 0; x < w; x++)
+                        for (int y = 0; y < h; y++)
                         {
-                            // Verify target X is inside the 64x64 canvas boundaries
-                            if (offsetX + x >= 0 && offsetX + x < W)
+                            int targetY = targetYBase - y;
+                            // Safety boundaries check to avoid array corruption since texture size is fixed 64x64
+                            if (targetY < 0 || targetY >= H) continue;
+
+                            byte* srcRowPtr = pPixels + (y * stride);
+                            Color32* targetRowPtr = pColors + (targetY * W + offsetX);
+
+                            for (int x = 0; x < w; x++)
                             {
-                                targetRowPtr[x].r = srcRowPtr[2];
-                                targetRowPtr[x].g = srcRowPtr[1];
-                                targetRowPtr[x].b = srcRowPtr[0];
-                                targetRowPtr[x].a = srcRowPtr[3];
+                                // Verify target X is inside the 64x64 canvas boundaries
+                                if (offsetX + x >= 0 && offsetX + x < W)
+                                {
+                                    targetRowPtr[x].r = srcRowPtr[2];
+                                    targetRowPtr[x].g = srcRowPtr[1];
+                                    targetRowPtr[x].b = srcRowPtr[0];
+                                    targetRowPtr[x].a = srcRowPtr[3];
+                                }
+                                srcRowPtr += 4;
                             }
-                            srcRowPtr += 4;
+                        }
+                    }
+                }
+                else
+                {
+                    GetObject(iconInfo.hbmMask, BITMAP_SIZE, out BITMAP bmMask);
+                    int stride = bmMask.bmWidthBytes;
+
+                    fixed (Color32* pColors = data.ColorBuffer)
+                    fixed (byte* pPixels = _rawPixelBuffer)
+                    {
+                        for (int y = 0; y < h; y++)
+                        {
+                            int targetY = targetYBase - y;
+                            // Safety boundaries check to avoid array corruption since texture size is fixed 64x64
+                            if (targetY < 0 || targetY >= H) continue;
+
+                            byte* andRowPtr = pPixels + (y * stride);
+                            byte* xorRowPtr = pPixels + ((y + h) * stride);
+                            Color32* targetRowPtr = pColors + (targetY * W + offsetX);
+
+                            for (int x = 0; x < w; x++)
+                            {
+                                // Verify target X is inside the 64x64 canvas boundaries
+                                if (offsetX + x >= 0 && offsetX + x < W)
+                                {
+                                    int byteIdx = x / 8;
+                                    int bitIdx = 7 - (x % 8);
+
+                                    bool andBit = ((andRowPtr[byteIdx] >> bitIdx) & 1) != 0;
+                                    bool xorBit = ((xorRowPtr[byteIdx] >> bitIdx) & 1) != 0;
+
+                                    if (!andBit && !xorBit)
+                                        targetRowPtr[x] = new Color32(0, 0, 0, 255);
+                                    else if (andBit && xorBit)
+                                        targetRowPtr[x] = new Color32(255, 255, 255, 255);
+                                    else if (!andBit && xorBit)
+                                        targetRowPtr[x] = new Color32(255, 255, 255, 255);
+                                    else
+                                        targetRowPtr[x] = new Color32(0, 0, 0, 0);
+                                }
+                            }
                         }
                     }
                 }
             }
             else
-            {
-                GetObject(iconInfo.hbmMask, BITMAP_SIZE, out BITMAP bmMask);
-                int stride = bmMask.bmWidthBytes;
-
-                fixed (Color32* pColors = data.ColorBuffer)
-                fixed (byte* pPixels = _rawPixelBuffer)
-                {
-                    for (int y = 0; y < h; y++)
-                    {
-                        int targetY = targetYBase - y;
-                        // Safety boundaries check to avoid array corruption since texture size is fixed 64x64
-                        if (targetY < 0 || targetY >= H) continue;
-
-                        byte* andRowPtr = pPixels + (y * stride);
-                        byte* xorRowPtr = pPixels + ((y + h) * stride);
-                        Color32* targetRowPtr = pColors + (targetY * W + offsetX);
-
-                        for (int x = 0; x < w; x++)
-                        {
-                            // Verify target X is inside the 64x64 canvas boundaries
-                            if (offsetX + x >= 0 && offsetX + x < W)
-                            {
-                                int byteIdx = x / 8;
-                                int bitIdx = 7 - (x % 8);
-
-                                bool andBit = ((andRowPtr[byteIdx] >> bitIdx) & 1) != 0;
-                                bool xorBit = ((xorRowPtr[byteIdx] >> bitIdx) & 1) != 0;
-
-                                if (!andBit && !xorBit)
-                                    targetRowPtr[x] = new Color32(0, 0, 0, 255);
-                                else if (andBit && xorBit)
-                                    targetRowPtr[x] = new Color32(255, 255, 255, 255);
-                                else if (!andBit && xorBit)
-                                    targetRowPtr[x] = new Color32(255, 255, 255, 255);
-                                else
-                                    targetRowPtr[x] = new Color32(0, 0, 0, 0);
-                            }
-                        }
-                    }
-                }
-            }
+                ApplyDoubleClickAnimation(data.ColorBuffer, doubleClickState, doubleClickStartTime);
 
             texture.SetPixels32(data.ColorBuffer, 0);
             texture.Apply();
@@ -494,6 +543,214 @@ namespace xsoverlay_tweak.Patches.Cursor
             DeleteObject(iconInfo.hbmMask);
 
             return texture;
+        }
+
+        private static void ApplyDoubleClickAnimation(Color32[] colorBuffer, int state, float startTime)
+        {
+            if (colorBuffer == null || colorBuffer.Length != 64 * 64) return;
+
+            float elapsed = Time.unscaledTime - startTime;
+
+            if (state == 1) // Circle loading bar animation
+            {
+                float duration = (Clicker.WinDoubleClickTime > 0 ? Clicker.WinDoubleClickTime : 500) / 1000f;
+                float progress = Mathf.Clamp01(elapsed / duration);
+
+                DrawCircleLoadingBar(colorBuffer, progress);
+            }
+            else if (state == 2) // Check mark animation
+            {
+                float progress = Mathf.Clamp01(elapsed / ((markAnimationDuration - 100) / 1000f));
+
+                DrawCheckMarkAnimation(colorBuffer, progress);
+            }
+        }
+
+        private static void DrawCircleLoadingBar(Color32[] buffer, float progress)
+        {
+            const int W = 64;
+            const int H = 64;
+            const float cx = 31.5f;
+            const float cy = 31.5f;
+            const float radius = 22f;
+            const float halfThickness = 2.5f;
+
+            Color32 arcColor = XSettingsManager.Instance.Settings.AccentColor;
+            float brightness = (arcColor.r * 0.299f + arcColor.g * 0.587f + arcColor.b * 0.114f) / 255f;
+            Color32 trackColor = Color.Lerp(arcColor, brightness > 0.5f ? Color.black : Color.white, 0.4f);
+
+            arcColor.a = 255;
+            trackColor.a = 255;
+
+            float maxAngle = progress * 2f * Mathf.PI;
+            int minX = Mathf.Max(0, (int)(cx - radius - halfThickness - 1));
+            int maxX = Mathf.Min(W - 1, (int)(cx + radius + halfThickness + 1));
+            int minY = Mathf.Max(0, (int)(cy - radius - halfThickness - 1));
+            int maxY = Mathf.Min(H - 1, (int)(cy + radius + halfThickness + 1));
+
+            for (int y = minY; y <= maxY; y++)
+            {
+                float dy = y - cy;
+                for (int x = minX; x <= maxX; x++)
+                {
+                    float dx = x - cx;
+                    float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                    float distDelta = Mathf.Abs(dist - radius);
+
+                    if (distDelta <= halfThickness + 0.5f)
+                    {
+                        float edgeAlpha = Mathf.Clamp01((halfThickness + 0.5f) - distDelta);
+
+                        float angleRad = Mathf.Atan2(dx, dy);
+                        if (angleRad < 0f) angleRad += 2f * Mathf.PI;
+
+                        int idx = y * W + x;
+                        if (angleRad <= maxAngle)
+                        {
+                            Color32 color = arcColor;
+                            color.a = (byte)(color.a * edgeAlpha);
+                            buffer[idx] = AlphaBlend(buffer[idx], color);
+                        }
+                        else
+                        {
+                            Color32 color = trackColor;
+                            color.a = (byte)(color.a * edgeAlpha);
+                            buffer[idx] = AlphaBlend(buffer[idx], color);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void DrawCheckMarkAnimation(Color32[] buffer, float progress)
+        {
+            const int W = 64;
+            const int H = 64;
+            const float cx = 31.5f;
+            const float cy = 31.5f;
+            const float bgRadius = 22f;
+
+            Color32 bgColor = XSettingsManager.Instance.Settings.AccentColor;
+            float brightness = (bgColor.r * 0.299f + bgColor.g * 0.587f + bgColor.b * 0.114f) / 255f;
+            Color32 checkColor = Color.Lerp(bgColor, brightness > 0.5f ? Color.black : Color.white, 0.4f);
+
+            bgColor.a = 255;
+            checkColor.a = 255;
+
+            int minX = Mathf.Max(0, (int)(cx - bgRadius - 1));
+            int maxX = Mathf.Min(W - 1, (int)(cx + bgRadius + 1));
+            int minY = Mathf.Max(0, (int)(cy - bgRadius - 1));
+            int maxY = Mathf.Min(H - 1, (int)(cy + bgRadius + 1));
+
+            const float strokeThickness = 3.0f;
+
+            for (int y = minY; y <= maxY; y++)
+            {
+                float dy = y - cy;
+                for (int x = minX; x <= maxX; x++)
+                {
+                    float dx = x - cx;
+                    float dist = Mathf.Sqrt(dx * dx + dy * dy);
+
+                    if (dist <= bgRadius + 0.5f)
+                    {
+                        float edgeAlpha = Mathf.Clamp01((bgRadius + 0.5f) - dist);
+                        float strokeFactor = Mathf.Clamp01((dist - (bgRadius - strokeThickness)) / 0.5f);
+                        Color32 c = Color.Lerp(bgColor, checkColor, strokeFactor);
+
+                        c.a = (byte)(c.a * edgeAlpha);
+                        int idx = y * W + x;
+                        buffer[idx] = AlphaBlend(buffer[idx], c);
+                    }
+                }
+            }
+
+            Vector2 p0 = new(21f, 31f);
+            Vector2 p1 = new(28f, 22f);
+            Vector2 p2 = new(43f, 39f);
+
+            float drawProgress = Mathf.Clamp01(progress);
+            float leg1Prop = 0.35f;
+
+            if (drawProgress > 0f)
+            {
+                float strokeRadius = 2.0f;
+
+                if (drawProgress <= leg1Prop)
+                {
+                    float t1 = drawProgress / leg1Prop;
+                    Vector2 currentEnd1 = Vector2.Lerp(p0, p1, t1);
+                    DrawLineSegment(buffer, p0, currentEnd1, strokeRadius, checkColor);
+                }
+                else
+                {
+                    DrawLineSegment(buffer, p0, p1, strokeRadius, checkColor);
+
+                    float t2 = (drawProgress - leg1Prop) / (1f - leg1Prop);
+                    Vector2 currentEnd2 = Vector2.Lerp(p1, p2, t2);
+                    DrawLineSegment(buffer, p1, currentEnd2, strokeRadius, checkColor);
+                }
+            }
+        }
+
+        private static void DrawLineSegment(Color32[] buffer, Vector2 a, Vector2 b, float radius, Color32 color)
+        {
+            const int W = 64;
+            const int H = 64;
+
+            int minX = Mathf.Max(0, (int)(Mathf.Min(a.x, b.x) - radius - 1));
+            int maxX = Mathf.Min(W - 1, (int)(Mathf.Max(a.x, b.x) + radius + 1));
+            int minY = Mathf.Max(0, (int)(Mathf.Min(a.y, b.y) - radius - 1));
+            int maxY = Mathf.Min(H - 1, (int)(Mathf.Max(a.y, b.y) + radius + 1));
+
+            Vector2 ab = b - a;
+            float sqrLen = ab.sqrMagnitude;
+
+            for (int y = minY; y <= maxY; y++)
+            {
+                for (int x = minX; x <= maxX; x++)
+                {
+                    Vector2 p = new(x, y);
+                    float dist;
+
+                    if (sqrLen == 0f)
+                        dist = Vector2.Distance(p, a);
+                    else
+                    {
+                        float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / sqrLen);
+                        Vector2 proj = a + t * ab;
+                        dist = Vector2.Distance(p, proj);
+                    }
+
+                    if (dist <= radius + 0.5f)
+                    {
+                        float edgeAlpha = Mathf.Clamp01((radius + 0.5f) - dist);
+                        Color32 c = color;
+                        c.a = (byte)(c.a * edgeAlpha);
+                        int idx = y * W + x;
+                        buffer[idx] = AlphaBlend(buffer[idx], c);
+                    }
+                }
+            }
+        }
+
+        private static Color32 AlphaBlend(Color32 dst, Color32 src)
+        {
+            if (src.a == 0) return dst;
+            if (src.a == 255 || dst.a == 0) return src;
+
+            float srcA = src.a / 255f;
+            float dstA = dst.a / 255f;
+            float outA = srcA + dstA * (1f - srcA);
+
+            if (outA <= 0f) return new Color32(0, 0, 0, 0);
+
+            byte r = (byte)Mathf.Clamp((src.r * srcA + dst.r * dstA * (1f - srcA)) / outA, 0, 255);
+            byte g = (byte)Mathf.Clamp((src.g * srcA + dst.g * dstA * (1f - srcA)) / outA, 0, 255);
+            byte b = (byte)Mathf.Clamp((src.b * srcA + dst.b * dstA * (1f - srcA)) / outA, 0, 255);
+            byte a = (byte)Mathf.Clamp(outA * 255f, 0, 255);
+
+            return new Color32(r, g, b, a);
         }
 
         [StructLayout(LayoutKind.Sequential)]
