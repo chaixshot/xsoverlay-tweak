@@ -132,7 +132,7 @@ namespace xsoverlay_tweak.Patches.Cursor
             }
         }
 
-        private static bool IsEnable()
+        public static bool IsEnable()
         {
             return XConfig.DoubleClickConfirm.Value && XSettingsManager.Instance.Settings.InputMethod == InputMethods.EmulateMouse;
         }

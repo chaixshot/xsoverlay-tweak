@@ -27,6 +27,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(CustomSettings));
 
         harmony.PatchAll(typeof(EventBridge));
+        harmony.PatchAll(typeof(Clicker));
         harmony.PatchAll(typeof(Raycast));
         harmony.PatchAll(typeof(Notify));
 
