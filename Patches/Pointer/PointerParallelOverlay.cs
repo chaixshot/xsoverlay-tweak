@@ -79,7 +79,13 @@ namespace xsoverlay_tweak.Patches.Pointer
         public static void TooltipParallelToParentOverlay(Unity_Overlay ___TooltipOverlay, Unity_Overlay ___TooltipParent)
         {
             if (___TooltipOverlay != null && ___TooltipParent != null)
+            {
+                string targetName = EventBridge.GetCurrentHoveringOverlay()?.overlayName;
+                float offset = (targetName == "window.settings" || targetName == "window.toolbar") ? 0.015f : 0.003f;
+
+                ___TooltipOverlay.transform.position -= ___TooltipOverlay.transform.forward * offset;
                 ___TooltipOverlay.transform.rotation = ___TooltipParent.transform.rotation;
+            }
         }
 
         private static bool IsEnable()
