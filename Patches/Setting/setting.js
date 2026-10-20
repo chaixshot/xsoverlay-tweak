@@ -57,6 +57,7 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardHoldingIndicator', name: 'Keyboard Holding Indicator', description: 'Do Keyboard key-pressed animation while the key is being held or sticky.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
+            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.StutterSpamFix', name: 'Anti Stutter Spam', description: 'Fix keyboard WebView stutter while typing made the key press stuck and spamming.', default: true },
         ]
     },
     {

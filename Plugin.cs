@@ -67,6 +67,7 @@ public class Plugin : BaseUnityPlugin
         //harmony.PatchAll(typeof(Patches.Keyboard.KeyboardControlButtonStateFix)); //## Official change to WebView keyboard fixed this issue
         harmony.PatchAll(typeof(Patches.Keyboard.KeyboardHoldingIndicator));
         harmony.PatchAll(typeof(Patches.Keyboard.LoadLayoutKeyboard)); //# Official Feature, missing buttons state
+        harmony.PatchAll(typeof(Patches.Keyboard.StutterSpamFix));
 
         // Mouse
         harmony.PatchAll(typeof(Patches.Mouse.MouseButtonSwap));

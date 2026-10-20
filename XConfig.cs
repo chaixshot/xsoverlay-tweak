@@ -42,6 +42,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<bool> KeyboardControlButtonStateFix;
         public static ConfigEntry<bool> KeyboardHoldingIndicator;
         public static ConfigEntry<bool> LoadLayoutKeyboard;
+        public static ConfigEntry<bool> StutterSpamFix;
 
         // Mouse Navigation
         public static ConfigEntry<bool> MouseButtonSwap;
@@ -143,6 +144,7 @@ namespace xsoverlay_tweak
             KeyboardControlButtonStateFix = cfg.Bind("Keyboard", "KeyboardControlButtonStateFix", true, "Fix keyboard control button color not following the state when summoning.");
             KeyboardHoldingIndicator = cfg.Bind("Keyboard", "KeyboardHoldingIndicator", true, "Do Keyboard key-pressed animation while the key is being held or sticky.");
             LoadLayoutKeyboard = cfg.Bind("Keyboard", "LoadLayoutKeyboard", true, "Layout will save the current keyboard state to the selected profile.");
+            StutterSpamFix = cfg.Bind("Keyboard", "StutterSpamFix", true, "Fix keyboard WebView stutter while typing made the key press stuck and spamming.");
 
             // Mouse
             MouseButtonSwap = cfg.Bind("Mouse", "MouseButtonSwap", true, "Detect the Windows setting 'Switch primary and secondary buttons' to auto-swap controller binding.");

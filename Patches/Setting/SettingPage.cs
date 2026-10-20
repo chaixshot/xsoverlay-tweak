@@ -86,6 +86,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.KeyboardControlButtonStateFix"] = XConfig.KeyboardControlButtonStateFix.Value,
                 ["XSOverlayTweak.KeyboardHoldingIndicator"] = XConfig.KeyboardHoldingIndicator.Value,
                 ["XSOverlayTweak.LoadLayoutKeyboard"] = XConfig.LoadLayoutKeyboard.Value,
+                ["XSOverlayTweak.StutterSpamFix"] = XConfig.StutterSpamFix.Value,
 
                 // Mouse
                 ["XSOverlayTweak.MouseButtonSwap"] = XConfig.MouseButtonSwap.Value,
@@ -253,6 +254,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.LoadLayoutKeyboard":
                     XConfig.LoadLayoutKeyboard.Value = bool.Parse(value);
+                    break;
+                case "XSOverlayTweak.StutterSpamFix":
+                    XConfig.StutterSpamFix.Value = bool.Parse(value);
                     break;
 
                 // Mouse
