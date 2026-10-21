@@ -20,21 +20,41 @@ namespace xsoverlay_tweak.Patches.Setting
             {
                 wv.WebViewReady += (IWebView) =>
                 {
-                    // JS for inserting the actual settings page
-                    Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("xsoverlay_tweak.Patches.Setting.setting.js");
-                    using StreamReader reader = new(stream);
-                    string jsContent = reader.ReadToEnd();
-
-                    jsContent = jsContent.Replace("<<Version>>", MyPluginInfo.PLUGIN_VERSION);
-                    jsContent = jsContent.Replace("<<HMDRefreshRate>>", DeviceManager.Instance.HMDRefreshRate.ToString());
-                    jsContent = jsContent.Replace("<<RefreshRate>>", XConfig.RefreshRate.Value);
-                    jsContent = jsContent.Replace("<<RefreshRateList>>", string.Join(", ", RefreshRate.RefreshRateList));
-
-                    string jsCode = $"(function() {{ {jsContent} }})();";
-
-                    wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
+                    Task.Run(async () =>
                     {
-                        //Plugin.Logger.LogError($"[{wv.UserInterfaceSelection}] {result}");
+                        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("xsoverlay_tweak.Patches.Setting.setting.js");
+                        using StreamReader reader = new(stream);
+                        string jsContent = reader.ReadToEnd();
+
+                        jsContent = jsContent.Replace("<<Version>>", MyPluginInfo.PLUGIN_VERSION);
+                        jsContent = jsContent.Replace("<<HMDRefreshRate>>", DeviceManager.Instance.HMDRefreshRate.ToString());
+                        jsContent = jsContent.Replace("<<RefreshRate>>", XConfig.RefreshRate.Value);
+                        jsContent = jsContent.Replace("<<RefreshRateList>>", string.Join(", ", RefreshRate.RefreshRateList));
+
+                        string jsCode = $"(function() {{ {jsContent} }})();";
+
+                        for (int attempt = 0; attempt < 20; attempt++)
+                        {
+                            await Task.Delay(500);
+
+                            if (wv?._webView?.WebView == null) break;
+
+                            var tcs = new TaskCompletionSource<string>();
+
+                            wv._webView.WebView.ExecuteJavaScript(jsCode, (result) =>
+                            {
+                                tcs.TrySetResult(result);
+                            });
+
+                            // Wait for JS execution result with timeout
+                            var completedTask = await Task.WhenAny(tcs.Task, Task.Delay(1000));
+                            if (completedTask == tcs.Task)
+                            {
+                                string res = tcs.Task.Result;
+                                if (res != null && (res.Contains("injected") || res.Contains("already injected")))
+                                    break;
+                            }
+                        }
                     });
                 };
             }
