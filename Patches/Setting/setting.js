@@ -20,7 +20,7 @@ const SECTIONS = [
     {
         name: 'Cursor', priority: 2, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysHideCursor', name: 'Always Hide', description: 'Forcefully hides the system Windows Cursor in Desktop and Window Capture Overlay.', default: false },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysUpdateCursor', name: 'Always Update', description: 'Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.<br>Without this, the Windows Cursor often appears to lag one frame behind the Pointer position.', default: false },
+            //{ type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.AlwaysUpdateCursor', name: 'Always Update', description: 'Reduces Windows Cursor latency by sending the position from the Pointer before the desktop frame is captured.<br>Without this, the Windows Cursor often appears to lag one frame behind the Pointer position.', default: false },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CursorMovingInteractionFix', name: 'Cursor Moving Interaction', description: 'Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CursorSingleClickFix', name: 'Cursor Single Click', description: 'Fix where Windows cursor movement events fail to interact with elements. For example, hovering the cursor over the Windows taskbar displays a thumbnail preview, or dragging to move the system tray icon.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.DoubleClickConfirm', name: 'Double Click Confirm', description: 'Ensures that a Double Click is reliable and precise, using Double Click Delay from XSOverlay settings and Windows Double-click speed setting.', default: true },
@@ -54,7 +54,7 @@ const SECTIONS = [
     {
         name: 'Keyboard', priority: 5, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.CtrlKeySticky', name: 'Ctrl Key Sticky', description: 'Added double-tap to the Ctrl key for sticky toggle.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
+            // { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardControlButtonStateFix', name: 'Keyboard Control Button State', description: 'Fix keyboard control button color not following the state when summoning.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.KeyboardHoldingIndicator', name: 'Keyboard Holding Indicator', description: 'Do Keyboard key-pressed animation while the key is being held or sticky.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutKeyboard', name: 'Layout Keyboard State', description: 'Layout will save the current keyboard state to the selected profile.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.StutterSpamFix', name: 'Anti Stutter Spam', description: 'Fix keyboard WebView stutter while typing made the key press stuck and spamming.', default: true },
@@ -110,7 +110,7 @@ const SECTIONS = [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayAttachSmooth', name: 'Overlay Attach Smooth', description: 'When Capture Overlay is attached to the device, it will add more options to the Window Settings flyout to control Overlay movement behavior, using Position Dampening and Rotation Dampening settings to smooth its movement.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayConfirmClose', name: 'Overlay Confirm Close', description: 'Requires pressing the close overlay button three times to close.', default: false },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayCurveAutoRefresh', name: 'Overlay Curve Auto Refresh', description: 'Automatically applies Overlay Curve changes to all active behaviors. For example, when the Overlay Curve setting changes, Overlay Scaling and Overlay Spawning are affected', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayGripAntiSlip', name: 'Overlay Grip Anti Slip', description: 'Prevents Overlay from dropping or slipping out of Grip when moving it too fast.', default: true },
+            // { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayGripAntiSlip', name: 'Overlay Grip Anti Slip', description: 'Prevents Overlay from dropping or slipping out of Grip when moving it too fast.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.OverlayRollCurveFix', name: 'Overlay Roll Curve', description: 'Prevents an Overlay from turning invisible when curvature and rotation change simultaneously.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.PinBlockInputNonEditMode', name: 'Pin + Block Input Non Layout Mode', description: 'Blocks interaction with \'Pinned\' + \'Block Input\' Overlay unless Layout Mode is active.', default: true },
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WindowToolbarGesture', name: 'Window Toolbar Gesture', description: 'When hovering over the Window Toolbar, right-click to switch to the previous Window or use thumbstick scrolling the Window list.', default: true },
@@ -128,9 +128,9 @@ const SECTIONS = [
     {
         name: 'Fix', priority: 13, settings: [
             { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.LoadLayoutScaleFix', name: 'Load Layout Scale', description: 'Ensures saved scale values are applied correctly when loading an Overlay Layout.', default: true },
-            { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.', default: 'Medium', options: ['Ultra Low', 'Very Low', 'Low', 'Medium', 'High', 'Very High'] },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.SteamVRCompositorTextureFormatFix', name: 'SteamVR Compositor Texture Format', description: 'Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.', default: true },
-            { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFrozenFix', name: 'WebView', description: 'Fixes an issue where certain WebView UI elements were not clickable.', default: true },
+            // { type: Ui.ComponentType.Dropdown, id: 'XSOverlayTweak.MouseSmoothSpeed', name: 'Mouse Smoothing', description: 'Adjusts the level of smoothing applied to the Windows Cursor within Capture Overlay.', default: 'Medium', options: ['Ultra Low', 'Very Low', 'Low', 'Medium', 'High', 'Very High'] },
+            // { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.SteamVRCompositorTextureFormatFix', name: 'SteamVR Compositor Texture Format', description: 'Wraps SteamVR compositor textures using the native DXGI format reported by OpenVR to avoid RGBA/BGRA shader resource view mismatches.', default: true },
+            // { type: Ui.ComponentType.Toggle, id: 'XSOverlayTweak.WebViewFrozenFix', name: 'WebView', description: 'Fixes an issue where certain WebView UI elements were not clickable.', default: true },
         ]
     },
     {
