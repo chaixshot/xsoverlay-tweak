@@ -46,7 +46,7 @@ namespace xsoverlay_tweak.Patches
             };
 
             EventBridge.OnShowNotification += (notify) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
-            EventBridge.OnSwitchHoveringOverlay += (raycaster, overlay) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
+            EventBridge.OnSwitchHoveringOverlay += (raycaster, overlay, previousOVerlay) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
             EventBridge.OnTakeControlOfDesktopCursor += (raycaster) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
             EventBridge.OnReleaseControlOfDesktopCursor += (raycaster) => EventBridge.Ref_DeviceManager.GetHMDRefreshRate(__instance);
         }

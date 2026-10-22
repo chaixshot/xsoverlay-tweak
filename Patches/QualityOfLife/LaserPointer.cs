@@ -48,7 +48,7 @@ namespace xsoverlay_tweak.Patches.QualityOfLife
                 CreateLaser(__instance);
 
             // Listen for hovering ClickState changes to update Laser_A length immediately when hovering something new
-            EventBridge.OnSwitchHoveringOverlay += (raycaster, overlay) =>
+            EventBridge.OnSwitchHoveringOverlay += (raycaster, overlay, previousOVerlay) =>
             {
                 if (IsEnable())
                     Plugin.Instance.StartCoroutine(UpdateLaserLengthDelay(raycaster));

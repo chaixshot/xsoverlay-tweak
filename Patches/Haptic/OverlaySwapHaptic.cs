@@ -10,7 +10,7 @@ namespace xsoverlay_tweak.Patches.Haptic
         [HarmonyPostfix]
         public static void InitializeEvents()
         {
-            EventBridge.OnSwitchHoveringOverlay += (raycaster, overlay) =>
+            EventBridge.OnSwitchHoveringOverlay += (raycaster, overlay, previousOVerlay) =>
             {
                 if (!IsEnable()) return;
 

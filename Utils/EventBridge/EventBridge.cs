@@ -16,7 +16,7 @@ namespace xsoverlay_tweak.Utils.EventBridge
         protected static bool isKeyboardSpawning = false;
 
         public static event Action InputMethodChanged;
-        public static event Action<Raycaster, Unity_Overlay> OnSwitchHoveringOverlay;
+        public static event Action<Raycaster, Unity_Overlay, Unity_Overlay> OnSwitchHoveringOverlay;
         public static event Action<CustomAPI.XSONotificationObject> OnShowNotification;
         public static event Action<Raycaster> OnTakeControlOfDesktopCursor;
         public static event Action<Raycaster> OnReleaseControlOfDesktopCursor;
@@ -39,15 +39,21 @@ namespace xsoverlay_tweak.Utils.EventBridge
             public static readonly AccessTools.FieldRef<object, Raycaster> NativeHoverState_Owner = AccessTools.FieldRefAccess<Raycaster>(NativeHoverState, "Owner");
         }
 
+
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]
-        public static void InitializeEvents(DeviceManager __instance)
+        public static void InitializeEvents()
         {
             // Listen to hovering overlay change
             XSOEventSystem.OnSwitchHoveringOverlay += async (raycaster, overlay) =>
             {
                 await Task.Delay(2); // Wait for other logic in Ratcast.cs
-                OnSwitchHoveringOverlay?.Invoke(raycaster, overlay);
+
+                Raycast.TargetOverlay.TryGetValue(raycaster, out Unity_Overlay targetOverlay);
+                OnSwitchHoveringOverlay?.Invoke(raycaster, overlay, targetOverlay);
+
+                Raycast.TargetOverlay.Remove(raycaster);
+                Raycast.TargetOverlay.Add(raycaster, overlay);
             };
 
             // Listen to active raycaster change

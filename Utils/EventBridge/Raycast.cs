@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
 using XSOverlay;
@@ -22,6 +23,7 @@ namespace xsoverlay_tweak.Utils.EventBridge
         public static new bool IsHoverAnyDesktopCapture = false;
         public static new bool IsHoverAnyWindowCapture = false;
         public static new bool IsHoverAnyWebView = false;
+        public static readonly ConditionalWeakTable<Raycaster, Unity_Overlay> TargetOverlay = new();
 
         [HarmonyPatch(typeof(DeviceManager), "Start")]
         [HarmonyPostfix]
