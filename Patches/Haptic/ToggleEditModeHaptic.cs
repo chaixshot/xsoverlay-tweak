@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 using System.Collections;
 using UnityEngine;
-using Valve.VR;
 using XSOverlay;
+using xsoverlay_tweak.Utils;
 
 namespace xsoverlay_tweak.Patches.Haptic
 {
@@ -30,21 +30,21 @@ namespace xsoverlay_tweak.Patches.Haptic
 
         private static IEnumerator PlayShowHaptic()
         {
-            float strength = 100;
+            float strength = 0.01f;
             var wait = new WaitForSecondsRealtime(0.01f);
 
-            while (strength < 2000)
+            while (strength < 0.4f)
             {
-                OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.leftIndex, 0U, (ushort)strength);
-                OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.rightIndex, 0U, (ushort)strength);
+                AdvancedHaptics.Rumble(true, 0f, 320f, strength);
+                AdvancedHaptics.Rumble(false, 0f, 320f, strength);
 
                 yield return wait;
 
-                strength += 200;
+                strength += 0.035f;
             }
 
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.leftIndex, 0U, 6000);
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.rightIndex, 0U, 6000);
+            AdvancedHaptics.Rumble(true, 0f, 320f, 1f);
+            AdvancedHaptics.Rumble(false, 0f, 320f, 1f);
 
             HapticCoroutine = null;
         }
@@ -53,23 +53,23 @@ namespace xsoverlay_tweak.Patches.Haptic
         {
             var wait = new WaitForSecondsRealtime(0.1f);
 
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.leftIndex, 0U, 6000);
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.rightIndex, 0U, 6000);
+            AdvancedHaptics.Rumble(true, 0f, 320f, 1f);
+            AdvancedHaptics.Rumble(false, 0f, 320f, 1f);
 
             yield return wait;
 
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.leftIndex, 0U, 3000);
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.rightIndex, 0U, 3000);
+            AdvancedHaptics.Rumble(true, 0f, 320f, 0.5f);
+            AdvancedHaptics.Rumble(false, 0f, 320f, 0.5f);
 
             yield return wait;
 
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.leftIndex, 0U, 1000);
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.rightIndex, 0U, 1000);
+            AdvancedHaptics.Rumble(true, 0f, 320f, 0.3f);
+            AdvancedHaptics.Rumble(false, 0f, 320f, 0.3f);
 
             yield return wait;
 
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.leftIndex, 0U, 400);
-            OpenVR.System.TriggerHapticPulse(OVR_Pose_Handler.instance.rightIndex, 0U, 400);
+            AdvancedHaptics.Rumble(true, 0f, 320f, 0.1f);
+            AdvancedHaptics.Rumble(false, 0f, 320f, 0.1f);
 
             HapticCoroutine = null;
         }

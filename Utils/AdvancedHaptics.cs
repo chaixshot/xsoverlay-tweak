@@ -34,9 +34,7 @@ namespace xsoverlay_tweak.Utils
             if (ActiveRumbles.TryGetValue(handKey, out HapticTracker tracker))
             {
                 if (tracker.Coroutine != null)
-                {
                     Plugin.Instance.StopCoroutine(tracker.Coroutine);
-                }
             }
             else
             {
@@ -49,24 +47,25 @@ namespace xsoverlay_tweak.Utils
 
         private static IEnumerator DoRumble(HapticTracker tracker, uint deviceIndex, float duration, float frequency, float strength)
         {
-            float elapsed = 0f;
-
-            // Map strength (0.0 - 1.0) to OpenVR microseconds (0 - 3999)
-            ushort pulseWidth = (ushort)Mathf.Lerp(0, 3999, Mathf.Clamp01(strength));
-
-            // Frequency math: Time (seconds) between each pulse = 1 / Frequency
-            float targetFrequency = Mathf.Clamp(frequency, 10f, 500f);
-            float timeBetweenPulses = 1f / targetFrequency;
-
-            var wait = new WaitForSecondsRealtime(timeBetweenPulses);
-
             try
             {
-                while (elapsed < duration)
+                ushort pulseWidth = (ushort)Mathf.Lerp(0, 6000, Mathf.Clamp01(strength)); // Map strength (0.0 - 1.0) to OpenVR microseconds (0 - 6000)
+
+                if (duration == 0f) // Play once and exit loop immediately for short durations.
+                    OpenVR.System?.TriggerHapticPulse(deviceIndex, 0U, pulseWidth);
+                else
                 {
-                    OpenVR.System.TriggerHapticPulse(deviceIndex, 0U, pulseWidth);
-                    yield return wait;
-                    elapsed += timeBetweenPulses;
+                    float elapsed = 0f;
+                    float targetFrequency = Mathf.Clamp(frequency, 10f, 500f); // Frequency math: Time (seconds) between each pulse = 1 / Frequency
+                    float timeBetweenPulses = 1f / targetFrequency;
+                    var wait = new WaitForSecondsRealtime(timeBetweenPulses);
+
+                    while (elapsed < duration)
+                    {
+                        OpenVR.System.TriggerHapticPulse(deviceIndex, 0U, pulseWidth);
+                        yield return wait;
+                        elapsed += timeBetweenPulses;
+                    }
                 }
             }
             finally
