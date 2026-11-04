@@ -26,6 +26,7 @@ namespace xsoverlay_tweak
         public static ConfigEntry<int> InactivePointerOpacity;
         public static ConfigEntry<bool> PointerDoubleClickDelay;
         public static ConfigEntry<int> PointerScaleMultiply;
+        public static ConfigEntry<int> PointerStopSmooth;
         public static ConfigEntry<int> PullTriggerPointerLock;
         public static ConfigEntry<bool> TwoHandedMode;
 
@@ -128,6 +129,7 @@ namespace xsoverlay_tweak
             InactivePointerOpacity = cfg.Bind("Pointer", "InactivePointerOpacity", 50, "Sets the opacity level for the inactive hand's Pointer.");
             PointerDoubleClickDelay = cfg.Bind("Pointer", "PointerDoubleClickDelay", true, "Applies the Double Click Delay from XSOverlay settings to the physical Pointer itself, not just the cursor.");
             PointerScaleMultiply = cfg.Bind("Pointer", "PointerScaleMultiply", 100, "Multiplier for the Pointer scale relative to the global XSOverlay setting.");
+            PointerStopSmooth = cfg.Bind("Pointer", "PointerStopSmooth", 1, "Disables pointer smoothing for specific overlay types.");
             PullTriggerPointerLock = cfg.Bind("Pointer", "PullTriggerPointerLock", 3, "Locks/Smooths the Pointer while the Trigger is held for easier double clicking.\n\n- Uses the Trigger Value from SteamVR Input and Double Click Delay from XSOverlay settings.");
             TwoHandedMode = cfg.Bind("Pointer", "TwoHandedMode", false, "Allow both hands to become active hands at the same time to perform a Click simultaneously for two-hand interaction.");
 

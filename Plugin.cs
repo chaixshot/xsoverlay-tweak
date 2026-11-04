@@ -52,6 +52,7 @@ public class Plugin : BaseUnityPlugin
         harmony.PatchAll(typeof(Patches.Pointer.PointerDoubleClickDelay));
         harmony.PatchAll(typeof(Patches.Pointer.PointerParallelOverlay));
         harmony.PatchAll(typeof(Patches.Pointer.PointerScaleMultiply));
+        harmony.PatchAll(typeof(Patches.Pointer.PointerStopSmooth));
         harmony.PatchAll(typeof(Patches.Pointer.PullTriggerPointerLock));
         harmony.PatchAll(typeof(Patches.Pointer.TwoHandedMode));
 

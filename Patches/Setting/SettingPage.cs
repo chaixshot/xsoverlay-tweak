@@ -90,6 +90,7 @@ namespace xsoverlay_tweak.Patches.Setting
                 ["XSOverlayTweak.InactivePointerOpacity"] = XConfig.InactivePointerOpacity.Value,
                 ["XSOverlayTweak.PointerDoubleClickDelay"] = XConfig.PointerDoubleClickDelay.Value,
                 ["XSOverlayTweak.PointerScaleMultiply"] = XConfig.PointerScaleMultiply.Value,
+                ["XSOverlayTweak.PointerStopSmooth"] = XConfig.PointerStopSmooth.Value,
                 ["XSOverlayTweak.PullTriggerPointerLock"] = XConfig.PullTriggerPointerLock.Value,
                 ["XSOverlayTweak.TwoHandedMode"] = XConfig.TwoHandedMode.Value,
 
@@ -234,6 +235,9 @@ namespace xsoverlay_tweak.Patches.Setting
                     break;
                 case "XSOverlayTweak.PointerScaleMultiply":
                     XConfig.PointerScaleMultiply.Value = int.Parse(value);
+                    break;
+                case "XSOverlayTweak.PointerStopSmooth":
+                    XConfig.PointerStopSmooth.Value = int.Parse(value);
                     break;
                 case "XSOverlayTweak.PullTriggerPointerLock":
                     XConfig.PullTriggerPointerLock.Value = int.Parse(value);
