@@ -28,6 +28,7 @@ namespace xsoverlay_tweak.Patches.Pointer
                 {
                     PullTriggerPointerLock.InstanceState.TryGetValue(__instance, out PullTriggerPointerLock.RaycasterState ClickState);
 
+                    // Cursor overlay
                     if (!___InputDevice.ClickFreezeActive && (ClickState == null || !ClickState.IsLocking))
                     {
                         // Toolbar and WindowSettings overlay using parent as target
@@ -61,21 +62,33 @@ namespace xsoverlay_tweak.Patches.Pointer
                             // Calculate the tilt required to stay parallel to the curved surface at this specific point.
                             Quaternion surfaceTilt = Quaternion.FromToRotation(Vector3.forward, worldNormal);
 
-                            // Apply the surface tilt to the targetOverlay's base world rotation.
-                            ___VisualCursorElementOverlay.transform.rotation = rotation * surfaceTilt;
+                            ___VisualCursorElementOverlay.transform.rotation = rotation * surfaceTilt; // Apply the surface tilt to the targetOverlay's base world rotation.
+                            ___VisualCursorElementOverlay.transform.position -= ___VisualCursorElementOverlay.transform.position * 0.001f; // Push forward
                         }
                     }
 
+                    float curveRadius = CalculateCurveRadius(targetOverlay, ___VisualCursorElementOverlay.widthInMeters);
+
+                    // Click animation overlay
                     if (___VisualCursorElementClickAnimationOverlay.gameObject.activeSelf)
                     {
-                        ___VisualCursorElementClickAnimationOverlay.transform.position = ___VisualCursorElementOverlay.transform.position;
+                        ___VisualCursorElementClickAnimationOverlay.transform.position = ___VisualCursorElementOverlay.transform.position + (___VisualCursorElementOverlay.transform.position * 0.001f); // Follow cursor and push backwrd
                         ___VisualCursorElementClickAnimationOverlay.transform.rotation = ___VisualCursorElementOverlay.transform.rotation;
-                        ___VisualCursorElementClickAnimationOverlay.overlayCurveRadius = targetOverlay.overlayCurveRadius;
+                        ___VisualCursorElementClickAnimationOverlay.overlayCurveRadius = curveRadius;
                     }
 
-                    ___VisualCursorElementOverlay.overlayCurveRadius = targetOverlay.overlayCurveRadius;
+                    ___VisualCursorElementOverlay.overlayCurveRadius = curveRadius;
                 }
             }
+        }
+
+        private static float CalculateCurveRadius(Unity_Overlay targetOverlay, float widthInMeters)
+        {
+            if (targetOverlay == null || targetOverlay.overlayCurveRadius <= 0f)
+                return 0f;
+
+            float targetWidth = targetOverlay.widthInMeters > 0f ? targetOverlay.widthInMeters : 1f;
+            return targetOverlay.overlayCurveRadius * (widthInMeters / targetWidth);
         }
 
         [HarmonyPatch(typeof(Tooltip), "LateUpdate")]
