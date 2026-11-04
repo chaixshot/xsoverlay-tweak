@@ -23,14 +23,25 @@ namespace xsoverlay_tweak.Patches.Pointer
             public bool IsDown = false;
             public bool WasSmooth = false;
             public bool WasClick = false;
-            public Quaternion InitialLockRotation = new();
+            public Vector3 InitialLockDirection = new();
             public Coroutine ReleaseingCoroutine;
         }
         public static readonly ConditionalWeakTable<Raycaster, RaycasterState> InstanceState = new();
 
         private static readonly Func<Raycaster, float> GetTriggerAxis = AccessTools.MethodDelegate<Func<Raycaster, float>>(AccessTools.Method(typeof(Raycaster), "GetTriggerAxis"));
 
+        private static readonly AccessTools.FieldRef<Raycaster, Vector3> getRawRayDirection = AccessTools.FieldRefAccess<Raycaster, Vector3>("RawRayDirection");
+
         private const float ANGLE_THRESHOLD = 1f;
+
+        private static Vector3 GetCurrentRayDirection(Raycaster instance)
+        {
+            Vector3 rawDir = getRawRayDirection(instance);
+            if (rawDir != Vector3.zero)
+                return rawDir;
+
+            return instance.transform.forward;
+        }
 
         [HarmonyPatch(typeof(Raycaster), "Start")]
         [HarmonyPostfix]
@@ -116,7 +127,7 @@ namespace xsoverlay_tweak.Patches.Pointer
 
                     if (!Data.IsLocking)
                     {
-                        Data.InitialLockRotation = __instance.transform.rotation;
+                        Data.InitialLockDirection = GetCurrentRayDirection(__instance);
 
                         AdvancedHaptics.Rumble(__instance.HapticDeviceName == Raycaster.HapticDevice.Left, 0.001f, 320f, XConfig.PullTriggerPointerLockHaptic.Value / 100f);
                     }
@@ -135,31 +146,6 @@ namespace xsoverlay_tweak.Patches.Pointer
             }
         }
 
-        [HarmonyPatch(typeof(Raycaster), "SearchForOverlays")]
-        [HarmonyPrefix]
-        public static bool FreezeSearchForOverlays(Raycaster __instance)
-        {
-            if (!IsLockMode()) return true;
-            if (EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay)) return true;
-
-            if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
-                if (Data.IsLocking)
-                {
-                    float angleDelta = Quaternion.Angle(__instance.transform.rotation, Data.InitialLockRotation);
-                    if (Data.IsLockingOverThreshold = !Data.WasClick && angleDelta > ANGLE_THRESHOLD)
-                        return false;
-                }
-
-            return true;
-        }
-
-        [HarmonyPatch(typeof(MouseInputDevice), nameof(MouseInputDevice.StartClickFreezePeriod))]
-        [HarmonyPrefix]
-        public static bool BlockOriginalDoubleClickDelay()
-        {
-            return !IsEnable();
-        }
-
         [HarmonyPatch(typeof(Raycaster), "SendCapturedPressClick"), HarmonyPatch(typeof(Raycaster), "SendCapturedPressDown")]
         [HarmonyPrefix]
         public static void ListenClickInput(Raycaster __instance, bool __result)
@@ -170,6 +156,43 @@ namespace xsoverlay_tweak.Patches.Pointer
                 Data.WasClick = true;
         }
 
+        [HarmonyPatch(typeof(MouseInputDevice), nameof(MouseInputDevice.StartClickFreezePeriod))]
+        [HarmonyPrefix]
+        public static bool BlockOriginalDoubleClickDelay()
+        {
+            return !IsEnable();
+        }
+
+        #region Lock Mode
+        [HarmonyPatch(typeof(Raycaster), "UpdateRaycaster")]
+        [HarmonyPrefix]
+        public static bool FreezeRaycaster(Raycaster __instance)
+        {
+            if (!IsLockMode()) return true;
+            if (EventBridge.IsOverlayKeyboard(__instance.HoveringOverlay)) return true;
+
+            if (InstanceState.TryGetValue(__instance, out RaycasterState Data))
+                if (Data.IsLocking)
+                {
+                    Vector3 currentDir = GetCurrentRayDirection(__instance);
+                    float angleDelta = Vector3.Angle(currentDir, Data.InitialLockDirection);
+                    if (!Data.WasClick && angleDelta > ANGLE_THRESHOLD)
+                    {
+                        Data.IsLockingOverThreshold = true;
+                        return true;
+                    }
+                    else
+                    {
+                        Data.IsLockingOverThreshold = false;
+                        return false;
+                    }
+                }
+
+            return true;
+        }
+        #endregion
+
+        #region Smooth Mode
         [HarmonyPatch(typeof(Raycaster), "CheckOverlayIntersection")]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> CustomSmoothValue(IEnumerable<CodeInstruction> instructions)
@@ -206,9 +229,7 @@ namespace xsoverlay_tweak.Patches.Pointer
         private static float GetCustomPointerSmoothing(float originalSmoothing, Raycaster instance)
         {
             if (!IsSmoothMode() || instance == null || EventBridge.IsOverlayKeyboard(instance.HoveringOverlay))
-            {
                 return originalSmoothing;
-            }
 
             if (InstanceState.TryGetValue(instance, out RaycasterState data))
                 if (data.WasSmooth)
@@ -216,6 +237,7 @@ namespace xsoverlay_tweak.Patches.Pointer
 
             return originalSmoothing;
         }
+        #endregion
 
         private static IEnumerator ReleaseingDelay(Raycaster instance)
         {
