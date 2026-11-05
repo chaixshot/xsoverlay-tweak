@@ -10,6 +10,7 @@ namespace xsoverlay_tweak.Utils
         private class HapticTracker
         {
             public Coroutine Coroutine;
+            public float EndTime;
         }
 
         private static readonly ConditionalWeakTable<object, HapticTracker> ActiveRumbles = new();
@@ -34,7 +35,13 @@ namespace xsoverlay_tweak.Utils
             if (ActiveRumbles.TryGetValue(handKey, out HapticTracker tracker))
             {
                 if (tracker.Coroutine != null)
+                {
+                    // Prevent short confirmation rumbles from cutting off ongoing quick rumbles
+                    if (duration <= 0.01f && Time.realtimeSinceStartup < tracker.EndTime)
+                        return;
+
                     Plugin.Instance.StopCoroutine(tracker.Coroutine);
+                }
             }
             else
             {
@@ -42,6 +49,7 @@ namespace xsoverlay_tweak.Utils
                 ActiveRumbles.Add(handKey, tracker);
             }
 
+            tracker.EndTime = Time.realtimeSinceStartup + (duration == 0f ? 0.05f : duration);
             tracker.Coroutine = Plugin.Instance.StartCoroutine(DoRumble(tracker, deviceIndex, duration, frequency, strength));
         }
 

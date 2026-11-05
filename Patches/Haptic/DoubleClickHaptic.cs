@@ -17,7 +17,7 @@ namespace xsoverlay_tweak.Patches.Haptic
                 if (!IsEnable()) return;
 
                 if (isDoubleClickWin || isDoubleClickXSO)
-                    AdvancedHaptics.Rumble((DesktopCursorManager.Instance.GetCurrentInputDevice().HapticDeviceName == Raycaster.HapticDevice.Left), 0.05f, 40f, XConfig.DoubleClickHaptic.Value / 100f);
+                    AdvancedHaptics.Rumble((DesktopCursorManager.Instance.GetCurrentInputDevice().HapticDeviceName == Raycaster.HapticDevice.Left), 0.05f, 320f, XConfig.DoubleClickHaptic.Value / 100f);
             };
         }
 
