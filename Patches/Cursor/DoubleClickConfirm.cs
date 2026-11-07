@@ -90,6 +90,13 @@ namespace xsoverlay_tweak.Patches.Cursor
             }
         }
 
+        [HarmonyPatch(typeof(MouseInputDevice), nameof(MouseInputDevice.StartClickFreezePeriod))]
+        [HarmonyPrefix]
+        public static bool BlockOriginalDoubleClickDelay()
+        {
+            return !IsEnable();
+        }
+
         public static bool IsEnable()
         {
             return XConfig.DoubleClickConfirm.Value && XSettingsManager.Instance.Settings.InputMethod == InputMethods.EmulateMouse;
