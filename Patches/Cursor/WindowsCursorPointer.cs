@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using Valve.VR;
 using XSOverlay;
 using xsoverlay_tweak.Patches.Pointer;
 using xsoverlay_tweak.Utils.EventBridge;
@@ -219,6 +220,19 @@ namespace xsoverlay_tweak.Patches.Cursor
             if (CursorDictionary.TryGetValue(__instance, out CursorData Data))
                 if (Data.IsCursor)
                     ___VisualCursorElementClickAnimationOverlay.widthInMeters = ___VisualCursorElementOverlay.widthInMeters / 1.5f;
+        }
+
+        [HarmonyPatch("PublishCursorState")]
+        [HarmonyPrefix]
+        public static bool PreventCompositorTextureOverride(Raycaster __instance, ref Unity_Overlay ___VisualCursorElementOverlay, Unity_Overlay ___VisualCursorElementClickAnimationOverlay, ETrackingUniverseOrigin origin)
+        {
+            if (IsEnable() && CursorDictionary.TryGetValue(__instance, out CursorData Data) && Data.IsCursor)
+            {
+                ___VisualCursorElementOverlay?.SyncTransformToOpenVR(origin);
+                ___VisualCursorElementClickAnimationOverlay?.SyncTransformToOpenVR(origin);
+                return false;
+            }
+            return true;
         }
 
         private static bool IsTargetWindow(Unity_Overlay overlay)
