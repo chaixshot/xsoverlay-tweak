@@ -156,7 +156,7 @@ namespace xsoverlay_tweak.Patches.Pointer
                 Data.WasClick = true;
         }
 
-        [HarmonyPatch(typeof(MouseInputDevice), nameof(MouseInputDevice.StartClickFreezePeriod))]
+        [HarmonyPatch(typeof(MouseInputDevice), "StartClickFreezePeriod")]
         [HarmonyPrefix]
         public static bool BlockOriginalDoubleClickDelay()
         {
